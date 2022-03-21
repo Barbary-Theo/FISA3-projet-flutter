@@ -1,13 +1,13 @@
 # projet-flutter
 
 
-### Membre du * groupe 1 * de l'équipe projet 
+### Membre du groupe 1 de l'équipe projet 
 
 
-- BARBARY Théo 👨🏻‍💻
-- CALIER Amandine 👩🏼‍💻
-- THIBAUT Martin 👨🏻‍💻
-- THIERY Basile 🧑‍💻
+- BARBARY Théo 🐺
+- CALIER Amandine 🦉
+- THIBAUT Martin 🦋
+- THIERY Basile 🦦
 
 
 ### Ressources du projet 
