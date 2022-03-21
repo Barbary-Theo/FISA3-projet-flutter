@@ -4,7 +4,7 @@
 ### Membre du groupe 1 de l'équipe projet 
 
 
-- BARBARY Théo 🐺
+- BARBARY Théo 🦬
 - CALIER Amandine 🦉
 - THIBAUT Martin 🦋
 - THIERY Basile 🦦
