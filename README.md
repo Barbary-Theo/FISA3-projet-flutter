@@ -7,7 +7,7 @@
 - BARBARY Théo 🦬
 - CALIER Amandine 🦉
 - THIBAUT Martin 🦋
-- THIERY Basile 🦦
+- THIRY Basile 🦦
 
 
 ### Ressources du projet 
