@@ -2,8 +2,32 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:projetmobiles6/loginPage.dart';
+import 'package:projetmobiles6/main.dart';
+import 'package:projetmobiles6/service/Authentificaiton_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class signInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget{
+  @override
+  State<SignInPage> createState() => _SignInPage();
+}
+
+class _SignInPage extends State<SignInPage> {
+
+  final TextEditingController login = TextEditingController();
+  final TextEditingController password1 = TextEditingController();
+  final TextEditingController password2 = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+
+  void _goToLogIn() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (context) => LoginPage()
+        ),
+            (route) => false
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +49,7 @@ class signInPage extends StatelessWidget {
                 ),
                 Center(
                   child: Text(
-                    "Welcome to \n Done&Gone",
+                    "Bienvenue to \n Done&Gone",
                     style: TextStyle(
                       fontSize: 25,
                     ),
@@ -37,6 +61,7 @@ class signInPage extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
                   child: TextField(
+                    controller: login,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -54,6 +79,7 @@ class signInPage extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
                   child: TextField(
+                    controller: password1,
                     obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -72,6 +98,7 @@ class signInPage extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
                   child: TextField(
+                    controller: password2,
                     obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -97,7 +124,13 @@ class signInPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if(password1.text.trim() == password2.text.trim()){
+                      if(login.text.trim().contains("@")){
+                        await _auth.createUserWithEmailAndPassword(email: login.text.trim(), password: password1.text.trim());
+                      }
+                    }
+                  },
                   child: const Text(
                     'S\'inscrire',
                     style: TextStyle(color: Colors.black),
@@ -120,7 +153,9 @@ class signInPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    _goToLogIn();
+                  },
                   child: const Text(
                     'Se connecter',
                     style: TextStyle(color: Colors.black),

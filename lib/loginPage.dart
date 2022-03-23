@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:projetmobiles6/signInPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:projetmobiles6/test.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key key}) : super(key: key);
-
+class LoginPage extends StatefulWidget{
   @override
+  State<LoginPage> createState() => _LoginPage();
+}
+
+class _LoginPage extends State<LoginPage> {
+
+  final TextEditingController login = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+
+  void _goToSignIn() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (context) => SignInPage()
+        ),
+            (route) => false
+    );
+  }
+
+  void _goToTest() {
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (context) => ParametreSignIn()
+        ),
+            (route) => false
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
@@ -23,7 +51,7 @@ class LoginPage extends StatelessWidget {
                   height: MediaQuery.of(context).size.width / 24,
                 ),
                 const Center(
-                    child: Text("Bienvenu sur \n Done&Gone", style: TextStyle(fontSize: 25),)
+                    child: Text("Bienvenue sur \n Done&Gone", style: TextStyle(fontSize: 25),)
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.width / 10,
@@ -31,7 +59,8 @@ class LoginPage extends StatelessWidget {
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
-                    child: const TextField(
+                    child: TextField(
+                      controller: login,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
@@ -51,12 +80,13 @@ class LoginPage extends StatelessWidget {
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
-                    child: const TextField(
+                    child: TextField(
+                      controller: password,
                       obscureText: true,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
-                                Radius.circular(40.0),
+                              Radius.circular(40.0),
                             ),
                           ),
                           filled: true,
@@ -71,16 +101,26 @@ class LoginPage extends StatelessWidget {
                 ),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Se connecter', style: TextStyle(color: Colors.black),),
-                    style: ButtonStyle(
-                      backgroundColor:  MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                      onPressed: () async {
+                        try {
+                          await _auth.signInWithEmailAndPassword(email: login.text
+                              .trim(), password: password.text.trim());
+                          print("test");
+                          _goToTest();
+                        //  Naviguer à la page des projets
+                        } on FirebaseAuthException catch  (e)  {
+                          print(e);
+                        }
+                      },
+                      child: const Text('Se connecter', style: TextStyle(color: Colors.black),),
+                      style: ButtonStyle(
+                        backgroundColor:  MaterialStateProperty.all<Color>(Colors.white),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
                         ),
-                      ),
-                    )
+                      )
                   ),
                 ),
                 SizedBox(
@@ -92,7 +132,11 @@ class LoginPage extends StatelessWidget {
                 ),
                 Center(
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _goToSignIn();
+                        });
+                      },
                       child: const Text("S'inscrire", style: TextStyle(color: Colors.black),),
                       style: ButtonStyle(
                         backgroundColor:  MaterialStateProperty.all<Color>(Color (0xFFD8D2ED)),
