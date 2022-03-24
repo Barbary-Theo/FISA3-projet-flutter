@@ -49,7 +49,7 @@ class _SignInPage extends State<SignInPage> {
                 ),
                 Center(
                   child: Text(
-                    "Bienvenue to \n Done&Gone",
+                    "Bienvenue sur \n Done&Gone",
                     style: TextStyle(
                       fontSize: 25,
                     ),
