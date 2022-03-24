@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projetmobiles6/projetOrToDo.dart';
 import 'package:projetmobiles6/signInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/test.dart';
@@ -14,19 +15,21 @@ class _LoginPage extends State<LoginPage> {
   final TextEditingController password = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
+  String errorText = "";
+
   void _goToSignIn() {
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => SignInPage()
-        ),
-            (route) => false
+    Navigator.pushReplacement<void, void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => SignInPage(),
+      ),
     );
   }
 
-  void _goToTest() {
+  void _goToProjectOrToDo() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-            builder: (context) => ParametreSignIn()
+            builder: (context) => projetOrToDo()
         ),
             (route) => false
     );
@@ -36,8 +39,8 @@ class _LoginPage extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: SizedBox (
-          width: MediaQuery.of(context).size.width / 1.2,
-          height: MediaQuery.of(context).size.height / 2.05,
+          width: MediaQuery.of(context).size.width / 1.1,
+          height: MediaQuery.of(context).size.height / 2,
           child: Card(
             shadowColor: Colors.black,
             elevation: 10,
@@ -106,10 +109,12 @@ class _LoginPage extends State<LoginPage> {
                           await _auth.signInWithEmailAndPassword(email: login.text
                               .trim(), password: password.text.trim());
                           print("test");
-                          _goToTest();
+                          _goToProjectOrToDo();
                         //  Naviguer à la page des projets
-                        } on FirebaseAuthException catch  (e)  {
-                          print(e);
+                        } on FirebaseAuthException catch (e)  {
+                          setState(() {
+                            errorText = e.message;
+                          });
                         }
                       },
                       child: const Text('Se connecter', style: TextStyle(color: Colors.black),),
@@ -125,6 +130,10 @@ class _LoginPage extends State<LoginPage> {
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.width / 20,
+                ),
+                Text(
+                  errorText,
+                  style: TextStyle(color: Colors.red),
                 ),
                 Divider(color: Colors.black, height: 1),
                 SizedBox(

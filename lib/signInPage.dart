@@ -18,7 +18,7 @@ class _SignInPage extends State<SignInPage> {
   final TextEditingController password1 = TextEditingController();
   final TextEditingController password2 = TextEditingController();
   final _auth = FirebaseAuth.instance;
-
+  String errorText = "";
   void _goToLogIn() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
@@ -34,7 +34,7 @@ class _SignInPage extends State<SignInPage> {
       body: Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width / 1.1,
-          height: MediaQuery.of(context).size.height / 1.6,
+          height: MediaQuery.of(context).size.height / 1.5,
           child: Container(
             child: (Card(
               shadowColor: Colors.black,
@@ -117,7 +117,7 @@ class _SignInPage extends State<SignInPage> {
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
+                    MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
@@ -125,10 +125,19 @@ class _SignInPage extends State<SignInPage> {
                     ),
                   ),
                   onPressed: () async {
-                    if(password1.text.trim() == password2.text.trim()){
-                      if(login.text.trim().contains("@")){
-                        await _auth.createUserWithEmailAndPassword(email: login.text.trim(), password: password1.text.trim());
-                      }
+                    try {
+                      await _auth.createUserWithEmailAndPassword(
+                          email: login.text.trim(),
+                          password: password1.text.trim());
+                      setState(() {
+                        // errorText = "Vous êtes bien inscrit";
+                        _goToLogIn();
+                      });
+
+                    } on FirebaseAuthException catch (e)  {
+                      setState(() {
+                        errorText = e.message;
+                      });
                     }
                   },
                   child: const Text(
@@ -139,6 +148,10 @@ class _SignInPage extends State<SignInPage> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 80,
                 ),
+                Text(
+                  errorText,
+                  style: TextStyle(color: Colors.red),
+                ),
                 Divider(color: Colors.black, height: 1),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 80,
@@ -146,7 +159,7 @@ class _SignInPage extends State<SignInPage> {
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFFFFDDB6)),
+                    MaterialStateProperty.all<Color>(Color(0xFFFFDDB6)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),

@@ -3,13 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ParametreSignIn extends StatefulWidget{
+class test extends StatefulWidget{
   @override
-  State<ParametreSignIn> createState() => _ParametreState();
+  State<test> createState() => _ParametreState();
 
 }
 
-class _ParametreState extends State<ParametreSignIn>{
+class _ParametreState extends State<test>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
