@@ -28,7 +28,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
   }
 
   void addToDo(){
-    
+
   }
 
   void research(String search){
@@ -51,39 +51,37 @@ class _projetOrToDoState extends State<projetOrToDo>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: !isSearching ? Text('Rechercher') :
-            TextField(decoration: InputDecoration(icon: Icon(Icons.search),
+            title: !isSearching ? const Text('Rechercher') :
+            TextField(decoration: const InputDecoration(icon: Icon(Icons.search),
                 hintText: "Cherchez ici"),
               onChanged: research,),
             backgroundColor: const Color(0xFFD8D2ED),
             actions: [
               !isSearching ?
               IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () {
                     setState(() {
-                      this.isSearching = !this.isSearching;
+                      isSearching = !isSearching;
                     });
                     // (context as Element).markNeedsBuild();
                   }
               ) :
               IconButton(
-                  icon: Icon(Icons.cancel),
+                  icon: const Icon(Icons.cancel),
                   onPressed: () {
                     setState(() {
                       stopResearch();
-                      this.isSearching = !this.isSearching;
+                      isSearching = !isSearching;
                       // (context as Element).markNeedsBuild();
                     });
                   }
               )
             ]
         ),
-        body : researchMainElementItem.length == 0 ?
-            Center(
-              child : Container(
-                  child: Text("PAS DE PROJET EN COURS"),
-                )
+        body : researchMainElementItem.isEmpty ?
+            const Center(
+              child : Text("PAS DE PROJET EN COURS")
             )
 
             : ListView.builder(
@@ -91,8 +89,8 @@ class _projetOrToDoState extends State<projetOrToDo>{
             itemBuilder: (context, i) {
               return Container(
                   margin: EdgeInsets.all(4.0),
-                  decoration: new BoxDecoration (
-                      color: researchMainElementItem.elementAt(i) is Project ? Color(0xFFFFDDB6) : Color(0xFFFFC6C6),
+                  decoration: BoxDecoration (
+                      color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
                       // boxShadow: [
                       //   BoxShadow(
                       //     color: Colors.black,
