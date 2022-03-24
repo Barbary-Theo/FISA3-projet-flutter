@@ -8,7 +8,14 @@ int selectedIndex = 0;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyAaTcKPegjcZjTZZtlAuewGN40nXBJF-jA",
+      appId: "1:117826766373:ios:a0c20e7c6aa99ad3cd61cc",
+      messagingSenderId: "XXX",
+      projectId: "projetmobiles6",
+    )
+  );
   runApp(const MyApp());
 }
 
