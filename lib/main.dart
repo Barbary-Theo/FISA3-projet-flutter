@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:projetmobiles6/projetOrToDo.dart';
 import 'loginPage.dart';
 import 'signInPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 int selectedIndex = 0;
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   runApp(const MyApp());
 }
 
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: projetOrToDo(),
     );
   }
 }
