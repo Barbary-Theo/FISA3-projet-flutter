@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/MainElementItem.dart';
@@ -20,6 +22,9 @@ class _projetOrToDoState extends State<projetOrToDo>{
   List<MainElementItem> researchMainElementItem = <MainElementItem>[];
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+  final TextEditingController elementName = TextEditingController();
+  final TextEditingController elementDesc = TextEditingController();
+
   @override
   void initState() {
 
@@ -29,17 +34,19 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
   void addProject(String name, String description){
     try {
-      FirebaseFirestore.instance.collection("projet").add(
+      List<String> member = <String>[];
+      member.add(auth.currentUser.uid);
+      FirebaseFirestore.instance.collection("project").add(
           {
             'name': name,
             'description' : description,
-            'member' : auth.currentUser.uid
+            'members' : member
           }
       );
     } catch(error){
       print(error);
     }
-
+    fillList();
   }
 
   void addToDo(String name, String description){
@@ -54,27 +61,17 @@ class _projetOrToDoState extends State<projetOrToDo>{
     } catch(error){
       print(error);
     }
+    fillList();
   }
 
   void research(String search){
     researchMainElementItem = [];
-    try{
-      FirebaseFirestore.instance.collection('project').where("user", isEqualTo: auth.currentUser.uid).where("name", arrayContains: search).get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          researchMainElementItem.add(Project(result.data().values.elementAt(0), result.get("description")));
-        }
-      });
-
-      FirebaseFirestore.instance.collection('todo').where("user", isEqualTo: auth.currentUser.uid).where("name", arrayContains: search).get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          researchMainElementItem.add(ToDo(result.data().values.elementAt(0), result.get("description")));
-        }
-      });
-    }catch(error){
-      print(error);
-    }
+    allMainElementItem.forEach((element) {
+      if(element.name.contains(search)){
+        researchMainElementItem.add(element);
+      }
+    });
     setState(() {
-
     });
   }
 
@@ -85,24 +82,34 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
   }
 
-  Future<void> fillList() async {
+  void fillList() async {
+
+    print("filling");
     allMainElementItem = [];
     try{
-      FirebaseFirestore.instance.collection('project').where("user", isEqualTo: auth.currentUser.uid).get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          allMainElementItem.add(Project(result.data().values.elementAt(0), result.get("description")));
-        }
+      await FirebaseFirestore.instance.collection('project').where("members",arrayContains: auth.currentUser.uid.toString()).get().then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+
+          allMainElementItem.add(Project(result.get("name"), result.get("description")));
+          print("done filling1");
+        });
       });
 
-      FirebaseFirestore.instance.collection('todo').where("user", isEqualTo: auth.currentUser.uid).get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          allMainElementItem.add(ToDo(result.data().values.elementAt(0), result.get("description")));
-        }
+      await FirebaseFirestore.instance.collection('todo').where("member", isEqualTo: auth.currentUser.uid.toString()).get().then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          print(result.data().values);
+          allMainElementItem.add(ToDo(result.get("name"), result.get("description")));
+          print("done filling2");
+        });
       });
+
     }catch(error){
+      print("error : ");
       print(error);
     }
+
     setState(() {
+      print("reset affichage");
       researchMainElementItem = allMainElementItem;
     });
 
@@ -221,8 +228,9 @@ class _projetOrToDoState extends State<projetOrToDo>{
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
-                            child: const TextField(
-                              decoration: InputDecoration(
+                            child: TextField(
+                              controller: elementName,
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
@@ -239,9 +247,10 @@ class _projetOrToDoState extends State<projetOrToDo>{
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
-                            child: const TextField(
+                            child: TextField(
+                              controller: elementDesc,
                               maxLines: 10,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
@@ -268,6 +277,9 @@ class _projetOrToDoState extends State<projetOrToDo>{
                               ),
                             ),
                             onPressed: () {
+                              if(!(elementName.text.isEmpty && elementDesc.text.isEmpty)){
+                                addProject(elementName.text.trim(), elementDesc.text.trim());
+                              }
                               Navigator.pop(context, false);
                             },
                             child: const Text(
@@ -284,8 +296,9 @@ class _projetOrToDoState extends State<projetOrToDo>{
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
-                            child: const TextField(
-                              decoration: InputDecoration(
+                            child: TextField(
+                              controller: elementName,
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
@@ -302,9 +315,10 @@ class _projetOrToDoState extends State<projetOrToDo>{
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
-                            child: const TextField(
+                            child: TextField(
+                              controller: elementDesc,
                               maxLines: 10,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius:
                                   BorderRadius.all(Radius.circular(20.0)),
@@ -331,6 +345,9 @@ class _projetOrToDoState extends State<projetOrToDo>{
                               ),
                             ),
                             onPressed: () {
+                              if(!(elementName.text.isEmpty && elementDesc.text.isEmpty)){
+                                addToDo(elementName.text.trim(), elementDesc.text.trim());
+                              }
                               Navigator.pop(context, false);
                             },
                             child: const Text(
