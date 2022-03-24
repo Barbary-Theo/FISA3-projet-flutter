@@ -23,8 +23,12 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
   }
 
-  void addProjetOrToDo(){
+  void addProject(){
 
+  }
+
+  void addToDo(){
+    
   }
 
   void research(String search){
