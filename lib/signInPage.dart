@@ -64,7 +64,7 @@ class _SignInPage extends State<SignInPage> {
                     controller: login,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
                       filled: true,
                       hintStyle: TextStyle(color: Colors.grey),
@@ -83,7 +83,7 @@ class _SignInPage extends State<SignInPage> {
                     obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
                       filled: true,
                       hintStyle: TextStyle(color: Colors.grey),
@@ -102,7 +102,7 @@ class _SignInPage extends State<SignInPage> {
                     obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
                       filled: true,
                       hintStyle: TextStyle(color: Colors.grey),

@@ -67,7 +67,7 @@ class _LoginPage extends State<LoginPage> {
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(40.0),
+                              Radius.circular(20.0),
                             ),
                           ),
                           filled: true,
@@ -89,7 +89,7 @@ class _LoginPage extends State<LoginPage> {
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(40.0),
+                              Radius.circular(20.0),
                             ),
                           ),
                           filled: true,
