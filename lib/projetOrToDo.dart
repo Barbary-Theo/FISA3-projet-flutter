@@ -125,36 +125,59 @@ class _projetOrToDoState extends State<projetOrToDo>{
             onChanged: research,),
           backgroundColor: const Color(0xFFD8D2ED),
           actions: [
-            !isSearching ?
-            IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  setState(() {
-                    isSearching = !isSearching;
-                  });
-                }
+            isSearching ?
+            Padding(
+                padding: EdgeInsets.only(right: 1),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  child: const Icon(
+                    Icons.cancel,
+                    size: 26.0,
+                  ),
+                )
             ) :
-            IconButton(
-                icon: const Icon(Icons.cancel),
-                onPressed: () {
-                  setState(() {
-                    stopResearch();
-                    isSearching = !isSearching;
-                  });
-                }
-            )
+            Padding(
+                padding: EdgeInsets.only(right: 1),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  child: const Icon(
+                    Icons.search,
+                    size: 26.0,
+                  ),
+                )
+            ),
+            const VerticalDivider(),
+            Padding(
+                padding: const EdgeInsets.only(left : 4, right: 10),
+                child: GestureDetector(
+                  onTap: () {
+                    //  ToDo make a route to user settings
+                  },
+                  child: const Icon(
+                    Icons.settings,
+                    size: 26.0,
+                  ),
+                )
+            ),
           ]
       ),
-      body : researchMainElementItem.isEmpty ?
+      body :
+      researchMainElementItem.isEmpty ?
       const Center(
           child : Text("PAS DE PROJET EN COURS")
-      )
-
-          : ListView.builder(
+      ) : ListView.builder(
           itemCount: researchMainElementItem.length,
           itemBuilder: (context, i) {
             return Container(
-                margin: const EdgeInsets.all(4.0),
+                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.all(4.0),
                 decoration: BoxDecoration (
                     color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
                     // boxShadow: [
@@ -171,7 +194,6 @@ class _projetOrToDoState extends State<projetOrToDo>{
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
                 )
-
             );
 
           }
