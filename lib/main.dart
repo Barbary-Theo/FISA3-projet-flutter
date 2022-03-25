@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'loginPage.dart';
+import 'splashScreen.dart';
 import 'signInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,8 +16,8 @@ Future<void> main() async {
       appId: "1:117826766373:ios:a0c20e7c6aa99ad3cd61cc",
       messagingSenderId: "XXX",
       projectId: "projetmobiles6",
-
-    ),name: "projetmobiles6"
+    ),
+    name: "projetmobiles6"
   );
   runApp(const MyApp());
 }
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: const SplashPage(),
     );
   }
 }
