@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:projetmobiles6/projectHome.dart';
 
 class projectMain extends StatefulWidget{
   @override
@@ -14,7 +15,7 @@ class _projectMainState extends State<projectMain>{
   int _selectedIndex = 0;
 
   List<Widget> _widgetOptions = <Widget>[
-
+    projectHome(),
   ];
 
 
@@ -40,7 +41,6 @@ class _projectMainState extends State<projectMain>{
           BottomNavigationBarItem(
             icon: Icon(Icons.exposure_plus_1),
             label: 'Plus',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
