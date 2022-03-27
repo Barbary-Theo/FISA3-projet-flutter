@@ -8,6 +8,7 @@ import 'package:projetmobiles6/model/ToDo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:projetmobiles6/userSettings.dart';
 
 class projetOrToDo extends StatefulWidget{
   @override
@@ -159,7 +160,12 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 padding: const EdgeInsets.only(left : 4, right: 10),
                 child: GestureDetector(
                   onTap: () {
-                    //  ToDo make a route to user settings
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => userSettings(),
+                      ),
+                    );
                   },
                   child: const Icon(
                     Icons.settings,
@@ -247,10 +253,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                         child:
                         SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child:
-
-
-                          Column(
+                          child: Column(
                               children: [
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height / 25,
