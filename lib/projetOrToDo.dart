@@ -160,11 +160,11 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 padding: const EdgeInsets.only(left : 4, right: 10),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => userSettings(),
-                      ),
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => userSettings()
+                        ),
+                            (route) => false
                     );
                   },
                   child: const Icon(
