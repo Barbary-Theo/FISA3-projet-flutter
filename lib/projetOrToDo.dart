@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/userSettings.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class projetOrToDo extends StatefulWidget{
   @override
@@ -25,6 +26,8 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
   final TextEditingController elementName = TextEditingController();
   final TextEditingController elementDesc = TextEditingController();
+
+  bool loading = true;
 
   @override
   void initState() {
@@ -112,6 +115,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
     setState(() {
       print("reset affichage");
       researchMainElementItem = allMainElementItem;
+      loading = false;
     });
 
   }
@@ -175,10 +179,15 @@ class _projetOrToDoState extends State<projetOrToDo>{
             ),
           ]
       ),
-      body :
+      body : loading ? const Center(
+          child : SpinKitChasingDots(
+            color: Color(0xFFFFDDB6),
+            size: 50.0,
+          ),
+      ) :
       researchMainElementItem.isEmpty ?
       const Center(
-          child : Text("PAS DE PROJET EN COURS")
+          child : Text("Pas de projets en cours")
       ) : ListView.builder(
           itemCount: researchMainElementItem.length,
           itemBuilder: (context, i) {
