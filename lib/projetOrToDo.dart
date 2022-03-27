@@ -8,6 +8,8 @@ import 'package:projetmobiles6/model/ToDo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:projetmobiles6/projectHome.dart';
+import 'package:projetmobiles6/projectMain.dart';
 import 'package:projetmobiles6/userSettings.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -83,27 +85,22 @@ class _projetOrToDoState extends State<projetOrToDo>{
     setState(() {
       researchMainElementItem = allMainElementItem;
     });
-
   }
 
   void fillList() async {
 
-    print("filling");
     allMainElementItem = [];
     try{
       await FirebaseFirestore.instance.collection('project').where("members",arrayContains: auth.currentUser.uid.toString()).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-
-          allMainElementItem.add(Project(result.get("name"), result.get("description")));
-          print("done filling1");
+          allMainElementItem.add(Project(result.get("name"), result.get("description"),result.id));
         });
       });
 
       await FirebaseFirestore.instance.collection('todo').where("member", isEqualTo: auth.currentUser.uid.toString()).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           print(result.data().values);
-          allMainElementItem.add(ToDo(result.get("name"), result.get("description")));
-          print("done filling2");
+          allMainElementItem.add(ToDo(result.get("name"), result.get("description"),result.id));
         });
       });
 
@@ -113,7 +110,6 @@ class _projetOrToDoState extends State<projetOrToDo>{
     }
 
     setState(() {
-      print("reset affichage");
       researchMainElementItem = allMainElementItem;
       loading = false;
     });
@@ -208,6 +204,17 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 child: ListTile(
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
+                  onTap: (){
+                    print(researchMainElementItem.elementAt(i).id);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => projectMain(
+                                mainElementId : researchMainElementItem.elementAt(i).id
+                            )
+                        ),
+                            (route) => false
+                    );
+                  },
                 )
             );
 

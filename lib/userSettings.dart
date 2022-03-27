@@ -41,7 +41,6 @@ class _userSettingsState extends State<userSettings>{
       // extendBodyBehindAppBar: true,
         body: ListView(
           children: [
-
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(

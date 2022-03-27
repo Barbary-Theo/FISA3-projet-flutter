@@ -1,11 +1,17 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/projectHome.dart';
+import 'package:projetmobiles6/projectOrTodoSettings.dart';
+import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projectMain extends StatefulWidget{
+
+  final String mainElementId;
+
+  const projectMain({Key key, this.mainElementId}) : super(key: key);
+
   @override
-  State<projectMain> createState() => _projectMainState();
+  State<projectMain> createState() => _projectMainState(mainElementId: mainElementId);
 
 }
 
@@ -13,10 +19,19 @@ class projectMain extends StatefulWidget{
 class _projectMainState extends State<projectMain>{
 
   int _selectedIndex = 0;
+  final String mainElementId;
 
-  List<Widget> _widgetOptions = <Widget>[
-    projectHome(),
-  ];
+  _projectMainState({this.mainElementId});
+
+  List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    _widgetOptions = <Widget>[
+      projectHome(mainElementId : mainElementId),
+      projetOrToDoSettings(),
+    ];
+  }
 
 
   void _onItemTapped(int index) {
@@ -28,6 +43,7 @@ class _projectMainState extends State<projectMain>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -43,11 +59,6 @@ class _projectMainState extends State<projectMain>{
             label: 'Plus',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Paramètres',
 
@@ -55,6 +66,20 @@ class _projectMainState extends State<projectMain>{
         ],
 
 
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        heroTag: "btn1",
+        onPressed: () {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => projetOrToDo()
+              ),
+                  (route) => false
+          );
+        },
+        backgroundColor: const Color(0xFFF2DAD3),
+        child: const Icon(Icons.home),
       ),
     );
   }
