@@ -45,12 +45,10 @@ class _projectMainState extends State<projectMain>{
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Paramètres',
-
           ),
         ],
 
