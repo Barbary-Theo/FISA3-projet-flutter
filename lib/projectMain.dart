@@ -20,16 +20,16 @@ class _projectMainState extends State<projectMain>{
 
   int _selectedIndex = 0;
   final String mainElementId;
-
   _projectMainState({this.mainElementId});
 
   List<Widget> _widgetOptions;
 
   @override
   void initState() {
+
     _widgetOptions = <Widget>[
       projectHome(mainElementId : mainElementId),
-      projetOrToDoSettings(),
+      projetOrToDoSettings(mainElementId : mainElementId),
     ];
   }
 
