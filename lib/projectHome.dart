@@ -52,12 +52,6 @@ class _projectHomeState extends State<projectHome>{
     });
   }
 
-  void stopResearch(){
-    setState(() {
-      researchCategorie = allCategorie;
-    });
-
-  }
 
   void addCategorie(String name){
     try {
@@ -112,6 +106,7 @@ class _projectHomeState extends State<projectHome>{
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
+                      researchCategorie = allCategorie;
                       isSearching = !isSearching;
                     });
                   },
@@ -262,8 +257,4 @@ class _projectHomeState extends State<projectHome>{
         });
   }
 
-  _floatingButtonForGoingBack(context){
-
-
-  }
 }

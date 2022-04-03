@@ -81,12 +81,6 @@ class _projetOrToDoState extends State<projetOrToDo>{
     });
   }
 
-  void stopResearch(){
-    setState(() {
-      researchMainElementItem = allMainElementItem;
-    });
-  }
-
   void fillList() async {
 
     allMainElementItem = [];
@@ -132,6 +126,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
+                      researchMainElementItem = allMainElementItem;
                       isSearching = !isSearching;
                     });
                   },
