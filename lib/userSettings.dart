@@ -97,6 +97,7 @@ class _userSettingsState extends State<userSettings>{
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.4,
+                        height: MediaQuery.of(context).size.height / 15,
                         child: TextField(
                           controller: mdp1,
                           obscureText: true,
@@ -116,6 +117,7 @@ class _userSettingsState extends State<userSettings>{
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.4,
+                        height: MediaQuery.of(context).size.height / 15,
                         child: TextField(
                           controller: mdp2,
                           obscureText: true,
@@ -135,6 +137,7 @@ class _userSettingsState extends State<userSettings>{
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.4,
+                        height: MediaQuery.of(context).size.height / 15,
                         child: TextField(
                           controller: mdp3,
                           obscureText: true,
