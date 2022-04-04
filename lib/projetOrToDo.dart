@@ -8,6 +8,10 @@ import 'package:projetmobiles6/model/ToDo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:projetmobiles6/projectHome.dart';
+import 'package:projetmobiles6/projectMain.dart';
+import 'package:projetmobiles6/userSettings.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class projetOrToDo extends StatefulWidget{
   @override
@@ -24,6 +28,8 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
   final TextEditingController elementName = TextEditingController();
   final TextEditingController elementDesc = TextEditingController();
+
+  bool loading = true;
 
   @override
   void initState() {
@@ -75,31 +81,20 @@ class _projetOrToDoState extends State<projetOrToDo>{
     });
   }
 
-  void stopResearch(){
-    setState(() {
-      researchMainElementItem = allMainElementItem;
-    });
-
-  }
-
   void fillList() async {
 
-    print("filling");
     allMainElementItem = [];
     try{
       await FirebaseFirestore.instance.collection('project').where("members",arrayContains: auth.currentUser.uid.toString()).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-
-          allMainElementItem.add(Project(result.get("name"), result.get("description")));
-          print("done filling1");
+          allMainElementItem.add(Project(result.get("name"), result.get("description"),result.id));
         });
       });
 
       await FirebaseFirestore.instance.collection('todo').where("member", isEqualTo: auth.currentUser.uid.toString()).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           print(result.data().values);
-          allMainElementItem.add(ToDo(result.get("name"), result.get("description")));
-          print("done filling2");
+          allMainElementItem.add(ToDo(result.get("name"), result.get("description"),result.id));
         });
       });
 
@@ -109,8 +104,8 @@ class _projetOrToDoState extends State<projetOrToDo>{
     }
 
     setState(() {
-      print("reset affichage");
       researchMainElementItem = allMainElementItem;
+      loading = false;
     });
 
   }
@@ -131,6 +126,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
+                      researchMainElementItem = allMainElementItem;
                       isSearching = !isSearching;
                     });
                   },
@@ -159,7 +155,12 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 padding: const EdgeInsets.only(left : 4, right: 10),
                 child: GestureDetector(
                   onTap: () {
-                    //  ToDo make a route to user settings
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => userSettings()
+                        ),
+                            (route) => false
+                    );
                   },
                   child: const Icon(
                     Icons.settings,
@@ -169,10 +170,15 @@ class _projetOrToDoState extends State<projetOrToDo>{
             ),
           ]
       ),
-      body :
+      body : loading ? const Center(
+          child : SpinKitChasingDots(
+            color: Color(0xFFFFDDB6),
+            size: 50.0,
+          ),
+      ) :
       researchMainElementItem.isEmpty ?
       const Center(
-          child : Text("PAS DE PROJET EN COURS")
+          child : Text("Pas de projets en cours")
       ) : ListView.builder(
           itemCount: researchMainElementItem.length,
           itemBuilder: (context, i) {
@@ -193,6 +199,17 @@ class _projetOrToDoState extends State<projetOrToDo>{
                 child: ListTile(
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
+                  onTap: (){
+                    print(researchMainElementItem.elementAt(i).id);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => projectMain(
+                                mainElementId : researchMainElementItem.elementAt(i).id
+                            )
+                        ),
+                            (route) => false
+                    );
+                  },
                 )
             );
 
@@ -247,10 +264,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                         child:
                         SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child:
-
-
-                          Column(
+                          child: Column(
                               children: [
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height / 25,

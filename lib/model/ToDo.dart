@@ -5,7 +5,8 @@ class ToDo extends MainElementItem{
 
   List<Task> _taskList = <Task>[];
 
-  ToDo(String name, String description) : super(name, description);
+  ToDo(String name, String description, String id) : super(name, description, id);
+
 
   addTask(Task task){
     _taskList.add(task);

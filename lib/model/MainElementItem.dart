@@ -2,11 +2,10 @@ abstract class MainElementItem{
 
   String _name = "";
   String _description = "";
+  String _id = "";
 
-  MainElementItem(String name, String description){
-    _name = name;
-    _description = description;
-  }
+
+  MainElementItem(this._name, this._description, this._id);
 
   String get description => _description;
 
@@ -20,4 +19,9 @@ abstract class MainElementItem{
     _name = value;
   }
 
+  String get id => _id;
+
+  set id(String value) {
+    _id = value;
+  }
 }

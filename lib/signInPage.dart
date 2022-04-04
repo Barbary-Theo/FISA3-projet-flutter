@@ -20,6 +20,7 @@ class _SignInPage extends State<SignInPage> {
   final TextEditingController password2 = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String errorText = "";
+
   void _goToLogIn() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
