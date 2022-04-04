@@ -40,7 +40,7 @@ class _LoginPage extends State<LoginPage> {
       body: Center(
         child: SizedBox (
           width: MediaQuery.of(context).size.width / 1.1,
-          height: MediaQuery.of(context).size.height / 2.1,
+          height: MediaQuery.of(context).size.height / 2,
           child: Card(
             shadowColor: Colors.black,
             elevation: 10,

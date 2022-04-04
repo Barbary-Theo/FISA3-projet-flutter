@@ -89,7 +89,7 @@ class _userSettingsState extends State<userSettings>{
                         height: MediaQuery.of(context).size.height / 30,
                       ),
                       const Text(
-                        "Pour changer votre mot de passe, écrivez votre ancien mot de passe, et n'oubliez pas de le confirmer 🥵.",
+                        "Pour changer votre mot de passe \n écrivez votre ancien mot de passe \n et n'oubliez pas de le confirmer 🥵.",
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
