@@ -233,7 +233,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
         builder: (BuildContext context) {
           return Dialog(
             child: Container(
-              height: MediaQuery.of(context).size.height / 1.5,
+              height: MediaQuery.of(context).size.height / 1.6,
               child: DefaultTabController(
                 length: 2,
                 child: Scaffold(
@@ -271,6 +271,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                                 ),
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width / 1.5,
+                                  height: MediaQuery.of(context).size.height / 15,
                                   child: TextField(
                                     controller: elementName,
                                     decoration: const InputDecoration(
@@ -290,6 +291,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                                 ),
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width / 1.5,
+                                  height: MediaQuery.of(context).size.height / 5,
                                   child: TextField(
                                     controller: elementDesc,
                                     maxLines: 10,
@@ -306,7 +308,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                                   ),
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height / 25,
+                                  height: MediaQuery.of(context).size.height / 30,
                                 ),
                                 ElevatedButton(
                                   style: ButtonStyle(
@@ -342,6 +344,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 1.5,
+                              height: MediaQuery.of(context).size.height / 15,
                               child: TextField(
                                 controller: elementName,
                                 decoration: const InputDecoration(
@@ -361,6 +364,7 @@ class _projetOrToDoState extends State<projetOrToDo>{
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 1.5,
+                              height: MediaQuery.of(context).size.height / 5,
                               child: TextField(
                                 controller: elementDesc,
                                 maxLines: 10,
