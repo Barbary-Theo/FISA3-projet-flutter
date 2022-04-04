@@ -93,13 +93,11 @@ class _projetOrToDoState extends State<projetOrToDo>{
 
       await FirebaseFirestore.instance.collection('todo').where("member", isEqualTo: auth.currentUser.uid.toString()).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          print(result.data().values);
           allMainElementItem.add(ToDo(result.get("name"), result.get("description"),result.id));
         });
       });
 
     }catch(error){
-      print("error : ");
       print(error);
     }
 
@@ -182,25 +180,18 @@ class _projetOrToDoState extends State<projetOrToDo>{
       ) : ListView.builder(
           itemCount: researchMainElementItem.length,
           itemBuilder: (context, i) {
-            return Container(
+            return Card(
                 margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.all(4.0),
-                decoration: BoxDecoration (
-                    color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black,
-                    //     spreadRadius: 0,
-                    //     blurRadius: 0,
-                    //     offset: Offset(0, 2),
-                    //   )
-                    // ],
-                    borderRadius: BorderRadius.circular(10.0)
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
+                color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
+                shadowColor: Colors.black,
+                elevation: 5,
                 child: ListTile(
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
                   onTap: (){
-                    print(researchMainElementItem.elementAt(i).id);
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => projectMain(
