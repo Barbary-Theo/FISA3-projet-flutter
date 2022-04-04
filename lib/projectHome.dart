@@ -144,20 +144,14 @@ class _projectHomeState extends State<projectHome>{
       ) : ListView.builder(
           itemCount: researchCategorie.length,
           itemBuilder: (context, i) {
-            return Container(
-                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.all(4.0),
-                decoration: BoxDecoration (
-                    color: colorList[i%4],
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.black,
-                    //     spreadRadius: 0,
-                    //     blurRadius: 0,
-                    //     offset: Offset(0, 2),
-                    //   )
-                    // ],
-                    borderRadius: BorderRadius.circular(10.0)
+            return Card(
+                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
+                color: colorList[i%4],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
+                shadowColor: Colors.black,
+                elevation: 5,
                 child: ListTile(
                   title: Text(researchCategorie.elementAt(i).name),
                   onTap: (){
