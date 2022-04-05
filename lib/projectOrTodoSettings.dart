@@ -269,7 +269,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
                         child: IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () {
-                            _showModalCreateCategorie(context);
+                            _showModalAddUser(context);
                           },
                         ),
                       );
@@ -308,7 +308,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
                     height: MediaQuery.of(context).size.height / 3,
                     child: Scaffold(
                       appBar: AppBar(
-                        title: const Text("Création",
+                        title: const Text("Supprimer un membre",
                             style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
                         automaticallyImplyLeading: false,
@@ -381,7 +381,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
         });
   }
 
-  _showModalCreateCategorie(context) {
+  _showModalAddUser(context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -390,7 +390,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
               height: MediaQuery.of(context).size.height / 3,
               child: Scaffold(
                 appBar: AppBar(
-                  title: const Text("Création",
+                  title: const Text("Ajout D'un membre",
                       style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
                   automaticallyImplyLeading: false,
                   backgroundColor: const Color(0xFF92DEB1),
@@ -413,7 +413,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
                             ),
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Nom de la catégorie",
+                            hintText: "Email de l'utilisateur",
                             fillColor: Colors.white70,
                           ),
                         ),
