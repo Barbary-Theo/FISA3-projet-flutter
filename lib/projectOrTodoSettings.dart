@@ -308,7 +308,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
                     height: MediaQuery.of(context).size.height / 3,
                     child: Scaffold(
                       appBar: AppBar(
-                        title: const Text("Supprimer un membre",
+                        title: const Text("Suppression",
                             style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
                         automaticallyImplyLeading: false,
@@ -390,7 +390,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
               height: MediaQuery.of(context).size.height / 3,
               child: Scaffold(
                 appBar: AppBar(
-                  title: const Text("Ajout D'un membre",
+                  title: const Text("Ajout",
                       style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
                   automaticallyImplyLeading: false,
                   backgroundColor: const Color(0xFF92DEB1),
