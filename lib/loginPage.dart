@@ -51,17 +51,18 @@ class _LoginPage extends State<LoginPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 24,
+                  height: MediaQuery.of(context).size.height / 90,
                 ),
                 const Center(
                     child: Text("Bienvenue sur \n Done&Gone", style: TextStyle(fontSize: 25),)
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 10,
+                  height: MediaQuery.of(context).size.height / 30,
                 ),
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.height / 15,
                     child: TextField(
                       controller: login,
                       decoration: InputDecoration(
@@ -78,11 +79,12 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 30,
+                  height: MediaQuery.of(context).size.height / 70,
                 ),
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.height / 15,
                     child: TextField(
                       controller: password,
                       obscureText: true,
@@ -100,7 +102,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 30,
+                  height: MediaQuery.of(context).size.height / 70,
                 ),
                 Center(
                   child: ElevatedButton(
@@ -129,7 +131,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 20,
+                  height: MediaQuery.of(context).size.height / 70,
                 ),
                 Text(
                   errorText,
@@ -137,7 +139,7 @@ class _LoginPage extends State<LoginPage> {
                 ),
                 Divider(color: Colors.black, height: 1),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 30,
+                  height: MediaQuery.of(context).size.height / 50,
                 ),
                 Center(
                   child: ElevatedButton(

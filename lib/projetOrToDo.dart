@@ -91,13 +91,11 @@ class _projetOrToDoState extends State<projetOrToDo> {
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          print(result.data().values);
-          allMainElementItem.add(
-              ToDo(result.get("name"), result.get("description"), result.id));
+          allMainElementItem.add(ToDo(result.get("name"), result.get("description"),result.id));
         });
       });
-    } catch (error) {
-      print("error : ");
+
+    }catch(error){
       print(error);
     }
 
@@ -161,65 +159,49 @@ class _projetOrToDoState extends State<projetOrToDo> {
                     Icons.settings,
                     size: 26.0,
                   ),
-                )),
-          ]),
-      body: loading
-          ? const Center(
-              child: SpinKitChasingDots(
-                color: Color(0xFFFFDDB6),
-                size: 50.0,
-              ),
-            )
-          : researchMainElementItem.isEmpty
-              ? const Center(child: Text("Pas de projets en cours"))
-              : ListView.builder(
-                  itemCount: researchMainElementItem.length,
-                  itemBuilder: (context, i) {
-                    return Container(
-                        margin: i == 0
-                            ? const EdgeInsets.only(
-                                top: 10, bottom: 4, left: 4, right: 4)
-                            : const EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                            color:
-                                researchMainElementItem.elementAt(i) is Project
-                                    ? const Color(0xFFFFDDB6)
-                                    : const Color(0xFFFFC6C6),
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Colors.black,
-                            //     spreadRadius: 0,
-                            //     blurRadius: 0,
-                            //     offset: Offset(0, 2),
-                            //   )
-                            // ],
-                            borderRadius: BorderRadius.circular(10.0)),
-                        child: ListTile(
-                          title:
-                              Text(researchMainElementItem.elementAt(i).name),
-                          subtitle: Text(
-                              researchMainElementItem.elementAt(i).description),
-                          onTap: () {
-                            researchMainElementItem.elementAt(i) is Project
-                                ? Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) => projectMain(
-                                            mainElementId:
-                                                researchMainElementItem
-                                                    .elementAt(i)
-                                                    .id)),
-                                    (route) => false)
-                                : Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) => toDoMain(
-                                            mainElementId:
-                                                researchMainElementItem
-                                                    .elementAt(i)
-                                                    .id)),
-                                    (route) => false);
-                          },
-                        ));
-                  }),
+                )
+            ),
+          ]
+      ),
+      body : loading ? const Center(
+          child : SpinKitChasingDots(
+            color: Color(0xFFFFDDB6),
+            size: 50.0,
+          ),
+      ) :
+      researchMainElementItem.isEmpty ?
+      const Center(
+          child : Text("Pas de projets en cours")
+      ) : ListView.builder(
+          itemCount: researchMainElementItem.length,
+          itemBuilder: (context, i) {
+            return Card(
+                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.all(4.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
+                shadowColor: Colors.black,
+                elevation: 5,
+                child: ListTile(
+                  title: Text(researchMainElementItem.elementAt(i).name),
+                  subtitle: Text(researchMainElementItem.elementAt(i).description),
+                  onTap: (){
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => projectMain(
+                                mainElementId : researchMainElementItem.elementAt(i).id
+                            )
+                        ),
+                            (route) => false
+                    );
+                  },
+                )
+            );
+
+          }
+
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showModalCreateProjectOrTasks(context);
@@ -236,7 +218,7 @@ class _projetOrToDoState extends State<projetOrToDo> {
         builder: (BuildContext context) {
           return Dialog(
             child: Container(
-              height: MediaQuery.of(context).size.height / 1.5,
+              height: MediaQuery.of(context).size.height / 1.6,
               child: DefaultTabController(
                 length: 2,
                 child: Scaffold(
@@ -267,17 +249,19 @@ class _projetOrToDoState extends State<projetOrToDo> {
                       Container(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child: Column(children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              child: TextField(
-                                controller: elementName,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
+                          child: Column(
+                              children: [
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height / 25,
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width / 1.5,
+                                  height: MediaQuery.of(context).size.height / 15,
+                                  child: TextField(
+                                    controller: elementName,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius:
                                         BorderRadius.all(Radius.circular(20.0)),
                                   ),
                                   filled: true,
@@ -285,19 +269,18 @@ class _projetOrToDoState extends State<projetOrToDo> {
                                   hintText: "Nom du projet",
                                   fillColor: Colors.white70,
                                 ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 20,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              child: TextField(
-                                controller: elementDesc,
-                                maxLines: 10,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height / 20,
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width / 1.5,
+                                  height: MediaQuery.of(context).size.height / 5,
+                                  child: TextField(
+                                    controller: elementDesc,
+                                    maxLines: 10,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius:
                                         BorderRadius.all(Radius.circular(20.0)),
                                   ),
                                   filled: true,
@@ -305,15 +288,12 @@ class _projetOrToDoState extends State<projetOrToDo> {
                                   hintText: "Description du projet",
                                   fillColor: Colors.white70,
                                 ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height / 30,
+                                ),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(
                                         Color(0xFFFFDDB6)),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
@@ -347,6 +327,7 @@ class _projetOrToDoState extends State<projetOrToDo> {
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 1.5,
+                              height: MediaQuery.of(context).size.height / 15,
                               child: TextField(
                                 controller: elementName,
                                 decoration: const InputDecoration(
@@ -366,6 +347,7 @@ class _projetOrToDoState extends State<projetOrToDo> {
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 1.5,
+                              height: MediaQuery.of(context).size.height / 5,
                               child: TextField(
                                 controller: elementDesc,
                                 maxLines: 10,
