@@ -9,6 +9,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
+import 'model/Task.dart';
+
 class toDoHome extends StatefulWidget {
   final String mainElementId;
 
@@ -22,9 +24,9 @@ class toDoHome extends StatefulWidget {
 class _toDoHomeState extends State<toDoHome> {
   bool isSearching = false;
   final String mainElementId;
-  final TextEditingController categorieName = TextEditingController();
-  List<Categorie> allCategorie = <Categorie>[];
-  List<Categorie> researchCategorie = <Categorie>[];
+  final TextEditingController tacheName = TextEditingController();
+  List<Task> allTache = <Task>[];
+  List<Task> researchTache = <Task>[];
   String errorText = "";
   bool loading = true;
 
@@ -41,15 +43,16 @@ class _toDoHomeState extends State<toDoHome> {
   Stack allTaskWidget;
 
   void setAllPositionned() {
-    var rng = Random();
-    for(int i = 0 ; i < allCategorie.length ; i++) {
+    posiList = [];
+
+    for(int i = 0 ; i < allTache.length ; i++) {
       posiList.add(
         Positioned(
-          top: rng.nextDouble() * 100,
-          left: rng.nextDouble() * 100,
+          top: allTache.elementAt(i).y,
+          left: allTache.elementAt(i).x,
           child: SizedBox(
-            height: 100,
-            width: 100,
+            height: MediaQuery.of(context).size.width / 4,
+            width: MediaQuery.of(context).size.width / 3,
             child: Card(
                 shadowColor: Colors.black,
                 elevation: 10,
@@ -57,7 +60,9 @@ class _toDoHomeState extends State<toDoHome> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 color: const Color(0xFFFFDDB6),
-                child: Text(allCategorie.elementAt(i).name.toString())
+                child: Center(
+                    child: Text(allTache.elementAt(i).name.toString())
+                ),
             )
           )
         )
@@ -78,21 +83,22 @@ class _toDoHomeState extends State<toDoHome> {
   }
 
   void research(String search) {
-    researchCategorie = [];
-    allCategorie.forEach((element) {
+    researchTache = [];
+    allTache.forEach((element) {
       if (element.name.contains(search)) {
-        researchCategorie.add(element);
+        researchTache.add(element);
       }
     });
 
     setState(() {});
   }
 
-  void addCategorie(String name) {
+  void addTache(String name) {
     try {
+      var rng = Random();
       FirebaseFirestore.instance
-          .collection("categorie")
-          .add({'name': name, 'project': mainElementId});
+          .collection("task")
+          .add({'name': name, 'mainElementId': mainElementId, 'x': rng.nextDouble() * 100, 'y': rng.nextDouble() * 100});
     } catch (error) {
       print(error);
     }
@@ -100,15 +106,16 @@ class _toDoHomeState extends State<toDoHome> {
   }
 
   Future<void> fillList() async {
-    allCategorie = [];
+    allTache = [];
     try {
+      var rng = Random();
       await FirebaseFirestore.instance
-          .collection('categorie')
-          .where("project", isEqualTo: mainElementId)
+          .collection('task')
+          .where("mainElementId", isEqualTo: mainElementId)
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          allCategorie.add(Categorie([], result.get("name")));
+          allTache.add(Task(result.get("name"), 0, result.get("x"), result.get("y"), result.get("mainElementId")));
         });
       });
       await displayTask();
@@ -117,7 +124,7 @@ class _toDoHomeState extends State<toDoHome> {
     }
 
     setState(() {
-      researchCategorie = allCategorie;
+      researchTache = allTache;
       print(loading);
       loading = false;
     });
@@ -143,7 +150,7 @@ class _toDoHomeState extends State<toDoHome> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          researchCategorie = allCategorie;
+                          researchTache = allTache;
                           isSearching = !isSearching;
                         });
                       },
@@ -173,8 +180,8 @@ class _toDoHomeState extends State<toDoHome> {
                 size: 50.0,
               ),
             )
-          : researchCategorie.isEmpty
-              ? const Center(child: Text("Pas de tâches dans la toDo List."))
+          : researchTache.isEmpty
+              ? Center(child: Text("Aucune tâche dans cette ToDo List"))
               : allTaskWidget,
       floatingActionButton: FloatingActionButton(
         heroTag: "btn2",
@@ -213,7 +220,7 @@ class _toDoHomeState extends State<toDoHome> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 1.5,
                           child: TextField(
-                            controller: categorieName,
+                            controller: tacheName,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius:
@@ -241,10 +248,10 @@ class _toDoHomeState extends State<toDoHome> {
                             ),
                           ),
                           onPressed: () {
-                            print(categorieName.text);
-                            if (!categorieName.text.isEmpty) {
-                              addCategorie(
-                                  categorieName.text.toString().trim());
+                            print(tacheName.text);
+                            if (!tacheName.text.isEmpty) {
+                              addTache(
+                                  tacheName.text.toString().trim());
                             }
                             Navigator.pop(context, false);
                           },

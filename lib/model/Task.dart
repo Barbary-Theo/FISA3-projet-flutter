@@ -1,13 +1,12 @@
 class Task{
 
   String _name = "";
-  String _description = "";
-  DateTime _deadLine = DateTime.now();
-  List<String> _members = <String>[];
+  String _mainElementId = "";
   int _status = 0;
+  double _x = 10;
+  double _y = 10;
 
-  Task(this._name, this._description, this._deadLine, this._members,
-      this._status);
+  Task(this._name, this._status, this._x, this._y, this._mainElementId);
 
   int get status => _status;
 
@@ -15,27 +14,27 @@ class Task{
     _status = value;
   }
 
-  List<String> get members => _members;
-
-  set members(List<String> value) {
-    _members = value;
-  }
-
-  DateTime get deadLine => _deadLine;
-
-  set deadLine(DateTime value) {
-    _deadLine = value;
-  }
-
-  String get description => _description;
-
-  set description(String value) {
-    _description = value;
-  }
-
   String get name => _name;
 
   set name(String value) {
     _name = value;
+  }
+
+  double get x => _x;
+
+  set x(double value) {
+    _x = value;
+  }
+
+  double get y => _y;
+
+  set y(double value) {
+    _y = value;
+  }
+
+  String get mainElementId => _mainElementId;
+
+  set mainElementId(String value) {
+    _mainElementId = value;
   }
 }
