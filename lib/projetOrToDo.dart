@@ -187,20 +187,27 @@ class _projetOrToDoState extends State<projetOrToDo> {
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
                   onTap: (){
-                    Navigator.of(context).pushAndRemoveUntil(
+                    researchMainElementItem.elementAt(i) is Project
+                        ? Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => projectMain(
-                                mainElementId : researchMainElementItem.elementAt(i).id
-                            )
-                        ),
-                            (route) => false
-                    );
+                                mainElementId:
+                                researchMainElementItem
+                                    .elementAt(i)
+                                    .id)),
+                            (route) => false)
+                        : Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => toDoMain(
+                                mainElementId:
+                                researchMainElementItem
+                                    .elementAt(i)
+                                    .id)),
+                            (route) => false);
                   },
                 )
             );
-
           }
-
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -263,11 +270,13 @@ class _projetOrToDoState extends State<projetOrToDo> {
                                       border: OutlineInputBorder(
                                         borderRadius:
                                         BorderRadius.all(Radius.circular(20.0)),
+                                      ),
+                                      filled: true,
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      hintText: "Nom du projet",
+                                      fillColor: Colors.white70,
+                                    ),
                                   ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Nom du projet",
-                                  fillColor: Colors.white70,
                                 ),
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height / 20,
@@ -282,11 +291,13 @@ class _projetOrToDoState extends State<projetOrToDo> {
                                       border: OutlineInputBorder(
                                         borderRadius:
                                         BorderRadius.all(Radius.circular(20.0)),
+                                      ),
+                                      filled: true,
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      hintText: "Description du projet",
+                                      fillColor: Colors.white70,
+                                    ),
                                   ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Description du projet",
-                                  fillColor: Colors.white70,
                                 ),
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height / 30,
@@ -294,27 +305,25 @@ class _projetOrToDoState extends State<projetOrToDo> {
                                 ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(
-                                        Color(0xFFFFDDB6)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
+                                        Color(0xFFFFDDB6),
+                                    ),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(18.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (!(elementName.text.isEmpty && elementDesc.text.isEmpty)) {
+                                      addProject(elementName.text.trim(), elementDesc.text.trim());
+                                    }
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text(
+                                    'Valider',
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                if (!(elementName.text.isEmpty &&
-                                    elementDesc.text.isEmpty)) {
-                                  addProject(elementName.text.trim(),
-                                      elementDesc.text.trim());
-                                }
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text(
-                                'Valider',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
                           ]),
                         ),
                       ),

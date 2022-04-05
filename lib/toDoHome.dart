@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Categorie.dart';
@@ -14,10 +16,10 @@ class toDoHome extends StatefulWidget {
 
   @override
   State<toDoHome> createState() =>
-      _projectHomeState(mainElementId: mainElementId);
+      _toDoHomeState(mainElementId: mainElementId);
 }
 
-class _projectHomeState extends State<toDoHome> {
+class _toDoHomeState extends State<toDoHome> {
   bool isSearching = false;
   final String mainElementId;
   final TextEditingController categorieName = TextEditingController();
@@ -33,7 +35,42 @@ class _projectHomeState extends State<toDoHome> {
     Color(0xFFFFDDB6),
   ];
 
-  _projectHomeState({this.mainElementId});
+  _toDoHomeState({this.mainElementId});
+
+  List<Widget> posiList = <Widget>[];
+  Stack allTaskWidget;
+
+  void setAllPositionned() {
+    var rng = Random();
+    for(int i = 0 ; i < allCategorie.length ; i++) {
+      posiList.add(
+        Positioned(
+          top: rng.nextDouble() * 100,
+          left: rng.nextDouble() * 100,
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: Card(
+                shadowColor: Colors.black,
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                color: const Color(0xFFFFDDB6),
+                child: Text(allCategorie.elementAt(i).name.toString())
+            )
+          )
+        )
+      );
+    }
+  }
+
+  displayTask () {
+    setAllPositionned();
+    allTaskWidget =  Stack(
+      children: posiList,
+    );
+  }
 
   @override
   void initState() {
@@ -74,8 +111,8 @@ class _projectHomeState extends State<toDoHome> {
           allCategorie.add(Categorie([], result.get("name")));
         });
       });
+      await displayTask();
     } catch (error) {
-      print("error : ");
       print(error);
     }
 
@@ -84,6 +121,7 @@ class _projectHomeState extends State<toDoHome> {
       print(loading);
       loading = false;
     });
+
   }
 
   @override
@@ -137,32 +175,7 @@ class _projectHomeState extends State<toDoHome> {
             )
           : researchCategorie.isEmpty
               ? const Center(child: Text("Pas de tâches dans la toDo List."))
-              : ListView.builder(
-                  itemCount: researchCategorie.length,
-                  itemBuilder: (context, i) {
-                    return Container(
-                        margin: i == 0
-                            ? const EdgeInsets.only(
-                                top: 10, bottom: 4, left: 4, right: 4)
-                            : const EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                            color: colorList[i % 4],
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: Colors.black,
-                            //     spreadRadius: 0,
-                            //     blurRadius: 0,
-                            //     offset: Offset(0, 2),
-                            //   )
-                            // ],
-                            borderRadius: BorderRadius.circular(10.0)),
-                        child: ListTile(
-                          title: Text(researchCategorie.elementAt(i).name),
-                          onTap: () {
-                            //  todo add action when categorie is pressed
-                          },
-                        ));
-                  }),
+              : allTaskWidget,
       floatingActionButton: FloatingActionButton(
         heroTag: "btn2",
         onPressed: () {
