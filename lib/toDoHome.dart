@@ -40,32 +40,53 @@ class _toDoHomeState extends State<toDoHome> {
   _toDoHomeState({this.mainElementId});
 
   List<Widget> posiList = <Widget>[];
-  Stack allTaskWidget;
+  Widget allTaskWidget;
+
+  List<List<double>> allCoordinate = [];
 
   void setAllPositionned() {
     posiList = [];
 
     for(int i = 0 ; i < allTache.length ; i++) {
+
+      if(allCoordinate.length < allTache.length) {
+        allCoordinate.add([allTache.elementAt(i).x, allTache.elementAt(i).y]);
+      }
+
       posiList.add(
-        Positioned(
-          top: allTache.elementAt(i).y,
-          left: allTache.elementAt(i).x,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.width / 4,
-            width: MediaQuery.of(context).size.width / 3,
-            child: Card(
-                shadowColor: Colors.black,
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                color: const Color(0xFFFFDDB6),
-                child: Center(
-                    child: Text(allTache.elementAt(i).name.toString())
-                ),
-            )
-          )
-        )
+          Positioned(
+              top: allCoordinate.elementAt(i)[1],
+              left: allCoordinate.elementAt(i)[0],
+              child: GestureDetector(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 8,
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: Card(
+                        shadowColor: Colors.black,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        color: const Color(0xFFFFDDB6),
+                        child: Center(
+                            child: Text(allTache.elementAt(i).name.toString())
+                        ),
+                      )
+                  ),
+                  onVerticalDragEnd: (DragEndDetails dd){
+                    print("oui");
+                    //here save
+                  },
+                  onVerticalDragUpdate: (DragUpdateDetails dd) {
+                    setState(() {
+                      print(dd);
+                      allCoordinate.elementAt(i)[1] = dd.globalPosition.dy - MediaQuery.of(context).size.height / 6;
+                      allCoordinate.elementAt(i)[0] = dd.globalPosition.dx - MediaQuery.of(context).size.width / 6;
+                      displayTask();
+                    });
+                  },
+              )
+          ),
       );
     }
   }
@@ -95,10 +116,9 @@ class _toDoHomeState extends State<toDoHome> {
 
   void addTache(String name) {
     try {
-      var rng = Random();
       FirebaseFirestore.instance
           .collection("task")
-          .add({'name': name, 'mainElementId': mainElementId, 'x': rng.nextDouble() * 100, 'y': rng.nextDouble() * 100});
+          .add({'name': name, 'mainElementId': mainElementId, 'x': 0, 'y': 0});
     } catch (error) {
       print(error);
     }
@@ -181,7 +201,7 @@ class _toDoHomeState extends State<toDoHome> {
               ),
             )
           : researchTache.isEmpty
-              ? Center(child: Text("Aucune tâche dans cette ToDo List"))
+              ? const Center(child: Text("Aucune tâche dans cette ToDo List"))
               : allTaskWidget,
       floatingActionButton: FloatingActionButton(
         heroTag: "btn2",
