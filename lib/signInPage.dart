@@ -33,7 +33,7 @@ class _SignInPage extends State<SignInPage> {
       body: Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width / 1.1,
-          height: MediaQuery.of(context).size.height / 1.5,
+          height: MediaQuery.of(context).size.height / 1.7,
           child: Container(
             child: (Card(
               shadowColor: Colors.black,
@@ -44,7 +44,7 @@ class _SignInPage extends State<SignInPage> {
               ),
               child: Column(children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 30,
+                  height: MediaQuery.of(context).size.height / 60,
                 ),
                 Center(
                   child: Text(
@@ -55,10 +55,11 @@ class _SignInPage extends State<SignInPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 30,
+                  height: MediaQuery.of(context).size.height / 50,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
+                  height: MediaQuery.of(context).size.height / 15,
                   child: TextField(
                     controller: login,
                     decoration: InputDecoration(
@@ -73,10 +74,11 @@ class _SignInPage extends State<SignInPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 13,
+                  height: MediaQuery.of(context).size.height / 25,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
+                  height: MediaQuery.of(context).size.height / 15,
                   child: TextField(
                     controller: password1,
                     obscureText: true,
@@ -92,10 +94,11 @@ class _SignInPage extends State<SignInPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 40,
+                  height: MediaQuery.of(context).size.height / 70,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.4,
+                  height: MediaQuery.of(context).size.height / 15,
                   child: TextField(
                     controller: password2,
                     obscureText: true,
@@ -111,7 +114,7 @@ class _SignInPage extends State<SignInPage> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 80,
+                  height: MediaQuery.of(context).size.height / 70,
                 ),
                 ElevatedButton(
                   style: ButtonStyle(
@@ -155,7 +158,7 @@ class _SignInPage extends State<SignInPage> {
                 ),
                 Divider(color: Colors.black, height: 1),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 80,
+                  height: MediaQuery.of(context).size.height / 60,
                 ),
                 ElevatedButton(
                   style: ButtonStyle(

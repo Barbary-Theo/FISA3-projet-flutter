@@ -17,7 +17,6 @@ Future<void> main() async {
       messagingSenderId: "XXX",
       projectId: "projetmobiles6",
     ),
-    name: "projetmobiles6"
   );
   runApp(const MyApp());
 }

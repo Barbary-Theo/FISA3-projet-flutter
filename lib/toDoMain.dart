@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:projetmobiles6/projectHome.dart';
 import 'package:projetmobiles6/projectOrTodoSettings.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
+import 'package:projetmobiles6/toDoHome.dart';
 
-class projectMain extends StatefulWidget {
+class toDoMain extends StatefulWidget {
   final String mainElementId;
 
-  const projectMain({Key key, this.mainElementId}) : super(key: key);
+  const toDoMain({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<projectMain> createState() =>
-      _projectMainState(mainElementId: mainElementId);
+  State<toDoMain> createState() => _toDoMainState(mainElementId: mainElementId);
 }
 
-class _projectMainState extends State<projectMain> {
+class _toDoMainState extends State<toDoMain> {
   int _selectedIndex = 0;
   final String mainElementId;
-  _projectMainState({this.mainElementId});
+
+  _toDoMainState({this.mainElementId});
 
   List<Widget> _widgetOptions;
 
   @override
   void initState() {
-
     _widgetOptions = <Widget>[
-      projectHome(mainElementId : mainElementId),
-      projetOrToDoSettings(mainElementId : mainElementId),
+      toDoHome(mainElementId: mainElementId),
+      projetOrToDoSettings(),
     ];
   }
 
