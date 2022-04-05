@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 import 'package:projetmobiles6/signInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget{
   @override
@@ -66,7 +66,7 @@ class _LoginPage extends State<LoginPage> {
                     child: TextField(
                       controller: login,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
@@ -88,7 +88,7 @@ class _LoginPage extends State<LoginPage> {
                     child: TextField(
                       controller: password,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
@@ -108,11 +108,30 @@ class _LoginPage extends State<LoginPage> {
                   child: ElevatedButton(
                       onPressed: () async {
                         try {
-                          await _auth.signInWithEmailAndPassword(email: login.text
-                              .trim(), password: password.text.trim());
-                          print("test");
+                          await _auth.signInWithEmailAndPassword(email: login.text.trim(), password: password.text.trim());
+
+                          bool exist = false;
+
+                          await FirebaseFirestore.instance.collection('user').where("id",isEqualTo: _auth.currentUser.uid).get().then((querySnapshot) {
+                            querySnapshot.docs.forEach((result) {
+                              print(result.get("email"));
+                              exist = true;
+                              print("already exist");
+                            });
+                          });
+
+                          print("???");
+                          if(!exist) {
+                            print("on ajoute");
+                            FirebaseFirestore.instance.collection("user").add(
+                                {
+                                  'email': login.text.trim(),
+                                  'id': _auth.currentUser.uid.trim(),
+                                }
+                            );
+                          }
                           _goToProjectOrToDo();
-                        //  Naviguer à la page des projets
+                          //  Naviguer à la page des projets
                         } on FirebaseAuthException catch (e)  {
                           setState(() {
                             errorText = e.message;
