@@ -187,20 +187,27 @@ class _projetOrToDoState extends State<projetOrToDo> {
                   title: Text(researchMainElementItem.elementAt(i).name),
                   subtitle: Text(researchMainElementItem.elementAt(i).description),
                   onTap: (){
-                    Navigator.of(context).pushAndRemoveUntil(
+                    researchMainElementItem.elementAt(i) is Project
+                        ? Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => projectMain(
-                                mainElementId : researchMainElementItem.elementAt(i).id
-                            )
-                        ),
-                            (route) => false
-                    );
+                                mainElementId:
+                                researchMainElementItem
+                                    .elementAt(i)
+                                    .id)),
+                            (route) => false)
+                        : Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => toDoMain(
+                                mainElementId:
+                                researchMainElementItem
+                                    .elementAt(i)
+                                    .id)),
+                            (route) => false);
                   },
                 )
             );
-
           }
-
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
