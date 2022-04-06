@@ -9,25 +9,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-class categorieHome extends StatefulWidget{
-
+class categorieHome extends StatefulWidget {
   final String categorieId;
   final String categorieName;
   final String mainElementId;
 
-  const categorieHome({Key key, this.categorieId, this.categorieName, this.mainElementId}) : super(key: key);
+  const categorieHome(
+      {Key key, this.categorieId, this.categorieName, this.mainElementId})
+      : super(key: key);
 
   @override
-  State<categorieHome> createState() => _categorieHomeState(categorieId: categorieId,categorieName : categorieName,mainElementId: mainElementId);
+  State<categorieHome> createState() => _categorieHomeState(
+      categorieId: categorieId,
+      categorieName: categorieName,
+      mainElementId: mainElementId);
 }
 
-
 class _categorieHomeState extends State<categorieHome> {
-
   final String categorieId;
   final String categorieName;
   final String mainElementId;
-  _categorieHomeState({this.categorieId,this.categorieName,this.mainElementId});
+
+  _categorieHomeState(
+      {this.categorieId, this.categorieName, this.mainElementId});
+
   bool isSearching = false;
   List<Task> allTask = <Task>[];
   String errorText = "";
@@ -51,28 +56,25 @@ class _categorieHomeState extends State<categorieHome> {
   final List<Color> _colorList = [
     const Color(0xFFF2DAD3),
     const Color(0xFFFBEDC9),
-    const Color(0xFFD7F2D3)];
+    const Color(0xFFD7F2D3)
+  ];
 
   @override
   void initState() {
     initData();
   }
 
-
-
-  void addTask(String name, String description, int status, DateTime deadLine){
+  void addTask(String name, String description, int status, DateTime deadLine) {
     try {
-      FirebaseFirestore.instance.collection("task").add(
-          {
-            'mainElementId' : categorieId,
-            'name' : name,
-            'description' : description,
-            'status' : status,
-            'deadLine' : deadLine,
-            'members' : <String>[_auth.currentUser.uid]
-          }
-      );
-    } catch(error){
+      FirebaseFirestore.instance.collection("task").add({
+        'mainElementId': categorieId,
+        'name': name,
+        'description': description,
+        'status': status,
+        'deadLine': deadLine,
+        'members': <String>[_auth.currentUser.uid]
+      });
+    } catch (error) {
       print(error);
     }
     initData();
@@ -85,10 +87,23 @@ class _categorieHomeState extends State<categorieHome> {
     allTask = [];
     _allMembersEmail = <String>[];
     _allMembersOfTask = <Members>[];
-    try{
-      await FirebaseFirestore.instance.collection('task').where("mainElementId",isEqualTo: categorieId).get().then((querySnapshot) {
+    try {
+      await FirebaseFirestore.instance
+          .collection('task')
+          .where("mainElementId", isEqualTo: categorieId)
+          .get()
+          .then((querySnapshot) {
         for (var result in querySnapshot.docs) {
-          allTask.add(Task.withDate(result.get("name"),result.get("status"),0,0,result.get("mainElementId"),false,result.get("deadLine").toDate(),result.id,result.get("description")));
+          allTask.add(Task.withDate(
+              result.get("name"),
+              result.get("status"),
+              0,
+              0,
+              result.get("mainElementId"),
+              false,
+              result.get("deadLine").toDate(),
+              result.id,
+              result.get("description")));
           List<dynamic> temp = result.get("members");
 
           temp.forEach((element) async {
@@ -98,17 +113,14 @@ class _categorieHomeState extends State<categorieHome> {
                 .get()
                 .then((querySnapshot) {
               querySnapshot.docs.forEach((result) {
-
-                _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
-
+                _allMembersOfTask
+                    .add(Members(result.get("email"), result.get("id")));
               });
             });
 
-
             if (_allMembersOfTask.length == temp.length) {
-              if(_allMembersOfTask.isEmpty){
+              if (_allMembersOfTask.isEmpty) {
                 setState(() {
-
                   _loading = false;
                   print(_loading);
                 });
@@ -122,13 +134,12 @@ class _categorieHomeState extends State<categorieHome> {
               }
             }
           });
-
         }
         setState(() {
           _loading = false;
         });
       });
-    }catch(error){
+    } catch (error) {
       print("error : ");
       print(error);
     }
@@ -136,14 +147,13 @@ class _categorieHomeState extends State<categorieHome> {
     // setState(() {
     //
     // });
-
-
   }
 
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
     _allMembersOfTask.forEach((element) {
-      _menuItems.add(DropdownMenuItem(value: element.email, child: Text(element.email)));
+      _menuItems.add(
+          DropdownMenuItem(value: element.email, child: Text(element.email)));
     });
   }
 
@@ -181,101 +191,102 @@ class _categorieHomeState extends State<categorieHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _loading ? const Center(
-        child : SpinKitChasingDots(
-          color: Color(0xFFFFDDB6),
-          size: 50.0,
-        ),
-      ) :
-      allTask.isEmpty ?
-      ListView.builder(
-          itemCount: 3,
-          itemBuilder: (context, i) {
-            Widget widget;
-            if(i == 0) {
-              widget = Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                    alignment: Alignment.topLeft,
-                    constraints: const BoxConstraints(
-                        minHeight: 1,
-                        minWidth: 1
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                        Icons.keyboard_backspace
-                    )
-                ),
-              );
-            } else if(i == 1){
-              widget = Text(
-                categorieName,
-                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20), textAlign: TextAlign.center,
-              );
-            } else {
-              widget = Center(child: Text("Pas de tâches affecté à la catégorie"),);
-            }
-            return widget;
-          }
-      ) :
-      ListView.builder(
-          itemCount: allTask.length + 2,
-          itemBuilder: (context, i) {
-            Widget widget;
-            if(i == 0) {
-              widget = Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                    alignment: Alignment.topLeft,
-                    constraints: const BoxConstraints(
-                        minHeight: 1,
-                        minWidth: 1
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                        Icons.keyboard_backspace
-                    )
-                ),
-              );
-            } else if(i == 1){
-              widget = Text(
-                categorieName,
-                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20), textAlign: TextAlign.center,
-              );
-            } else {
-              widget = SizedBox(
-                height: MediaQuery.of(context).size.width / 4.5,
-                child: Card(
-                  margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
-                  color: _colorList.elementAt(allTask.elementAt(i-2).status),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  shadowColor: Colors.black,
-                  elevation: 5,
-                  child: ListTile(
-                    title: Text(allTask.elementAt(i-2).name),
-                    onTap: (){
-
-                      taskIdTaskPressed = allTask.elementAt(i-2).id;
-                      taskNameTaskPressed = allTask.elementAt(i-2).name;
-                      taskDescTaskPressed = allTask.elementAt(i-2).desc;
-                      taskDeadLinePressed = allTask.elementAt(i-2).deadLine;
-                      _status = allTask.elementAt(i-2).status;
-                      _showModalTaskInfo(context);
-                    },
-                  ),
-                ),
-              );
-            }
-            return widget;
-          }
-      ),
-
+      body: _loading
+          ? const Center(
+              child: SpinKitChasingDots(
+                color: Color(0xFFFFDDB6),
+                size: 50.0,
+              ),
+            )
+          : allTask.isEmpty
+              ? ListView.builder(
+                  itemCount: 3,
+                  itemBuilder: (context, i) {
+                    Widget widget;
+                    if (i == 0) {
+                      widget = Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                            alignment: Alignment.topLeft,
+                            constraints:
+                                const BoxConstraints(minHeight: 1, minWidth: 1),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.keyboard_backspace)),
+                      );
+                    } else if (i == 1) {
+                      widget = Text(
+                        categorieName,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                        textAlign: TextAlign.center,
+                      );
+                    } else {
+                      widget = Center(
+                        child: Text("Pas de tâches affecté à la catégorie"),
+                      );
+                    }
+                    return widget;
+                  })
+              : ListView.builder(
+                  itemCount: allTask.length + 2,
+                  itemBuilder: (context, i) {
+                    Widget widget;
+                    if (i == 0) {
+                      widget = Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                            alignment: Alignment.topLeft,
+                            constraints:
+                                const BoxConstraints(minHeight: 1, minWidth: 1),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.keyboard_backspace)),
+                      );
+                    } else if (i == 1) {
+                      widget = Text(
+                        categorieName,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                        textAlign: TextAlign.center,
+                      );
+                    } else {
+                      widget = SizedBox(
+                        height: MediaQuery.of(context).size.width / 4.5,
+                        child: Card(
+                          margin: i == 0
+                              ? const EdgeInsets.only(
+                                  top: 10, bottom: 4, left: 4, right: 4)
+                              : const EdgeInsets.only(
+                                  top: 10, bottom: 4, left: 4, right: 4),
+                          color: _colorList
+                              .elementAt(allTask.elementAt(i - 2).status),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          shadowColor: Colors.black,
+                          elevation: 5,
+                          child: ListTile(
+                            title: Text(allTask.elementAt(i - 2).name),
+                            onTap: () {
+                              taskIdTaskPressed = allTask.elementAt(i - 2).id;
+                              taskNameTaskPressed =
+                                  allTask.elementAt(i - 2).name;
+                              taskDescTaskPressed =
+                                  allTask.elementAt(i - 2).desc;
+                              taskDeadLinePressed =
+                                  allTask.elementAt(i - 2).deadLine;
+                              _status = allTask.elementAt(i - 2).status;
+                              _showModalTaskInfo(context);
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                    return widget;
+                  }),
       floatingActionButton: FloatingActionButton(
         heroTag: "btn2",
         onPressed: () {
@@ -288,7 +299,6 @@ class _categorieHomeState extends State<categorieHome> {
     );
   }
 
-
   _showModalCreateTask(context) {
     showDialog(
         context: context,
@@ -299,271 +309,265 @@ class _categorieHomeState extends State<categorieHome> {
               child: Scaffold(
                   appBar: AppBar(
                     title: const Text("Création",
-                        style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                        style:
+                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
                     automaticallyImplyLeading: false,
                     backgroundColor: const Color(0xFF92DEB1),
                   ),
                   body: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Center(
-                      child:  Column(
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              child: TextField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
+                      child: Column(children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: TextField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
                                     BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Nom de la catégorie",
-                                  fillColor: Colors.white70,
-                                ),
                               ),
+                              filled: true,
+                              hintStyle: TextStyle(color: Colors.grey),
+                              hintText: "Nom de la tâche",
+                              fillColor: Colors.white70,
                             ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 60,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              height: MediaQuery.of(context).size.height / 5,
-                              child: TextField(
-                                controller: _descController,
-                                maxLines: 10,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 60,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          height: MediaQuery.of(context).size.height / 5,
+                          child: TextField(
+                            controller: _descController,
+                            maxLines: 10,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
                                     BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Description de la tâche",
-                                  fillColor: Colors.white70,
-                                ),
                               ),
+                              filled: true,
+                              hintStyle: TextStyle(color: Colors.grey),
+                              hintText: "Description de la tâche",
+                              fillColor: Colors.white70,
                             ),
-
-                            TextButton(
-                                onPressed: () {
-                                  DatePicker.showDatePicker(context,
-                                      showTitleActions: true,
-                                      minTime: DateTime.now(),
-                                      onChanged: (date) {
-                                        print('change $date');
-                                      }, onConfirm: (date) {
-                                        _deadLine = date;
-                                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                                },
-                                child: const Text(
-                                  'Selectionner une DeadLine',
-                                  style: TextStyle(color: Colors.blue),
-                                )),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 40,
-                            ),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    const Color(0xFFFFDDB6)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                if(_nameController.text.isNotEmpty){
-                                  addTask(_nameController.text.trim(),_descController.text.trim(),0,_deadLine);
-                                }
-                                Navigator.pop(context, false);
+                          ),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: DateTime.now(), onChanged: (date) {
+                                print('change $date');
+                              }, onConfirm: (date) {
+                                _deadLine = date;
                               },
-                              child: const Text(
-                                'Valider',
-                                style: TextStyle(color: Colors.black),
+                                  currentTime: DateTime.now(),
+                                  locale: LocaleType.en);
+                            },
+                            child: const Text(
+                              'Selectionner une DeadLine',
+                              style: TextStyle(color: Colors.blue),
+                            )),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 40,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color(0xFFFFDDB6)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
                               ),
                             ),
-                          ]),
+                          ),
+                          onPressed: () {
+                            if (_nameController.text.isNotEmpty) {
+                              addTask(_nameController.text.trim(),
+                                  _descController.text.trim(), 0, _deadLine);
+                            }
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text(
+                            'Valider',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ]),
                     ),
-                  )
-
-              ),
-
+                  )),
             ),
           );
         });
   }
 
-  Future<void> _showModalTaskInfo(context) async{
+  Future<void> _showModalTaskInfo(context) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 1.5,
-              child: Scaffold(
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Nom de la tâche : " + taskNameTaskPressed),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Description : " + taskDescTaskPressed),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Date de fin : " + taskDeadLinePressed.year.toString() + "/" + taskDeadLinePressed.month.toString() + "/" + taskDeadLinePressed.day.toString()
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Dialog(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height / 1.5,
+                child: Scaffold(
+                  body: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Center(
+                      child: Column(children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
                         ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 4.5,
-                        child: Column(
-                          children: [
-                            RadioListTile(
-                                title: const Text('Pas commencé'),
-                                value: 0,
-                                groupValue: _status,
-                                onChanged: (value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({
-                                    'status' : _status
-                                  });
-                                  initData();
-                                  setState(() {
-
-                                  });
-                                }),
-                            RadioListTile(
-                                title: const Text('Commencé'),
-                                value: 1,
-                                groupValue: _status,
-                                onChanged: (value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({
-                                    'status' : _status
-                                  });
-                                  initData();
-                                  setState(() {
-                                  });
-                                }),
-                            RadioListTile(
-                                title: const Text('Fini'),
-                                value: 2,
-                                groupValue: _status,
-                                onChanged: (value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({
-                                    'status' : _status
-                                  });
-
-                                  initData();
-                                  setState(() {
-
-                                  });
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child:
+                              Text("Nom de la tâche : " + taskNameTaskPressed),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: Text("Description : " + taskDescTaskPressed),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: Text("Date de fin : " +
+                              taskDeadLinePressed.year.toString() +
+                              "/" +
+                              taskDeadLinePressed.month.toString() +
+                              "/" +
+                              taskDeadLinePressed.day.toString()),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 4.5,
+                          child: Column(
+                            children: [
+                              RadioListTile(
+                                  title: const Text('Pas commencé'),
+                                  value: 0,
+                                  groupValue: _status,
+                                  onChanged: (int value) async {
+                                    _status = value;
+                                    await FirebaseFirestore.instance
+                                        .collection('task')
+                                        .doc(taskIdTaskPressed)
+                                        .update({'status': _status});
+                                    setState(() {});
+                                  }),
+                              RadioListTile(
+                                  title: const Text('Commencé'),
+                                  value: 1,
+                                  groupValue: _status,
+                                  onChanged: (value) async {
+                                    _status = value;
+                                    await FirebaseFirestore.instance
+                                        .collection('task')
+                                        .doc(taskIdTaskPressed)
+                                        .update({'status': _status});
+                                    setState(() {});
+                                  }),
+                              RadioListTile(
+                                  title: const Text('Fini'),
+                                  value: 2,
+                                  groupValue: _status,
+                                  onChanged: (value) async {
+                                    _status = value;
+                                    await FirebaseFirestore.instance
+                                        .collection('task')
+                                        .doc(taskIdTaskPressed)
+                                        .update({'status': _status});
+                                    setState(() {});
+                                  }),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height >
+                                  MediaQuery.of(context).size.width
+                              ? MediaQuery.of(context).size.width / 4.8
+                              : MediaQuery.of(context).size.height / 4.8,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _allMembersOfTask.length + 2,
+                              itemBuilder: (BuildContext context, int i) {
+                                Widget circle;
+                                if (i == _allMembersOfTask.length) {
+                                  circle = CircleAvatar(
+                                    backgroundColor: const Color(0xFF92DEB1),
+                                    radius: MediaQuery.of(context).size.height >
+                                            MediaQuery.of(context).size.width
+                                        ? MediaQuery.of(context).size.width / 10
+                                        : MediaQuery.of(context).size.height /
+                                            10,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.remove),
+                                      onPressed: () async {
+                                        await _showModalRemoveMember(context);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  );
+                                } else if (i == _allMembersOfTask.length + 1) {
+                                  circle = CircleAvatar(
+                                    backgroundColor: const Color(0xFFFFC6C6),
+                                    radius: MediaQuery.of(context).size.height >
+                                            MediaQuery.of(context).size.width
+                                        ? MediaQuery.of(context).size.width / 10
+                                        : MediaQuery.of(context).size.height /
+                                            10,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        _showModalAddUser(context);
+                                        setState(() {});
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  circle = CircleAvatar(
+                                    backgroundColor:
+                                        _colorList.elementAt(i % 4),
+                                    radius: MediaQuery.of(context).size.height >
+                                            MediaQuery.of(context).size.width
+                                        ? MediaQuery.of(context).size.width / 10
+                                        : MediaQuery.of(context).size.height /
+                                            10,
+                                    child: Text(_allMembersOfTask
+                                        .elementAt(i)
+                                        .email
+                                        .characters
+                                        .characterAt(0)
+                                        .toString()
+                                        .toUpperCase()),
+                                  );
                                 }
-                            ),
-                          ],
+                                return circle;
+                              }),
                         ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height >
-                            MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 4.8
-                            : MediaQuery.of(context).size.height / 4.8,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _allMembersOfTask.length + 2,
-                            itemBuilder: (BuildContext context, int i) {
-                              Widget circle;
-                              if (i == _allMembersOfTask.length) {
-                                circle = CircleAvatar(
-                                  backgroundColor: const Color(0xFF92DEB1),
-                                  radius: MediaQuery.of(context).size.height >
-                                      MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.remove),
-                                    onPressed: () {
-                                      setState(() {
-                                        _showModalRemoveMember(context);
-                                      });
-                                    },
-                                  ),
-                                );
-                              } else if (i == _allMembersOfTask.length + 1) {
-                                circle = CircleAvatar(
-                                  backgroundColor: const Color(0xFFFFC6C6),
-                                  radius: MediaQuery.of(context).size.height >
-                                      MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () {
-                                      _showModalAddUser(context);
-                                    },
-                                  ),
-                                );
-                              } else {
-                                circle = CircleAvatar(
-                                  backgroundColor: _colorList.elementAt(i%4),
-                                  radius: MediaQuery.of(context).size.height >
-                                      MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: Text(_allMembersOfTask
-                                      .elementAt(i)
-                                      .email
-                                      .characters
-                                      .characterAt(0)
-                                      .toString()
-                                      .toUpperCase()),
-                                );
-                              }
-                              return circle;
-                            }),
-                      ),
-                    ]),
+                      ]),
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          });
         });
   }
 
@@ -573,81 +577,81 @@ class _categorieHomeState extends State<categorieHome> {
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return Dialog(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Scaffold(
-                      appBar: AppBar(
-                        title: const Text("Suppression",
-                            style:
+            return Dialog(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: const Text("Suppression",
+                        style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                        automaticallyImplyLeading: false,
-                        backgroundColor: const Color(0xFF92DEB1),
-                      ),
-                      body: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Center(
-                          child: Column(children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                child: DropdownButton<String>(
-                                  value: _selectedMember,
-                                  icon: const Icon(Icons.keyboard_arrow_down),
-                                  onChanged: (String value) {
-                                    setState(() {
-                                      _selectedMember = value;
-                                      for (var element in _allMembersOfTask) {
-                                        if (element.email == value) {
-                                          _selectedMemberId = element.id;
-                                        }
-                                      }
-                                    });
-                                  },
-                                  items: _menuItems,
-                                )),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    const Color(0xFFFFDDB6)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () async {
-                                if (_selectedMember != _auth.currentUser.email) {
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({
-                                    "members": FieldValue.arrayRemove(
-                                        [_selectedMemberId])
-                                  });
-                                }
-                                Navigator.pop(context, false);
-                                initData();
-                                setState(() {});
-                              },
-                              child: const Text(
-                                'Valider',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ]),
+                    automaticallyImplyLeading: false,
+                    backgroundColor: const Color(0xFF92DEB1),
+                  ),
+                  body: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Center(
+                      child: Column(children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
                         ),
-                      ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            child: DropdownButton<String>(
+                              value: _selectedMember,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _selectedMember = value;
+                                  for (var element in _allMembersOfTask) {
+                                    if (element.email == value) {
+                                      _selectedMemberId = element.id;
+                                    }
+                                  }
+                                });
+                              },
+                              items: _menuItems,
+                            )),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color(0xFFFFDDB6)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_selectedMember != _auth.currentUser.email) {
+                              await FirebaseFirestore.instance
+                                  .collection('task')
+                                  .doc(taskIdTaskPressed)
+                                  .update({
+                                "members":
+                                    FieldValue.arrayRemove([_selectedMemberId])
+                              });
+                            }
+                            Navigator.pop(context, false);
+                            initData();
+                            setState(() {});
+                          },
+                          child: const Text(
+                            'Valider',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ]),
                     ),
                   ),
-                );
-              });
+                ),
+              ),
+            );
+          });
         });
   }
 
@@ -679,7 +683,7 @@ class _categorieHomeState extends State<categorieHome> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20.0)),
+                                  BorderRadius.all(Radius.circular(20.0)),
                             ),
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey),
@@ -695,8 +699,8 @@ class _categorieHomeState extends State<categorieHome> {
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               const Color(0xFFFFDDB6)),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
                             ),
@@ -724,5 +728,4 @@ class _categorieHomeState extends State<categorieHome> {
           );
         });
   }
-
 }
