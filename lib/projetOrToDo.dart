@@ -1,14 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/MainElementItem.dart';
 import 'package:projetmobiles6/model/Project.dart';
 import 'package:projetmobiles6/model/ToDo.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/projectHome.dart';
 import 'package:projetmobiles6/projectMain.dart';
 import 'package:projetmobiles6/toDoMain.dart';
 import 'package:projetmobiles6/userSettings.dart';

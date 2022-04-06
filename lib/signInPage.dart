@@ -1,12 +1,9 @@
 // ignore: file_names
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:projetmobiles6/loginPage.dart';
-import 'package:projetmobiles6/main.dart';
-import 'package:projetmobiles6/service/Authentificaiton_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignInPage extends StatefulWidget{
   @override
@@ -134,15 +131,17 @@ class _SignInPage extends State<SignInPage> {
                       await _auth.createUserWithEmailAndPassword(
                           email: login.text.trim(),
                           password: password1.text.trim());
+
                       setState(() {
-                        // errorText = "Vous êtes bien inscrit";
                         _goToLogIn();
                       });
 
-                    } on FirebaseAuthException catch (e)  {
+                    } on FirebaseAuthException catch (e) {
                       setState(() {
                         errorText = e.message;
                       });
+                    } catch(error){
+                      print(error);
                     }
                   },
                   child: const Text(
