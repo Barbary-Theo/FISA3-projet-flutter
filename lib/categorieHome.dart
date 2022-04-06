@@ -466,6 +466,7 @@ class _categorieHomeState extends State<categorieHome> {
                                         .collection('task')
                                         .doc(taskIdTaskPressed)
                                         .update({'status': _status});
+                                    initData();
                                     setState(() {});
                                   }),
                               RadioListTile(
@@ -478,6 +479,7 @@ class _categorieHomeState extends State<categorieHome> {
                                         .collection('task')
                                         .doc(taskIdTaskPressed)
                                         .update({'status': _status});
+                                    initData();
                                     setState(() {});
                                   }),
                               RadioListTile(
@@ -490,6 +492,7 @@ class _categorieHomeState extends State<categorieHome> {
                                         .collection('task')
                                         .doc(taskIdTaskPressed)
                                         .update({'status': _status});
+                                    initData();
                                     setState(() {});
                                   }),
                             ],
