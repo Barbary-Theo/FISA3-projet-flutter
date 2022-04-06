@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/projectHome.dart';
-import 'package:projetmobiles6/projectOrTodoSettings.dart';
+import 'package:projetmobiles6/projectSettings.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projectMain extends StatefulWidget {
@@ -65,7 +65,7 @@ class _projectMainState extends State<projectMain> {
         heroTag: "btn1",
         onPressed: () {
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => projetOrToDo()),
+              MaterialPageRoute(builder: (context) => projet()),
               (route) => false);
         },
         backgroundColor: const Color(0xFFF2DAD3),

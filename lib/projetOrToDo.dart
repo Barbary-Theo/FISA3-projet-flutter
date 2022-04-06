@@ -10,12 +10,12 @@ import 'package:projetmobiles6/toDoMain.dart';
 import 'package:projetmobiles6/userSettings.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class projetOrToDo extends StatefulWidget {
+class projet extends StatefulWidget {
   @override
-  State<projetOrToDo> createState() => _projetOrToDoState();
+  State<projet> createState() => _projetState();
 }
 
-class _projetOrToDoState extends State<projetOrToDo> {
+class _projetState extends State<projet> {
   bool isSearching = false;
   List<MainElementItem> allMainElementItem = <MainElementItem>[];
   List<MainElementItem> researchMainElementItem = <MainElementItem>[];

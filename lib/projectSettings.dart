@@ -152,7 +152,7 @@ class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
       //Todo : Remove all task link to categorie
 
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => projetOrToDo()),
+          MaterialPageRoute(builder: (context) => projet()),
               (route) => false);
     } catch(e){
       print("error : ");
