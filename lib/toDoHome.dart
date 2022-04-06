@@ -163,7 +163,6 @@ class _toDoHomeState extends State<toDoHome> {
                   },
                   onVerticalDragUpdate: (DragUpdateDetails dd) {
                     setState(() {
-                      print(dd);
                       allCoordinate.elementAt(i)[1] = dd.globalPosition.dy - MediaQuery.of(context).size.height / 6;
                       allCoordinate.elementAt(i)[0] = dd.globalPosition.dx - MediaQuery.of(context).size.width / 6;
                       displayTask();
@@ -211,6 +210,8 @@ class _toDoHomeState extends State<toDoHome> {
 
   Future<void> fillList() async {
     allTache = [];
+    allCoordinate = [];
+    allColor = [];
     try {
       var rng = Random();
       await FirebaseFirestore.instance
@@ -229,7 +230,6 @@ class _toDoHomeState extends State<toDoHome> {
 
     setState(() {
       researchTache = allTache;
-      print(loading);
       loading = false;
     });
   }
@@ -351,7 +351,6 @@ class _toDoHomeState extends State<toDoHome> {
                             ),
                           ),
                           onPressed: () {
-                            print(tacheName.text);
                             if (!tacheName.text.isEmpty) {
                               addTache(
                                   tacheName.text.toString().trim());
