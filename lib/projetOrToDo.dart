@@ -12,10 +12,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class projetOrToDo extends StatefulWidget {
   @override
-  State<projetOrToDo> createState() => _projetOrToDoState();
+  State<projetOrToDo> createState() => _projetState();
 }
 
-class _projetOrToDoState extends State<projetOrToDo> {
+class _projetState extends State<projetOrToDo> {
   bool isSearching = false;
   List<MainElementItem> allMainElementItem = <MainElementItem>[];
   List<MainElementItem> researchMainElementItem = <MainElementItem>[];
