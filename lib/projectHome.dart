@@ -7,12 +7,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
+import 'categorieHome.dart';
+
 class projectHome extends StatefulWidget{
 
   final String mainElementId;
 
   const projectHome({Key key, this.mainElementId}) : super(key: key);
-
 
   @override
   State<projectHome> createState() => _projectHomeState(mainElementId: mainElementId);
@@ -29,8 +30,13 @@ class _projectHomeState extends State<projectHome>{
   List<Categorie> researchCategorie = <Categorie>[];
   String errorText = "";
   bool loading = true;
+  String categorieId = "";
 
-  final List<Color> _colorList = [Color(0xFFD7F2D3),Color(0xFFD8D2ED),Color(0xFFFFC6C6),Color(0xFFFFDDB6),];
+  final List<Color> _colorList = [
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFC6C6),
+    const Color(0xFFFFDDB6),];
 
   _projectHomeState({this.mainElementId});
 
@@ -73,7 +79,7 @@ class _projectHomeState extends State<projectHome>{
     try{
       await FirebaseFirestore.instance.collection('categorie').where("project",isEqualTo: mainElementId).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          allCategorie.add(Categorie([], result.get("name")));
+          allCategorie.add(Categorie([], result.get("name"),result.id));
         });
       });
 
@@ -147,19 +153,20 @@ class _projectHomeState extends State<projectHome>{
             return SizedBox(
               height: MediaQuery.of(context).size.width / 4.5,
               child: Card(
-                  margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
-                  color: _colorList[i%4],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  shadowColor: Colors.black,
-                  elevation: 5,
-                  child: ListTile(
-                    title: Text(researchCategorie.elementAt(i).name),
-                    onTap: (){
-                      //  todo add action when categorie is pressed
-                    },
-                  ),
+                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
+                color: _colorList[i%4],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: Colors.black,
+                elevation: 5,
+                child: ListTile(
+                  title: Text(researchCategorie.elementAt(i).name),
+                  onTap: (){
+                    categorieId = researchCategorie.elementAt(i).id;
+                    print(categorieId);
+                  },
+                ),
               ),
             );
           }
@@ -245,7 +252,7 @@ class _projectHomeState extends State<projectHome>{
                           ]),
                     ),
                   ),
-                ),
+                )
 
               ),
 

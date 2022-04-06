@@ -42,12 +42,10 @@ class _projetSettingsState extends State<projetSettings> {
 
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
-    print(_allMembersEmail);
     _allMembersEmail.forEach((element) {
       print("element : " + element);
       _menuItems.add(DropdownMenuItem(value: element, child: Text(element)));
     });
-    print("allmembers email lenght = " + _allMembersEmail.length.toString());
   }
 
   Future<void> _initializeProjectData() async {
@@ -55,7 +53,6 @@ class _projetSettingsState extends State<projetSettings> {
     _allMembersOfProject = <Members>[];
     _allMembersEmail = <String>[];
     try {
-      print("recupération data project");
       await FirebaseFirestore.instance
           .collection('project')
           .doc(mainElementId)
@@ -116,9 +113,9 @@ class _projetSettingsState extends State<projetSettings> {
         .where("email", isEqualTo: email)
         .get()
         .then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
+      for (var result in querySnapshot.docs) {
         id = result.get("id");
-      });
+      }
     });
 
     if (canAdd) {
@@ -139,11 +136,11 @@ class _projetSettingsState extends State<projetSettings> {
 
       await FirebaseFirestore.instance.collection("categorie").where(
           "project", isEqualTo: mainElementId).get().then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
+        for (var result in querySnapshot.docs) {
           FirebaseFirestore.instance.collection("categorie")
               .doc(result.id)
               .delete();
-        });
+        }
       });
 
       await FirebaseFirestore.instance.collection("project").doc(mainElementId).delete();
@@ -158,9 +155,6 @@ class _projetSettingsState extends State<projetSettings> {
       print("error : ");
       print(e);
     }
-
-
-
   }
 
   @override

@@ -12,12 +12,12 @@ class _ParametreState extends State<test>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Suggestion"),
-        backgroundColor : Color.fromRGBO(34,139,34,100),),
+      appBar: AppBar(title: const Text("Suggestion"),
+        backgroundColor : const Color.fromRGBO(34,139,34,100),),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: const [
             Text("Ici faire une page de paramètres"),
           ]
       ),
