@@ -30,7 +30,7 @@ class _projectHomeState extends State<projectHome>{
   String errorText = "";
   bool loading = true;
 
-  List<Color> colorList = [Color(0xFFD7F2D3),Color(0xFFD8D2ED),Color(0xFFFFC6C6),Color(0xFFFFDDB6),];
+  final List<Color> _colorList = [Color(0xFFD7F2D3),Color(0xFFD8D2ED),Color(0xFFFFC6C6),Color(0xFFFFDDB6),];
 
   _projectHomeState({this.mainElementId});
 
@@ -148,7 +148,7 @@ class _projectHomeState extends State<projectHome>{
               height: MediaQuery.of(context).size.width / 4.5,
               child: Card(
                   margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
-                  color: colorList[i%4],
+                  color: _colorList[i%4],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),

@@ -17,8 +17,7 @@ class toDoHome extends StatefulWidget {
   const toDoHome({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<toDoHome> createState() =>
-      _toDoHomeState(mainElementId: mainElementId);
+  State<toDoHome> createState() => _toDoHomeState(mainElementId: mainElementId);
 }
 
 class _toDoHomeState extends State<toDoHome> {
@@ -176,9 +175,9 @@ class _toDoHomeState extends State<toDoHome> {
     }
   }
 
-  displayTask () {
+  displayTask() {
     setAllPositionned();
-    allTaskWidget =  Stack(
+    allTaskWidget = Stack(
       children: posiList,
     );
   }
@@ -233,7 +232,6 @@ class _toDoHomeState extends State<toDoHome> {
       print(loading);
       loading = false;
     });
-
   }
 
   @override

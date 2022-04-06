@@ -1,5 +1,4 @@
-class Task{
-
+class Task {
   String _name = "";
   String _mainElementId = "";
   int _status = 0;
