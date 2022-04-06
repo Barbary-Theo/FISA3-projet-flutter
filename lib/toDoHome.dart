@@ -64,6 +64,13 @@ class _toDoHomeState extends State<toDoHome> {
 
       if(allCoordinate.length < allTache.length) {
         allCoordinate.add([allTache.elementAt(i).x, allTache.elementAt(i).y]);
+
+        if(allTache.elementAt(i).validate) {
+          allColor.add(new Color(0xFFD7F2D3));
+        }
+        else {
+          allColor.add(new Color(0xFFFFDDB6));
+        }
       }
 
       posiList.add(
@@ -73,14 +80,14 @@ class _toDoHomeState extends State<toDoHome> {
               child: GestureDetector(
                   child: SizedBox(
                       height: MediaQuery.of(context).size.height / 8,
-                      width: MediaQuery.of(context).size.width / 3,
+                      width: MediaQuery.of(context).size.width / 2.5,
                       child: Card(
                         shadowColor: Colors.black,
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        color: const Color(0xFFFFDDB6),
+                        color: allColor.elementAt(i),
                         child: Stack(
                            children: [
                               Center(child: Text(allTache.elementAt(i).name.toString())),
@@ -90,6 +97,13 @@ class _toDoHomeState extends State<toDoHome> {
                                 value: allTache.elementAt(i).validate,
                                 onChanged: (bool value) {
                                   allTache.elementAt(i).validate = value;
+                                  if(value) {
+                                    allColor[i] = new Color(0xFFD7F2D3);
+                                  }
+                                  else {
+                                    allColor[i] = new Color(0xFFFFDDB6);
+                                  }
+
                                   setState(() {
                                     FirebaseFirestore.instance.collection("task").where(
                                         "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
@@ -104,6 +118,31 @@ class _toDoHomeState extends State<toDoHome> {
                                   });
                                 },
                               ),
+                             Align(
+                               alignment: Alignment.topRight,
+                               child: IconButton(
+                                   alignment: Alignment.topRight,
+                                   constraints: const BoxConstraints(
+                                       minHeight: 1,
+                                       minWidth: 1
+                                   ),
+                                   onPressed: () {
+                                     FirebaseFirestore.instance.collection("task").where(
+                                         "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                                       querySnapshot.docs.forEach((result) {
+                                         FirebaseFirestore.instance.collection("task")
+                                             .doc(result.id).delete();
+                                       });
+                                       fillList();
+                                       displayTask();
+                                     });
+                                   },
+                                   icon: const Icon(
+                                       Icons.highlight_remove_rounded,
+                                     color: Colors.red,
+                                   )
+                               ),
+                             ),
                             ],
                         )
                       )
