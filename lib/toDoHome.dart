@@ -40,9 +40,22 @@ class _toDoHomeState extends State<toDoHome> {
   _toDoHomeState({this.mainElementId});
 
   List<Widget> posiList = <Widget>[];
+  List<Color> allColor = <Color>[];
   Widget allTaskWidget;
 
   List<List<double>> allCoordinate = [];
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Colors.green;
+  }
 
   void setAllPositionned() {
     posiList = [];
@@ -73,10 +86,21 @@ class _toDoHomeState extends State<toDoHome> {
                               Center(child: Text(allTache.elementAt(i).name.toString())),
                               Checkbox(
                                 checkColor: Colors.white,
+                                fillColor: MaterialStateProperty.resolveWith(getColor),
                                 value: allTache.elementAt(i).validate,
                                 onChanged: (bool value) {
+                                  allTache.elementAt(i).validate = value;
                                   setState(() {
-                                    print("to change detected");
+                                    FirebaseFirestore.instance.collection("task").where(
+                                        "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                                      querySnapshot.docs.forEach((result) {
+                                        Map mapCheck = <String, bool>{};
+                                        mapCheck.putIfAbsent("validate", () => allTache.elementAt(i).validate);
+                                        FirebaseFirestore.instance.collection("task")
+                                            .doc(result.id).update(mapCheck);
+                                      });
+                                    });
+                                    displayTask();
                                   });
                                 },
                               ),
