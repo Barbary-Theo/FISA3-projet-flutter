@@ -13,18 +13,20 @@ class categorieHome extends StatefulWidget{
 
   final String categorieId;
   final String categorieName;
+  final String mainElementId;
 
-  const categorieHome({Key key, this.categorieId, this.categorieName}) : super(key: key);
+  const categorieHome({Key key, this.categorieId, this.categorieName, this.mainElementId}) : super(key: key);
 
   @override
-  State<categorieHome> createState() => _categorieHomeState(categorieId: categorieId,categorieName : categorieName);
+  State<categorieHome> createState() => _categorieHomeState(categorieId: categorieId,categorieName : categorieName,mainElementId: mainElementId);
 }
 
 class _categorieHomeState extends State<categorieHome> {
 
   final String categorieId;
   final String categorieName;
-  _categorieHomeState({this.categorieId,this.categorieName});
+  final String mainElementId;
+  _categorieHomeState({this.categorieId,this.categorieName,this.mainElementId});
 
   bool isSearching = false;
   List<Task> allTask = <Task>[];
@@ -34,8 +36,13 @@ class _categorieHomeState extends State<categorieHome> {
   TextEditingController _descController = TextEditingController();
   DateTime _deadLine = DateTime.now();
   final _auth = FirebaseAuth.instance;
-
-
+  List<String> _allMemberId = <String>[];
+  List<Members> _allMembersOfProject = <Members>[];
+  List<String> _allMembersEmail = <String>[];
+  bool loading = true;
+  String _selectedMember = "";
+  String _selectedMemberId = "";
+  List<DropdownMenuItem<String>> _menuItems = <DropdownMenuItem<String>>[];
 
   final List<Color> _colorList = [
     const Color(0xFFF2DAD3),
@@ -44,8 +51,6 @@ class _categorieHomeState extends State<categorieHome> {
 
   @override
   void initState() {
-    print("cat id :");
-    print(categorieId);
     initData();
   }
 
@@ -83,11 +88,63 @@ class _categorieHomeState extends State<categorieHome> {
       print(error);
     }
 
-    setState(() {
-      _loading = false;
-    });
+    _allMemberId = <String>[];
+    _allMembersOfProject = <Members>[];
+    _allMembersEmail = <String>[];
+    try {
+      await FirebaseFirestore.instance
+          .collection('project')
+          .doc(mainElementId)
+          .get()
+          .then((querySnapshot) {
+        List<dynamic> temp = querySnapshot.get("members");
+        temp.forEach((element) async {
+          await FirebaseFirestore.instance
+              .collection('user')
+              .where("id", isEqualTo: element.toString())
+              .get()
+              .then((querySnapshot) {
+            querySnapshot.docs.forEach((result) {
+
+              _allMembersOfProject
+                  .add(Members(result.get("email"), result.get("id")));
+              _allMembersEmail.add(result.get("email"));
+              _allMemberId.add(result.get("id"));
+
+            });
+          });
+
+
+          if (_allMembersOfProject.length == temp.length - 1) {
+            if(_allMembersOfProject.isEmpty){
+              setState(() {
+                loading = false;
+              });
+            } else {
+              setState(() {
+                _selectedMember = _allMembersOfProject.elementAt(0).email;
+                _selectedMemberId = _allMembersOfProject.elementAt(0).id;
+                loading = false;
+                _setMenuItems();
+              });
+            }
+          }
+        });
+      });
+      setState(() {});
+    } catch (error) {
+      print("error : ");
+      print(error);
+    }
+
   }
 
+  void _setMenuItems() {
+    _menuItems = <DropdownMenuItem<String>>[];
+    _allMembersEmail.forEach((element) {
+      _menuItems.add(DropdownMenuItem(value: element, child: Text(element)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

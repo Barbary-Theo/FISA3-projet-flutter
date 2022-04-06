@@ -171,7 +171,7 @@ class _projectHomeState extends State<projectHome>{
                     print("cat id avant : ");
                     print(categorieId);
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => categorieHome(categorieId: categorieId, categorieName: categorieName,)),
+                        MaterialPageRoute(builder: (context) => categorieHome(categorieId: categorieId, categorieName: categorieName,mainElementId: mainElementId,)),
                     );
                   },
                 ),
