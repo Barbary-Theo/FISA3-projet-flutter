@@ -1,3 +1,5 @@
+import 'package:projetmobiles6/model/Members.dart';
+
 class Task{
 
   String _name = "";
@@ -8,16 +10,17 @@ class Task{
   bool _validate = false;
   DateTime _deadLine = DateTime.now();
 
+
   Task(this._name, this._status, this._x, this._y, this._mainElementId, this._validate);
 
   Task.withDate(String name, int status, double x, double y, String mainElementId, bool validate, DateTime deadLine){
-    this._name = name;
-    this._status = status;
-    this._x = x;
-    this._y = y;
-    this._mainElementId = mainElementId;
-    this._validate = validate;
-    this._deadLine = deadLine;
+    _name = name;
+    _status = status;
+    _x = x;
+    _y = y;
+    _mainElementId = mainElementId;
+    _validate = validate;
+    _deadLine = deadLine;
   }
 
   int get status => _status;
