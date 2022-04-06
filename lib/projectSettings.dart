@@ -92,7 +92,9 @@ class _projetSettingsState extends State<projetSettings> {
           }
         });
       });
-      setState(() {});
+      setState(() {
+        loading = false;
+      });
     } catch (error) {
       print("error : ");
       print(error);

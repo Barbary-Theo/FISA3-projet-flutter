@@ -21,28 +21,32 @@ class categorieHome extends StatefulWidget{
   State<categorieHome> createState() => _categorieHomeState(categorieId: categorieId,categorieName : categorieName,mainElementId: mainElementId);
 }
 
+
 class _categorieHomeState extends State<categorieHome> {
 
   final String categorieId;
   final String categorieName;
   final String mainElementId;
   _categorieHomeState({this.categorieId,this.categorieName,this.mainElementId});
-
   bool isSearching = false;
   List<Task> allTask = <Task>[];
   String errorText = "";
   bool _loading = true;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _descController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   DateTime _deadLine = DateTime.now();
   final _auth = FirebaseAuth.instance;
-  List<String> _allMemberId = <String>[];
-  List<Members> _allMembersOfProject = <Members>[];
+  List<Members> _allMembersOfTask = <Members>[];
   List<String> _allMembersEmail = <String>[];
-  bool loading = true;
   String _selectedMember = "";
   String _selectedMemberId = "";
   List<DropdownMenuItem<String>> _menuItems = <DropdownMenuItem<String>>[];
+  final TextEditingController _userToAdd = TextEditingController();
+  String taskIdTaskPressed = "";
+  String taskNameTaskPressed = "";
+  String taskDescTaskPressed = "";
+  DateTime taskDeadLinePressed = DateTime.now();
+  int _status = 0;
 
   final List<Color> _colorList = [
     const Color(0xFFF2DAD3),
@@ -53,6 +57,8 @@ class _categorieHomeState extends State<categorieHome> {
   void initState() {
     initData();
   }
+
+
 
   void addTask(String name, String description, int status, DateTime deadLine){
     try {
@@ -73,14 +79,53 @@ class _categorieHomeState extends State<categorieHome> {
   }
 
   Future<void> initData() async {
-    setState(() {
-      _loading = true;
-    });
+    // setState(() {
+    //   _loading = true;
+    // });
     allTask = [];
+    _allMembersEmail = <String>[];
+    _allMembersOfTask = <Members>[];
     try{
       await FirebaseFirestore.instance.collection('task').where("mainElementId",isEqualTo: categorieId).get().then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          allTask.add(Task.withDate(result.get("name"),0,0,0,result.get("mainElementId"),false,result.get("deadLine").toDate()));
+        for (var result in querySnapshot.docs) {
+          allTask.add(Task.withDate(result.get("name"),result.get("status"),0,0,result.get("mainElementId"),false,result.get("deadLine").toDate(),result.id,result.get("description")));
+          List<dynamic> temp = result.get("members");
+
+          temp.forEach((element) async {
+            await FirebaseFirestore.instance
+                .collection('user')
+                .where("id", isEqualTo: element.toString())
+                .get()
+                .then((querySnapshot) {
+              querySnapshot.docs.forEach((result) {
+
+                _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
+
+              });
+            });
+
+
+            if (_allMembersOfTask.length == temp.length) {
+              if(_allMembersOfTask.isEmpty){
+                setState(() {
+
+                  _loading = false;
+                  print(_loading);
+                });
+              } else {
+                setState(() {
+                  _selectedMember = _allMembersOfTask.elementAt(0).email;
+                  _selectedMemberId = _allMembersOfTask.elementAt(0).id;
+                  _setMenuItems();
+                  _loading = false;
+                });
+              }
+            }
+          });
+
+        }
+        setState(() {
+          _loading = false;
         });
       });
     }catch(error){
@@ -88,62 +133,49 @@ class _categorieHomeState extends State<categorieHome> {
       print(error);
     }
 
-    _allMemberId = <String>[];
-    _allMembersOfProject = <Members>[];
-    _allMembersEmail = <String>[];
-    try {
-      await FirebaseFirestore.instance
-          .collection('project')
-          .doc(mainElementId)
-          .get()
-          .then((querySnapshot) {
-        List<dynamic> temp = querySnapshot.get("members");
-        temp.forEach((element) async {
-          await FirebaseFirestore.instance
-              .collection('user')
-              .where("id", isEqualTo: element.toString())
-              .get()
-              .then((querySnapshot) {
-            querySnapshot.docs.forEach((result) {
+    // setState(() {
+    //
+    // });
 
-              _allMembersOfProject
-                  .add(Members(result.get("email"), result.get("id")));
-              _allMembersEmail.add(result.get("email"));
-              _allMemberId.add(result.get("id"));
-
-            });
-          });
-
-
-          if (_allMembersOfProject.length == temp.length - 1) {
-            if(_allMembersOfProject.isEmpty){
-              setState(() {
-                loading = false;
-              });
-            } else {
-              setState(() {
-                _selectedMember = _allMembersOfProject.elementAt(0).email;
-                _selectedMemberId = _allMembersOfProject.elementAt(0).id;
-                loading = false;
-                _setMenuItems();
-              });
-            }
-          }
-        });
-      });
-      setState(() {});
-    } catch (error) {
-      print("error : ");
-      print(error);
-    }
 
   }
 
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
-    _allMembersEmail.forEach((element) {
-      _menuItems.add(DropdownMenuItem(value: element, child: Text(element)));
+    _allMembersOfTask.forEach((element) {
+      _menuItems.add(DropdownMenuItem(value: element.email, child: Text(element.email)));
     });
+  }
+
+  Future<void> _addUser(String email) async {
+    bool canAdd = true;
+    _allMembersEmail.forEach((element) {
+      if (email == element) {
+        canAdd = false;
+      }
+    });
+    String id = "";
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .where("email", isEqualTo: email)
+        .get()
+        .then((querySnapshot) {
+      for (var result in querySnapshot.docs) {
+        id = result.get("id");
+      }
+    });
+
+    if (canAdd) {
+      FirebaseFirestore.instance
+          .collection('task')
+          .doc(taskIdTaskPressed)
+          .update({
+        'members': FieldValue.arrayUnion([id])
+      });
+    }
+
+    initData();
   }
 
   @override
@@ -156,10 +188,38 @@ class _categorieHomeState extends State<categorieHome> {
         ),
       ) :
       allTask.isEmpty ?
-      const Center(
-          child : Text("Pas de task affectées à la catégorie.")
+      ListView.builder(
+          itemCount: 3,
+          itemBuilder: (context, i) {
+            Widget widget;
+            if(i == 0) {
+              widget = Align(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                    alignment: Alignment.topLeft,
+                    constraints: const BoxConstraints(
+                        minHeight: 1,
+                        minWidth: 1
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                        Icons.keyboard_backspace
+                    )
+                ),
+              );
+            } else if(i == 1){
+              widget = Text(
+                categorieName,
+                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20), textAlign: TextAlign.center,
+              );
+            } else {
+              widget = Center(child: Text("Pas de tâches affecté à la catégorie"),);
+            }
+            return widget;
+          }
       ) :
-
       ListView.builder(
           itemCount: allTask.length + 2,
           itemBuilder: (context, i) {
@@ -200,7 +260,13 @@ class _categorieHomeState extends State<categorieHome> {
                   child: ListTile(
                     title: Text(allTask.elementAt(i-2).name),
                     onTap: (){
-                      //  todo add action when task is pressed
+
+                      taskIdTaskPressed = allTask.elementAt(i-2).id;
+                      taskNameTaskPressed = allTask.elementAt(i-2).name;
+                      taskDescTaskPressed = allTask.elementAt(i-2).desc;
+                      taskDeadLinePressed = allTask.elementAt(i-2).deadLine;
+                      _status = allTask.elementAt(i-2).status;
+                      _showModalTaskInfo(context);
                     },
                   ),
                 ),
@@ -313,8 +379,6 @@ class _categorieHomeState extends State<categorieHome> {
                                 ),
                               ),
                               onPressed: () {
-                                print("id : " );
-                                print(categorieId);
                                 if(_nameController.text.isNotEmpty){
                                   addTask(_nameController.text.trim(),_descController.text.trim(),0,_deadLine);
                                 }
@@ -331,6 +395,331 @@ class _categorieHomeState extends State<categorieHome> {
 
               ),
 
+            ),
+          );
+        });
+  }
+
+  Future<void> _showModalTaskInfo(context) async{
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 1.5,
+              child: Scaffold(
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: Column(children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Nom de la tâche : " + taskNameTaskPressed),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Description : " + taskDescTaskPressed),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Date de fin : " + taskDeadLinePressed.year.toString() + "/" + taskDeadLinePressed.month.toString() + "/" + taskDeadLinePressed.day.toString()
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 4.5,
+                        child: Column(
+                          children: [
+                            RadioListTile(
+                                title: const Text('Pas commencé'),
+                                value: 0,
+                                groupValue: _status,
+                                onChanged: (value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({
+                                    'status' : _status
+                                  });
+                                  initData();
+                                  setState(() {
+
+                                  });
+                                }),
+                            RadioListTile(
+                                title: const Text('Commencé'),
+                                value: 1,
+                                groupValue: _status,
+                                onChanged: (value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({
+                                    'status' : _status
+                                  });
+                                  initData();
+                                  setState(() {
+                                  });
+                                }),
+                            RadioListTile(
+                                title: const Text('Fini'),
+                                value: 2,
+                                groupValue: _status,
+                                onChanged: (value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({
+                                    'status' : _status
+                                  });
+
+                                  initData();
+                                  setState(() {
+
+                                  });
+                                }
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height >
+                            MediaQuery.of(context).size.width
+                            ? MediaQuery.of(context).size.width / 4.8
+                            : MediaQuery.of(context).size.height / 4.8,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _allMembersOfTask.length + 2,
+                            itemBuilder: (BuildContext context, int i) {
+                              Widget circle;
+                              if (i == _allMembersOfTask.length) {
+                                circle = CircleAvatar(
+                                  backgroundColor: const Color(0xFF92DEB1),
+                                  radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.remove),
+                                    onPressed: () {
+                                      setState(() {
+                                        _showModalRemoveMember(context);
+                                      });
+                                    },
+                                  ),
+                                );
+                              } else if (i == _allMembersOfTask.length + 1) {
+                                circle = CircleAvatar(
+                                  backgroundColor: const Color(0xFFFFC6C6),
+                                  radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {
+                                      _showModalAddUser(context);
+                                    },
+                                  ),
+                                );
+                              } else {
+                                circle = CircleAvatar(
+                                  backgroundColor: _colorList.elementAt(i%4),
+                                  radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: Text(_allMembersOfTask
+                                      .elementAt(i)
+                                      .email
+                                      .characters
+                                      .characterAt(0)
+                                      .toString()
+                                      .toUpperCase()),
+                                );
+                              }
+                              return circle;
+                            }),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> _showModalRemoveMember(context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Dialog(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: const Text("Suppression",
+                            style:
+                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                        automaticallyImplyLeading: false,
+                        backgroundColor: const Color(0xFF92DEB1),
+                      ),
+                      body: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Center(
+                          child: Column(children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                child: DropdownButton<String>(
+                                  value: _selectedMember,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                  onChanged: (String value) {
+                                    setState(() {
+                                      _selectedMember = value;
+                                      for (var element in _allMembersOfTask) {
+                                        if (element.email == value) {
+                                          _selectedMemberId = element.id;
+                                        }
+                                      }
+                                    });
+                                  },
+                                  items: _menuItems,
+                                )),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(
+                                    const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (_selectedMember != _auth.currentUser.email) {
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({
+                                    "members": FieldValue.arrayRemove(
+                                        [_selectedMemberId])
+                                  });
+                                }
+                                Navigator.pop(context, false);
+                                initData();
+                                setState(() {});
+                              },
+                              child: const Text(
+                                'Valider',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              });
+        });
+  }
+
+  _showModalAddUser(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 3,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text("Ajout",
+                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                  automaticallyImplyLeading: false,
+                  backgroundColor: const Color(0xFF92DEB1),
+                ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: Column(children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: TextField(
+                          controller: _userToAdd,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                            filled: true,
+                            hintStyle: TextStyle(color: Colors.grey),
+                            hintText: "Email de l'utilisateur",
+                            fillColor: Colors.white70,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFFFDDB6)),
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (_userToAdd.text.isNotEmpty) {
+                              _addUser(_userToAdd.text.toString().trim());
+                            }
+                          });
+
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Valider',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
             ),
           );
         });
