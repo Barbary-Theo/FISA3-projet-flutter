@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/projectHome.dart';
-import 'package:projetmobiles6/projectOrTodoSettings.dart';
+import 'package:projetmobiles6/projectSettings.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projectMain extends StatefulWidget {
@@ -23,10 +23,9 @@ class _projectMainState extends State<projectMain> {
 
   @override
   void initState() {
-
     _widgetOptions = <Widget>[
-      projectHome(mainElementId : mainElementId),
-      projetOrToDoSettings(mainElementId : mainElementId),
+      projectHome(mainElementId: mainElementId),
+      projetSettings(mainElementId: mainElementId),
     ];
   }
 
