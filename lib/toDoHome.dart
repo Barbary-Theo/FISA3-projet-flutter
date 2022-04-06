@@ -68,14 +68,36 @@ class _toDoHomeState extends State<toDoHome> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         color: const Color(0xFFFFDDB6),
-                        child: Center(
-                            child: Text(allTache.elementAt(i).name.toString())
-                        ),
+                        child: Stack(
+                           children: [
+                              Center(child: Text(allTache.elementAt(i).name.toString())),
+                              Checkbox(
+                                checkColor: Colors.white,
+                                value: allTache.elementAt(i).validate,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    print("to change detected");
+                                  });
+                                },
+                              ),
+                            ],
+                        )
                       )
                   ),
                   onVerticalDragEnd: (DragEndDetails dd){
-                    print("oui");
-                    //here save
+                    FirebaseFirestore.instance.collection("task").where(
+                        "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                      querySnapshot.docs.forEach((result) {
+                        Map mapX = <String, double>{};
+                        Map mapY = <String, double>{};
+                        mapX.putIfAbsent("x", () => allCoordinate.elementAt(i)[0]);
+                        mapY.putIfAbsent("y", () => allCoordinate.elementAt(i)[1]);
+                        FirebaseFirestore.instance.collection("task")
+                            .doc(result.id).update(mapX);
+                        FirebaseFirestore.instance.collection("task")
+                            .doc(result.id).update(mapY);
+                      });
+                    });
                   },
                   onVerticalDragUpdate: (DragUpdateDetails dd) {
                     setState(() {
@@ -118,7 +140,7 @@ class _toDoHomeState extends State<toDoHome> {
     try {
       FirebaseFirestore.instance
           .collection("task")
-          .add({'name': name, 'mainElementId': mainElementId, 'x': 0, 'y': 0});
+          .add({'name': name, 'mainElementId': mainElementId, 'x': 0.0, 'y': 0.0, 'validate': false});
     } catch (error) {
       print(error);
     }
@@ -135,7 +157,7 @@ class _toDoHomeState extends State<toDoHome> {
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          allTache.add(Task(result.get("name"), 0, result.get("x"), result.get("y"), result.get("mainElementId")));
+          allTache.add(Task(result.get("name"), 0, result.get("x"), result.get("y"), result.get("mainElementId"), result.get("validate")));
         });
       });
       await displayTask();
