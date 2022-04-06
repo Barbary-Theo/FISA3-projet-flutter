@@ -6,21 +6,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/model/Members.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
-class projetOrToDoSettings extends StatefulWidget {
+class projetSettings extends StatefulWidget {
   final String mainElementId;
 
-  const projetOrToDoSettings({Key key, this.mainElementId}) : super(key: key);
+  const projetSettings({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<projetOrToDoSettings> createState() =>
-      _projetOrToDoSettingsState(mainElementId: mainElementId);
+  State<projetSettings> createState() =>
+      _projetSettingsState(mainElementId: mainElementId);
 }
 
-class _projetOrToDoSettingsState extends State<projetOrToDoSettings> {
+class _projetSettingsState extends State<projetSettings> {
   final String mainElementId;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  _projetOrToDoSettingsState({this.mainElementId});
+  _projetSettingsState({this.mainElementId});
 
   String _projectName = "";
   String _projectDesc = "";

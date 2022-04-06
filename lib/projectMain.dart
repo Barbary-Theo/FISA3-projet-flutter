@@ -26,7 +26,7 @@ class _projectMainState extends State<projectMain> {
 
     _widgetOptions = <Widget>[
       projectHome(mainElementId : mainElementId),
-      projetOrToDoSettings(mainElementId : mainElementId),
+      projetSettings(mainElementId : mainElementId),
     ];
   }
 

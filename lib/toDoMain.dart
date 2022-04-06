@@ -26,7 +26,7 @@ class _toDoMainState extends State<toDoMain> {
   void initState() {
     _widgetOptions = <Widget>[
       toDoHome(mainElementId: mainElementId),
-      projetOrToDoSettings(),
+      projetSettings(),
     ];
   }
 
