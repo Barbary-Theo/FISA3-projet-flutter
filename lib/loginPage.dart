@@ -29,7 +29,7 @@ class _LoginPage extends State<LoginPage> {
   void _goToProjectOrToDo() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-            builder: (context) => projetOrToDo()
+            builder: (context) => projet()
         ),
             (route) => false
     );

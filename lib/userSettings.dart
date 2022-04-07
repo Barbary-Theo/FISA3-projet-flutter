@@ -52,7 +52,7 @@ class _userSettingsState extends State<userSettings>{
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (context) => projetOrToDo()
+                            builder: (context) => projet()
                         ),
                             (route) => false
                     );
