@@ -191,80 +191,100 @@ class _projectHomeState extends State<projectHome>{
     );
   }
 
-
-  _showModalCreateCategorie(context) {
+  Future<void> _showModalCreateCategorie(context) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: Container(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Création",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child:  Column(
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            child: TextField(
-                              controller: categorieNameController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
-                                ),
-                                filled: true,
-                                hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Nom de la catégorie",
-                                fillColor: Colors.white70,
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                    contentPadding: EdgeInsets.only(bottom: 10.0),
+                    content: SizedBox(
+                        height: MediaQuery.of(context).size.height / 3.5,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    InkWell(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            top: 10.0, bottom: 10.0),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF92DEB1),
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16.0),
+                                              topRight: Radius.circular(16.0)),
+                                        ),
+                                        child: Text(
+                                          "Ajout d'un catégorie",
+                                          style: TextStyle(
+                                              color: Color(0xFF696868),
+                                              fontSize: 25),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 20,
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color(0xFFFFDDB6)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: TextField(
+                                  controller: categorieNameController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                    ),
+                                    filled: true,
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: "Nom de la catégorie",
+                                    fillColor: Colors.white70,
+                                  ),
                                 ),
                               ),
-                            ),
-                            onPressed: () {
-                              print(categorieNameController.text);
-                              if(categorieNameController.text.isNotEmpty){
-                                addCategorie(categorieNameController.text.toString().trim());
-                              }
-                              Navigator.pop(context, false);
-                            },
-                            child: const Text(
-                              'Valider',
-                              style: TextStyle(color: Colors.black),
-                            ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 25,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.height / 5,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(18.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    print(categorieNameController.text);
+                                    if(categorieNameController.text.isNotEmpty){
+                                      addCategorie(categorieNameController.text.toString().trim());
+                                    }
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text(
+                                    'Valider',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ]),
-                  ),
-                )
-
-              ),
-
-            ),
-          );
+                        )));
+              });
         });
   }
+
+
 
 }

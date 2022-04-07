@@ -57,7 +57,7 @@ class _toDoSettings extends State<toDoSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body:  Column(
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height / 10,
@@ -153,68 +153,64 @@ class _toDoSettings extends State<toDoSettings> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Confirmation",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFDDB6)),
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              contentPadding: EdgeInsets.only(top: 10.0),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+                child: Center(
+                    child: Column(
+                      children: [
+                        Text("Confirmation",
+                            style:
+                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color(0xFFFFDDB6)),
+                            shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
                             ),
                           ),
-                        ),
-                        onPressed: () {
-                          _deleteToDo();
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text(
-                          'Oui',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFC6C6)),
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
+                          onPressed: () {
+                            _deleteToDo();
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text(
+                            'Oui',
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text(
-                          'Non',
-                          style: TextStyle(color: Colors.black),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color(0xFFFFC6C6)),
+                            shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text(
+                            'Non',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
-                      ),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-          );
+                      ],
+                    )),
+              ));
         });
   }
+
 }

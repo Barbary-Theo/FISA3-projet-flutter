@@ -349,111 +349,131 @@ class _categorieHomeState extends State<categorieHome> {
     );
   }
 
-  _showModalCreateTask(context) {
+  Future<void> _showModalCreateTask(context) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 1.8,
-              child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Création",
-                        style:
-                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                    automaticallyImplyLeading: false,
-                    backgroundColor: const Color(0xFF92DEB1),
-                  ),
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                content: SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.8,
                     child: Center(
-                      child: Column(children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: TextField(
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
+                      child: Column(
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF92DEB1),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
+                                    ),
+                                    child: Text(
+                                      "Ajout d'une tâche",
+                                      style: TextStyle(
+                                          color: Color(0xFF696868),
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: TextField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Nom de la tâche",
+                                fillColor: Colors.white70,
                               ),
-                              filled: true,
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Nom de la tâche",
-                              fillColor: Colors.white70,
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 60,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          height: MediaQuery.of(context).size.height / 5,
-                          child: TextField(
-                            controller: _descController,
-                            maxLines: 10,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 60,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: TextField(
+                              controller: _descController,
+                              maxLines: 10,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Description de la tâche",
+                                fillColor: Colors.white70,
                               ),
-                              filled: true,
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Description de la tâche",
-                              fillColor: Colors.white70,
                             ),
                           ),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              DatePicker.showDatePicker(context,
-                                  showTitleActions: true,
-                                  minTime: DateTime.now(), onChanged: (date) {
-                              }, onConfirm: (date) {
-                                _deadLine = date;
+                          TextButton(
+                              onPressed: () {
+                                DatePicker.showDatePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime.now(), onChanged: (date) {
+                                  print('change $date');
+                                }, onConfirm: (date) {
+                                  _deadLine = date;
+                                },
+                                    currentTime: DateTime.now(),
+                                    locale: LocaleType.en);
                               },
-                                  currentTime: DateTime.now(),
-                                  locale: LocaleType.en);
+                              child: const Text(
+                                'Selectionner une DeadLine',
+                                style: TextStyle(color: Colors.blue),
+                              )),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 40,
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  const Color(0xFFFFDDB6)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_nameController.text.isNotEmpty) {
+                                addTask(_nameController.text.trim(),
+                                    _descController.text.trim(), 0, _deadLine);
+                              }
+                              Navigator.pop(context, false);
                             },
                             child: const Text(
-                              'Selectionner une DeadLine',
-                              style: TextStyle(color: Colors.blue),
-                            )),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 40,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFDDB6)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
+                              'Valider',
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
-                          onPressed: () {
-                            if (_nameController.text.isNotEmpty) {
-                              addTask(_nameController.text.trim(),
-                                  _descController.text.trim(), 0, _deadLine);
-                            }
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Valider',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ]),
-                    ),
-                  )),
-            ),
-          );
+                        ],
+                      ),
+                    )));
+          });
         });
   }
 
@@ -639,91 +659,103 @@ class _categorieHomeState extends State<categorieHome> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-              builder: (BuildContext contextOfDialog, StateSetter setState) {
-            return Dialog(
-              child: SizedBox(
-                height: MediaQuery.of(contextOfDialog).size.height / 3,
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Suppression",
-                        style:
-                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                    automaticallyImplyLeading: false,
-                    backgroundColor: const Color(0xFF92DEB1),
-                  ),
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child: Column(children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.2,
-                            child: DropdownButton<String>(
-                              value: _selectedMember,
-                              icon: const Icon(Icons.keyboard_arrow_down),
-                              onChanged: (String value) {
-                                setState(() {
-                                  _selectedMember = value;
-                                  for (var element in _allMembersOfTask) {
-                                    if (element.email == value) {
-                                      _selectedMemberId = element.id;
-                                    }
-                                  }
-                                });
-                              },
-                              items: _menuItems,
-                            )),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFDDB6)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
+              builder: (BuildContext context, StateSetter setState) {
+                return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                    contentPadding: EdgeInsets.only(bottom: 10.0),
+                    content: SizedBox(
+                        height: MediaQuery.of(context).size.height / 3.5,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    InkWell(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            top: 10.0, bottom: 10.0),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFC6C6),
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(16.0),
+                                              topRight: Radius.circular(16.0)),
+                                        ),
+                                        child: Text(
+                                          "Suppression",
+                                          style: TextStyle(
+                                              color: Color(0xFF696868),
+                                              fontSize: 25),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 20,
                               ),
-                            ),
+                              SizedBox(
+                                  child: DropdownButton<String>(
+                                    value: _selectedMember,
+                                    icon: const Icon(Icons.keyboard_arrow_down),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        _selectedMember = value;
+                                        for (var element in _allMembersOfTask) {
+                                          if (element.email == value) {
+                                            _selectedMemberId = element.id;
+                                          }
+                                        }
+                                      });
+                                    },
+                                    items: _menuItems,
+                                  )),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 25,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.height / 5,
+                                child:ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(18.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    Navigator.pop(context, false);
+
+                                    if (_selectedMember != _auth.currentUser.email) {
+                                      await FirebaseFirestore.instance
+                                          .collection('task')
+                                          .doc(taskIdTaskPressed)
+                                          .update({
+                                        "members":
+                                        FieldValue.arrayRemove([_selectedMemberId])
+                                      });
+                                      Navigator.pop(context, false);
+                                      await initData();
+                                      openShowTaskInfoModal();
+                                    }
+
+                                    // setState(() {});
+                                  },
+                                  child: const Text(
+                                    'Valider',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onPressed: () async {
-                            Navigator.pop(context, false);
-                            print(_selectedMemberId);
-                            print(_selectedMember);
-
-                            if (_selectedMember != _auth.currentUser.email) {
-                              await FirebaseFirestore.instance
-                                  .collection('task')
-                                  .doc(taskIdTaskPressed)
-                                  .update({
-                                "members":
-                                    FieldValue.arrayRemove([_selectedMemberId])
-                              });
-                              // Navigator.pop(context, false);
-                              await initData();
-                              await setAllUserOfTask();
-                              updateDialog();
-
-                              // openShowTaskInfoModal();
-                            }
-
-                            // setState(() {});
-                          },
-                          child: const Text(
-                            'Valider',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          });
+                        )));
+              });
         });
   }
 
@@ -731,70 +763,97 @@ class _categorieHomeState extends State<categorieHome> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Ajout",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: TextField(
-                          controller: _userToAdd,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
-                            ),
-                            filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Email de l'utilisateur",
-                            fillColor: Colors.white70,
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                content: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF92DEB1),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
+                                    ),
+                                    child: Text(
+                                      "Affecter un membre",
+                                      style: TextStyle(
+                                          color: Color(0xFF696868),
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFDDB6)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: TextField(
+                              controller: _userToAdd,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Email de l'utilisateur",
+                                fillColor: Colors.white70,
+                              ),
                             ),
                           ),
-                        ),
-                        onPressed: () async {
-                          Navigator.pop(context, false);
-                          if (_userToAdd.text.isNotEmpty) {
-                            await _addUser(_userToAdd.text.toString().trim());
-                          }
-                        },
-                        child: const Text(
-                          'Valider',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.height / 5,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Navigator.pop(context, false);
+                                Navigator.pop(context, false);
+                                if (_userToAdd.text.isNotEmpty) {
+                                  print("ajout user");
+                                  await _addUser(
+                                      _userToAdd.text.toString().trim());
+                                  print("fin ajout");
+                                }
+                              },
+                              child: const Text(
+                                'Valider',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-          );
+                    )));
+          });
         });
   }
 }

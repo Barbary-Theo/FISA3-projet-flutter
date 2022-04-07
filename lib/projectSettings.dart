@@ -140,11 +140,14 @@ class _projetSettingsState extends State<projetSettings> {
 
   Future<void> _deleteProject() async {
     try {
-
-      await FirebaseFirestore.instance.collection("categorie").where(
-          "project", isEqualTo: mainElementId).get().then((querySnapshot) {
+      await FirebaseFirestore.instance
+          .collection("categorie")
+          .where("project", isEqualTo: mainElementId)
+          .get()
+          .then((querySnapshot) {
         for (var result in querySnapshot.docs) {
-          FirebaseFirestore.instance.collection("categorie")
+          FirebaseFirestore.instance
+              .collection("categorie")
               .doc(result.id)
               .delete();
         }
@@ -158,8 +161,7 @@ class _projetSettingsState extends State<projetSettings> {
       //Todo : Remove all task link to categorie
 
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => projectMain()),
-              (route) => false);
+          MaterialPageRoute(builder: (context) => projet()), (route) => false);
     } catch (e) {
       print("error : ");
       print(e);
@@ -171,134 +173,134 @@ class _projetSettingsState extends State<projetSettings> {
     return Scaffold(
         body: loading
             ? const Center(
-          child: SpinKitChasingDots(
-            color: Color(0xFFFFDDB6),
-            size: 50.0,
-          ),
-        )
-            : Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 10,
-            ),
-            const Center(
-              child: Text(
-                "Nom du projet",
-                style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(
-                _projectName,
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            const Center(
-              child: Text(
-                "Description du projet",
-                style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(_projectDesc),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color(0xFFFFC6C6)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
+                child: SpinKitChasingDots(
+                  color: Color(0xFFFFDDB6),
+                  size: 50.0,
                 ),
-              ),
-              onPressed: () {
-                _sureToDelete(context);
-              },
-              child: const Text(
-                'Supprimer le projet',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-            ),
-            const Divider(color: Colors.black, height: 1),
-            SizedBox(
-              height: MediaQuery.of(context).size.height >
-                  MediaQuery.of(context).size.width
-                  ? MediaQuery.of(context).size.width / 4.8
-                  : MediaQuery.of(context).size.height / 4.8,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _allMembersOfProject.length + 2,
-                  itemBuilder: (BuildContext context, int i) {
-                    Widget circle;
-                    if (i == _allMembersOfProject.length) {
-                      circle = CircleAvatar(
-                        backgroundColor: const Color(0xFF92DEB1),
-                        radius: MediaQuery.of(context).size.height >
-                            MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              _showModalRemoveMember(context);
-                            });
-                          },
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 10,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Nom du projet",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  Center(
+                    child: Text(
+                      _projectName,
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Description du projet",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  Center(
+                    child: Text(_projectDesc),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0xFFFFC6C6)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
                         ),
-                      );
-                    } else if (i == _allMembersOfProject.length + 1) {
-                      circle = CircleAvatar(
-                        backgroundColor: const Color(0xFFFFC6C6),
-                        radius: MediaQuery.of(context).size.height >
+                      ),
+                    ),
+                    onPressed: () {
+                      _sureToDelete(context);
+                    },
+                    child: const Text(
+                      'Supprimer le projet',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 4,
+                  ),
+                  const Divider(color: Colors.black, height: 1),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height >
                             MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            _showModalAddUser(context);
-                          },
-                        ),
-                      );
-                    } else {
-                      circle = CircleAvatar(
-                        backgroundColor: _colorList.elementAt(i % 4),
-                        radius: MediaQuery.of(context).size.height >
-                            MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: Text(_allMembersOfProject
-                            .elementAt(i)
-                            .email
-                            .characters
-                            .characterAt(0)
-                            .toString()
-                            .toUpperCase()),
-                      );
-                    }
-                    return circle;
-                  }),
-            ),
-            const Divider(color: Colors.black, height: 1),
-          ],
-        ));
+                        ? MediaQuery.of(context).size.width / 4.8
+                        : MediaQuery.of(context).size.height / 4.8,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _allMembersOfProject.length + 2,
+                        itemBuilder: (BuildContext context, int i) {
+                          Widget circle;
+                          if (i == _allMembersOfProject.length) {
+                            circle = CircleAvatar(
+                              backgroundColor: const Color(0xFF92DEB1),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    _showModalRemoveMember(context);
+                                  });
+                                },
+                              ),
+                            );
+                          } else if (i == _allMembersOfProject.length + 1) {
+                            circle = CircleAvatar(
+                              backgroundColor: const Color(0xFFFFC6C6),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  _showModalAddUser(context);
+                                },
+                              ),
+                            );
+                          } else {
+                            circle = CircleAvatar(
+                              backgroundColor: _colorList.elementAt(i % 4),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: Text(_allMembersOfProject
+                                  .elementAt(i)
+                                  .email
+                                  .characters
+                                  .characterAt(0)
+                                  .toString()
+                                  .toUpperCase()),
+                            );
+                          }
+                          return circle;
+                        }),
+                  ),
+                  const Divider(color: Colors.black, height: 1),
+                ],
+              ));
   }
 
   Future<void> _showModalRemoveMember(context) async {
@@ -307,48 +309,70 @@ class _projetSettingsState extends State<projetSettings> {
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return Dialog(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Scaffold(
-                      appBar: AppBar(
-                        title: const Text("Suppression",
-                            style:
-                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                        automaticallyImplyLeading: false,
-                        backgroundColor: const Color(0xFF92DEB1),
-                      ),
-                      body: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Center(
-                          child: Column(children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                child: DropdownButton<String>(
-                                  value: _selectedMember,
-                                  icon: const Icon(Icons.keyboard_arrow_down),
-                                  onChanged: (String value) {
-                                    setState(() {
-                                      _selectedMember = value;
-                                      for (var element in _allMembersOfProject) {
-                                        if (element.email == value) {
-                                          _selectedMemberId = element.id;
-                                        }
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                content: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFC6C6),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
+                                    ),
+                                    child: Text(
+                                      "Suppression",
+                                      style: TextStyle(
+                                          color: Color(0xFF696868),
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          SizedBox(
+                              child: DropdownButton<String>(
+                                value: _selectedMember,
+                                icon: const Icon(Icons.keyboard_arrow_down),
+                                onChanged: (String value) {
+                                  setState(() {
+                                    _selectedMember = value;
+                                    for (var element in _allMembersOfProject) {
+                                      if (element.email == value) {
+                                        _selectedMemberId = element.id;
                                       }
-                                    });
-                                  },
-                                  items: _menuItems,
-                                )),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            ElevatedButton(
+                                    }
+                                  });
+                                },
+                                items: _menuItems,
+                              )),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.height / 5,
+                            child: ElevatedButton(
+                              child: Text("Valider"),
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    const Color(0xFFFFDDB6)),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                  const Color(0xFFFFDDB6),
+                                ),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -357,102 +381,120 @@ class _projetSettingsState extends State<projetSettings> {
                                 ),
                               ),
                               onPressed: () async {
-                                if (_selectedMember != _auth.currentUser.email) {
+                                if (_selectedMember !=
+                                    _auth.currentUser.email) {
                                   await FirebaseFirestore.instance
                                       .collection('project')
                                       .doc(mainElementId)
                                       .update({
-                                    "members":
-                                    FieldValue.arrayRemove([_selectedMemberId])
+                                    "members": FieldValue.arrayRemove(
+                                        [_selectedMemberId])
                                   });
                                 }
                                 Navigator.pop(context, false);
                                 _initializeProjectData();
                                 setState(() {});
                               },
+                            ),
+                          ),
+                        ],
+                      ),
+                    )));
+          });
+        });
+  }
+
+  Future<void> _showModalAddUser(context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                content: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFF92DEB1),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
+                                    ),
+                                    child: Text(
+                                      "Ajout",
+                                      style: TextStyle(
+                                          color: Color(0xFF696868),
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: TextField(
+                              controller: _userToAdd,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Email de l'utilisateur",
+                                fillColor: Colors.white70,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.height / 5,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (_userToAdd.text.isNotEmpty) {
+                                  _addUser(_userToAdd.text.toString().trim());
+                                }
+                                Navigator.pop(context, false);
+                              },
                               child: const Text(
                                 'Valider',
                                 style: TextStyle(color: Colors.black),
                               ),
                             ),
-                          ]),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              });
-        });
-  }
-
-  _showModalAddUser(context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Ajout",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: TextField(
-                          controller: _userToAdd,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(20.0)),
-                            ),
-                            filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Email de l'utilisateur",
-                            fillColor: Colors.white70,
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFDDB6)),
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          if (_userToAdd.text.isNotEmpty) {
-                            _addUser(_userToAdd.text.toString().trim());
-                          }
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text(
-                          'Valider',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-          );
+                    )));
+          });
         });
   }
 
@@ -460,68 +502,63 @@ class _projetSettingsState extends State<projetSettings> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Confirmation",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFDDB6)),
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              contentPadding: EdgeInsets.only(top: 10.0),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text("Confirmation",
+                        style:
+                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 25,
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFFFFDDB6)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                        onPressed: () {
-                          _deleteProject();
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text(
-                          'Oui',
-                          style: TextStyle(color: Colors.black),
-                        ),
                       ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFC6C6)),
-                          shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
+                      onPressed: () {
+                        _deleteProject();
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text(
+                        'Oui',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFFFFC6C6)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context, false);
-                        },
-                        child: const Text(
-                          'Non',
-                          style: TextStyle(color: Colors.black),
-                        ),
                       ),
-                    ]),
-                  ),
-                ),
-              ),
-            ),
-          );
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text(
+                        'Non',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                )),
+              ));
         });
   }
 }
