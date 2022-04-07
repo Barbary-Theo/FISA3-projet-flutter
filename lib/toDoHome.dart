@@ -3,11 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Categorie.dart';
-import 'package:projetmobiles6/model/Project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/projetOrToDo.dart';
 
 import 'model/Task.dart';
 
@@ -30,10 +27,10 @@ class _toDoHomeState extends State<toDoHome> {
   bool loading = true;
 
   List<Color> colorList = [
-    Color(0xFFD7F2D3),
-    Color(0xFFD8D2ED),
-    Color(0xFFFFC6C6),
-    Color(0xFFFFDDB6),
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFC6C6),
+    const Color(0xFFFFDDB6),
   ];
 
   _toDoHomeState({this.mainElementId});
@@ -183,16 +180,15 @@ class _toDoHomeState extends State<toDoHome> {
 
   @override
   void initState() {
-    fillList();
   }
 
   void research(String search) {
-    researchTache = [];
-    allTache.forEach((element) {
+    researchCategorie = [];
+    for (var element in allCategorie) {
       if (element.name.contains(search)) {
         researchTache.add(element);
       }
-    });
+    }
 
     setState(() {});
   }
@@ -249,7 +245,7 @@ class _toDoHomeState extends State<toDoHome> {
           actions: [
             isSearching
                 ? Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -263,7 +259,7 @@ class _toDoHomeState extends State<toDoHome> {
                       ),
                     ))
                 : Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -303,14 +299,14 @@ class _toDoHomeState extends State<toDoHome> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height / 3,
               child: Scaffold(
                 appBar: AppBar(
                   title: const Text("Création",
                       style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
                   automaticallyImplyLeading: false,
-                  backgroundColor: Color(0xFF92DEB1),
+                  backgroundColor: const Color(0xFF92DEB1),
                 ),
                 body: Container(
                   child: SingleChildScrollView(
@@ -334,20 +330,24 @@ class _toDoHomeState extends State<toDoHome> {
                               hintText: "Nom de la tâche",
                               fillColor: Colors.white70,
                             ),
+                            filled: true,
+                            hintStyle: TextStyle(color: Colors.grey),
+                            hintText: "Nom de la tâche",
+                            fillColor: Colors.white70,
                           ),
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color(0xFFFFDDB6)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFFFDDB6)),
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                             ),
                           ),
                           onPressed: () {
@@ -362,8 +362,19 @@ class _toDoHomeState extends State<toDoHome> {
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
-                      ]),
-                    ),
+                        onPressed: () {
+                          if (categorieName.text.isNotEmpty) {
+                            addCategorie(
+                                categorieName.text.toString().trim());
+                          }
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Valider',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ]),
                   ),
                 ),
               ),

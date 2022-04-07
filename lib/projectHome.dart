@@ -7,12 +7,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
+import 'categorieHome.dart';
+
 class projectHome extends StatefulWidget{
 
   final String mainElementId;
 
   const projectHome({Key key, this.mainElementId}) : super(key: key);
-
 
   @override
   State<projectHome> createState() => _projectHomeState(mainElementId: mainElementId);
@@ -24,13 +25,19 @@ class _projectHomeState extends State<projectHome>{
 
   bool isSearching = false;
   final String mainElementId;
-  final TextEditingController categorieName = TextEditingController();
+  final TextEditingController categorieNameController = TextEditingController();
   List<Categorie> allCategorie = <Categorie>[];
   List<Categorie> researchCategorie = <Categorie>[];
   String errorText = "";
   bool loading = true;
+  String categorieId = "";
+  String categorieName = "";
 
-  final List<Color> _colorList = [Color(0xFFD7F2D3),Color(0xFFD8D2ED),Color(0xFFFFC6C6),Color(0xFFFFDDB6),];
+  final List<Color> _colorList = [
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFC6C6),
+    const Color(0xFFFFDDB6),];
 
   _projectHomeState({this.mainElementId});
 
@@ -68,12 +75,14 @@ class _projectHomeState extends State<projectHome>{
   }
 
   Future<void> fillList() async {
-
+    setState(() {
+      loading = true;
+    });
     allCategorie = [];
     try{
       await FirebaseFirestore.instance.collection('categorie').where("project",isEqualTo: mainElementId).get().then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          allCategorie.add(Categorie([], result.get("name")));
+          allCategorie.add(Categorie([], result.get("name"),result.id));
         });
       });
 
@@ -147,19 +156,25 @@ class _projectHomeState extends State<projectHome>{
             return SizedBox(
               height: MediaQuery.of(context).size.width / 4.5,
               child: Card(
-                  margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
-                  color: _colorList[i%4],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  shadowColor: Colors.black,
-                  elevation: 5,
-                  child: ListTile(
-                    title: Text(researchCategorie.elementAt(i).name),
-                    onTap: (){
-                      //  todo add action when categorie is pressed
-                    },
-                  ),
+                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4),
+                color: _colorList[i%4],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: Colors.black,
+                elevation: 5,
+                child: ListTile(
+                  title: Text(researchCategorie.elementAt(i).name),
+                  onTap: (){
+                    categorieId = researchCategorie.elementAt(i).id;
+                    categorieName = researchCategorie.elementAt(i).name;
+                    print("cat id avant : ");
+                    print(categorieId);
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => categorieHome(categorieId: categorieId, categorieName: categorieName,mainElementId: mainElementId,)),
+                    );
+                  },
+                ),
               ),
             );
           }
@@ -189,63 +204,61 @@ class _projectHomeState extends State<projectHome>{
                   title: const Text("Création",
                       style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
                   automaticallyImplyLeading: false,
-                  backgroundColor: Color(0xFF92DEB1),
+                  backgroundColor: const Color(0xFF92DEB1),
                 ),
-                body: Container(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child:  Column(
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child:  Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: TextField(
+                              controller: categorieNameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                filled: true,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: "Nom de la catégorie",
+                                fillColor: Colors.white70,
+                              ),
                             ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              child: TextField(
-                                controller: categorieName,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Nom de la catégorie",
-                                  fillColor: Colors.white70,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  const Color(0xFFFFDDB6)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
+                            onPressed: () {
+                              print(categorieNameController.text);
+                              if(categorieNameController.text.isNotEmpty){
+                                addCategorie(categorieNameController.text.toString().trim());
+                              }
+                              Navigator.pop(context, false);
+                            },
+                            child: const Text(
+                              'Valider',
+                              style: TextStyle(color: Colors.black),
                             ),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(
-                                    Color(0xFFFFDDB6)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                print(categorieName.text);
-                                if(!categorieName.text.isEmpty){
-                                  addCategorie(categorieName.text.toString().trim());
-                                }
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text(
-                                'Valider',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ]),
-                    ),
+                          ),
+                        ]),
                   ),
-                ),
+                )
 
               ),
 
