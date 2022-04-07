@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'loginPage.dart';
 import 'splashScreen.dart';
 import 'signInPage.dart';
@@ -10,6 +11,10 @@ int selectedIndex = 0;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+  ]);
+
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyAaTcKPegjcZjTZZtlAuewGN40nXBJF-jA",
@@ -17,7 +22,7 @@ Future<void> main() async {
       messagingSenderId: "XXX",
       projectId: "projetmobiles6",
     ),
-    name: "projetmobiles6"
+    //name: "projetmobiles6"
   );
   runApp(const MyApp());
 }
