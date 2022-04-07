@@ -6,23 +6,22 @@ import 'package:projetmobiles6/model/Categorie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'model/Task.dart';
-
 class toDoHome extends StatefulWidget {
   final String mainElementId;
 
   const toDoHome({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<toDoHome> createState() => _toDoHomeState(mainElementId: mainElementId);
+  State<toDoHome> createState() =>
+      _toDoHomeState(mainElementId: mainElementId);
 }
 
 class _toDoHomeState extends State<toDoHome> {
   bool isSearching = false;
   final String mainElementId;
-  final TextEditingController tacheName = TextEditingController();
-  List<Task> allTache = <Task>[];
-  List<Task> researchTache = <Task>[];
+  final TextEditingController categorieName = TextEditingController();
+  List<Categorie> allCategorie = <Categorie>[];
+  List<Categorie> researchCategorie = <Categorie>[];
   String errorText = "";
   bool loading = true;
 
@@ -36,22 +35,7 @@ class _toDoHomeState extends State<toDoHome> {
   _toDoHomeState({this.mainElementId});
 
   List<Widget> posiList = <Widget>[];
-  List<Color> allColor = <Color>[];
-  Widget allTaskWidget;
-
-  List<List<double>> allCoordinate = [];
-
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Colors.green;
-  }
+  Stack allTaskWidget;
 
   void setAllPositionned() {
     posiList = [];
@@ -192,9 +176,9 @@ class _toDoHomeState extends State<toDoHome> {
     }
   }
 
-  displayTask() {
+  displayTask () {
     setAllPositionned();
-    allTaskWidget = Stack(
+    allTaskWidget =  Stack(
       children: posiList,
     );
   }
@@ -204,7 +188,7 @@ class _toDoHomeState extends State<toDoHome> {
     fillList();
   }
 
-  void addTache(String name) {
+  void addCategorie(String name) {
     try {
       FirebaseFirestore.instance.collection("task").add({
         'name': name,
