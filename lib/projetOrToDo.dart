@@ -87,11 +87,11 @@ class _projetState extends State<projet> {
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          allMainElementItem.add(ToDo(result.get("name"), result.get("description"),result.id));
+          allMainElementItem.add(
+              ToDo(result.get("name"), result.get("description"), result.id));
         });
       });
-
-    }catch(error){
+    } catch (error) {
       print(error);
     }
 
@@ -155,56 +155,59 @@ class _projetState extends State<projet> {
                     Icons.settings,
                     size: 26.0,
                   ),
-                )
-            ),
-          ]
-      ),
-      body : loading ? const Center(
-          child : SpinKitChasingDots(
-            color: Color(0xFFFFDDB6),
-            size: 50.0,
-          ),
-      ) :
-      researchMainElementItem.isEmpty ?
-      const Center(
-          child : Text("Pas de projets en cours")
-      ) : ListView.builder(
-          itemCount: researchMainElementItem.length,
-          itemBuilder: (context, i) {
-            return Card(
-                margin: i == 0 ? const EdgeInsets.only(top: 10,bottom: 4,left: 4,right: 4) : const EdgeInsets.all(4.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                color: researchMainElementItem.elementAt(i) is Project ? const Color(0xFFFFDDB6) : const Color(0xFFFFC6C6),
-                shadowColor: Colors.black,
-                elevation: 5,
-                child: ListTile(
-                  title: Text(researchMainElementItem.elementAt(i).name),
-                  subtitle: Text(researchMainElementItem.elementAt(i).description),
-                  onTap: (){
-                    researchMainElementItem.elementAt(i) is Project
-                        ? Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => projectMain(
-                                mainElementId:
-                                researchMainElementItem
-                                    .elementAt(i)
-                                    .id)),
-                            (route) => false)
-                        : Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => toDoMain(
-                                mainElementId:
-                                researchMainElementItem
-                                    .elementAt(i)
-                                    .id)),
-                            (route) => false);
-                  },
-                )
-            );
-          }
-      ),
+                )),
+          ]),
+      body: loading
+          ? const Center(
+              child: SpinKitChasingDots(
+                color: Color(0xFFFFDDB6),
+                size: 50.0,
+              ),
+            )
+          : researchMainElementItem.isEmpty
+              ? const Center(child: Text("Pas de projets en cours"))
+              : ListView.builder(
+                  itemCount: researchMainElementItem.length,
+                  itemBuilder: (context, i) {
+                    return Card(
+                        margin: i == 0
+                            ? const EdgeInsets.only(
+                                top: 10, bottom: 4, left: 4, right: 4)
+                            : const EdgeInsets.all(4.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        color: researchMainElementItem.elementAt(i) is Project
+                            ? const Color(0xFFFFDDB6)
+                            : const Color(0xFFFFC6C6),
+                        shadowColor: Colors.black,
+                        elevation: 5,
+                        child: ListTile(
+                          title:
+                              Text(researchMainElementItem.elementAt(i).name),
+                          subtitle: Text(
+                              researchMainElementItem.elementAt(i).description),
+                          onTap: () {
+                            researchMainElementItem.elementAt(i) is Project
+                                ? Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => projectMain(
+                                            mainElementId:
+                                                researchMainElementItem
+                                                    .elementAt(i)
+                                                    .id)),
+                                    (route) => false)
+                                : Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => toDoMain(
+                                            mainElementId:
+                                                researchMainElementItem
+                                                    .elementAt(i)
+                                                    .id)),
+                                    (route) => false);
+                          },
+                        ));
+                  }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showModalCreateProjectOrTasks(context);
@@ -219,53 +222,69 @@ class _projetState extends State<projet> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: Container(
-              height: MediaQuery.of(context).size.height / 1.6,
-              child: DefaultTabController(
-                length: 2,
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text("Création",
-                        style:
-                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Color(0xFF92DEB1),
-                    bottom: const TabBar(
-                      indicatorColor: Colors.white,
-                      tabs: [
-                        Text(
-                          "Projet",
-                          style:
-                              TextStyle(color: Color(0xFF696868), fontSize: 20),
-                        ),
-                        Text(
-                          "Liste ToDo",
-                          style:
-                              TextStyle(color: Color(0xFF696868), fontSize: 20),
-                        )
-                      ],
-                    ),
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16),
+                  )
+              ),
+              contentPadding: EdgeInsets.all(5),
+              content: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
                   ),
-                  body: TabBarView(
-                    children: [
-                      Container(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                              children: [
+                  height: MediaQuery.of(context).size.height / 1.9,
+                  child: DefaultTabController(
+                    length: 2,
+                    child: Scaffold(
+                      appBar: PreferredSize(
+                        preferredSize: Size(double.infinity, 50),
+                        child: AppBar(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(16.0),
+                                  topLeft: Radius.circular(16.0))),
+                          automaticallyImplyLeading: false,
+                          backgroundColor: Color(0xFF92DEB1),
+                          bottom: const TabBar(
+                            indicatorColor: Colors.white,
+                            tabs: [
+                              Text(
+                                "Projet",
+                                style: TextStyle(
+                                    color: Color(0xFF696868), fontSize: 20),
+                              ),
+                              Text(
+                                "Liste ToDo",
+                                style: TextStyle(
+                                    color: Color(0xFF696868), fontSize: 20),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      body: TabBarView(
+                        children: [
+                          Container(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(children: [
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height / 25,
+                                  height:
+                                      MediaQuery.of(context).size.height / 25,
                                 ),
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width / 1.5,
-                                  height: MediaQuery.of(context).size.height / 15,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 15,
                                   child: TextField(
                                     controller: elementName,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
                                       ),
                                       filled: true,
                                       hintStyle: TextStyle(color: Colors.grey),
@@ -275,18 +294,21 @@ class _projetState extends State<projet> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height / 20,
+                                  height:
+                                      MediaQuery.of(context).size.height / 20,
                                 ),
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width / 1.5,
-                                  height: MediaQuery.of(context).size.height / 5,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 5,
                                   child: TextField(
                                     controller: elementDesc,
                                     maxLines: 10,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
                                       ),
                                       filled: true,
                                       hintStyle: TextStyle(color: Colors.grey),
@@ -296,22 +318,28 @@ class _projetState extends State<projet> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height / 30,
+                                  height:
+                                      MediaQuery.of(context).size.height / 30,
                                 ),
                                 ElevatedButton(
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                        Color(0xFFFFDDB6),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Color(0xFFFFDDB6),
                                     ),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(18.0),
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
                                       ),
                                     ),
                                   ),
                                   onPressed: () {
-                                    if (!(elementName.text.isEmpty && elementDesc.text.isEmpty)) {
-                                      addProject(elementName.text.trim(), elementDesc.text.trim());
+                                    if (!(elementName.text.isEmpty &&
+                                        elementDesc.text.isEmpty)) {
+                                      addProject(elementName.text.trim(),
+                                          elementDesc.text.trim());
                                     }
                                     Navigator.pop(context, false);
                                   },
@@ -320,91 +348,99 @@ class _projetState extends State<projet> {
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ),
-                          ]),
-                        ),
+                              ]),
+                            ),
+                          ),
+                          Container(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 25,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 15,
+                                  child: TextField(
+                                    controller: elementName,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                      ),
+                                      filled: true,
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      hintText: "Nom de la liste ToDo",
+                                      fillColor: Colors.white70,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 20,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 5,
+                                  child: TextField(
+                                    controller: elementDesc,
+                                    maxLines: 10,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20.0)),
+                                      ),
+                                      filled: true,
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      hintText: "Description de la liste ToDo",
+                                      fillColor: Colors.white70,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 25,
+                                ),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color(0xFFFFDDB6)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    if (!(elementName.text.isEmpty &&
+                                        elementDesc.text.isEmpty)) {
+                                      addToDo(elementName.text.trim(),
+                                          elementDesc.text.trim());
+                                    }
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text(
+                                    'Valider',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ]),
+                            ),
+                          ),
+                        ],
                       ),
-                      Container(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              height: MediaQuery.of(context).size.height / 15,
-                              child: TextField(
-                                controller: elementName,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Nom de la liste ToDo",
-                                  fillColor: Colors.white70,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 20,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.5,
-                              height: MediaQuery.of(context).size.height / 5,
-                              child: TextField(
-                                controller: elementDesc,
-                                maxLines: 10,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20.0)),
-                                  ),
-                                  filled: true,
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: "Description de la liste ToDo",
-                                  fillColor: Colors.white70,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 25,
-                            ),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Color(0xFFFFDDB6)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                if (!(elementName.text.isEmpty &&
-                                    elementDesc.text.isEmpty)) {
-                                  addToDo(elementName.text.trim(),
-                                      elementDesc.text.trim());
-                                }
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text(
-                                'Valider',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
+              ));
         });
   }
 }
