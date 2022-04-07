@@ -17,7 +17,7 @@ class projet extends StatefulWidget {
 
 class _projetState extends State<projet> {
   bool isSearching = false;
-  List<MainElementItem> allMainElementItem = <MainElementItem>[]
+  List<MainElementItem> allMainElementItem = <MainElementItem>[];
   List<MainElementItem> researchMainElementItem = <MainElementItem>[];
   final FirebaseAuth auth = FirebaseAuth.instance;
 
