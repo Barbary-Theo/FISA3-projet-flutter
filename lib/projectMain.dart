@@ -23,10 +23,9 @@ class _projectMainState extends State<projectMain> {
 
   @override
   void initState() {
-
     _widgetOptions = <Widget>[
-      projectHome(mainElementId : mainElementId),
-      projetSettings(mainElementId : mainElementId),
+      projectHome(mainElementId: mainElementId),
+      projetSettings(mainElementId: mainElementId),
     ];
   }
 
@@ -65,7 +64,7 @@ class _projectMainState extends State<projectMain> {
         heroTag: "btn1",
         onPressed: () {
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => projet()),
+              MaterialPageRoute(builder: (context) => projetOrToDo()),
               (route) => false);
         },
         backgroundColor: const Color(0xFFF2DAD3),

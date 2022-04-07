@@ -32,8 +32,12 @@ class _projetSettingsState extends State<projetSettings> {
   String _selectedMemberId = "";
   List<DropdownMenuItem<String>> _menuItems = <DropdownMenuItem<String>>[];
   final TextEditingController _userToAdd = TextEditingController();
-  final List<Color> _colorList = [const Color(0xFFD7F2D3),const Color(0xFFD8D2ED),const Color(0xFFFFDDB6),const Color(0xFFFFDDB6),];
-
+  final List<Color> _colorList = [
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFDDB6),
+    const Color(0xFFFFDDB6),
+  ];
 
   @override
   void initState() {
@@ -68,7 +72,7 @@ class _projetSettingsState extends State<projetSettings> {
               .get()
               .then((querySnapshot) {
             querySnapshot.docs.forEach((result) {
-              if(result.get("email") != _auth.currentUser.email){
+              if (result.get("email") != _auth.currentUser.email) {
                 _allMembersOfProject
                     .add(Members(result.get("email"), result.get("id")));
                 _allMembersEmail.add(result.get("email"));
@@ -77,10 +81,11 @@ class _projetSettingsState extends State<projetSettings> {
             });
           });
 
-
           if (_allMembersOfProject.length == temp.length - 1) {
-            if(_allMembersOfProject.isEmpty){
-              setState(() {loading = false;});
+            if (_allMembersOfProject.isEmpty) {
+              setState(() {
+                loading = false;
+              });
             } else {
               setState(() {
                 _selectedMember = _allMembersOfProject.elementAt(0).email;
@@ -133,7 +138,6 @@ class _projetSettingsState extends State<projetSettings> {
   }
 
   Future<void> _deleteProject() async {
-
     try {
 
       await FirebaseFirestore.instance.collection("categorie").where(
@@ -145,15 +149,17 @@ class _projetSettingsState extends State<projetSettings> {
         }
       });
 
-      await FirebaseFirestore.instance.collection("project").doc(mainElementId).delete();
-
+      await FirebaseFirestore.instance
+          .collection("project")
+          .doc(mainElementId)
+          .delete();
 
       //Todo : Remove all task link to categorie
 
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => projet()),
-              (route) => false);
-    } catch(e){
+          MaterialPageRoute(builder: (context) => projetOrToDo()),
+          (route) => false);
+    } catch (e) {
       print("error : ");
       print(e);
     }
@@ -164,133 +170,134 @@ class _projetSettingsState extends State<projetSettings> {
     return Scaffold(
         body: loading
             ? const Center(
-          child: SpinKitChasingDots(
-            color: Color(0xFFFFDDB6),
-            size: 50.0,
-          ),
-        )
-            : Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 10,
-            ),
-            const Center(
-              child: Text(
-                "Nom du projet",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(
-                _projectName,
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            const Center(
-              child: Text(
-                "Description du projet",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(_projectDesc),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color(0xFFFFC6C6)),
-                shape: MaterialStateProperty.all<
-                    RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
+                child: SpinKitChasingDots(
+                  color: Color(0xFFFFDDB6),
+                  size: 50.0,
                 ),
-              ),
-              onPressed: () {
-                _sureToDelete(context);
-              },
-              child: const Text(
-                'Supprimer le projet',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-            ),
-            const Divider(color: Colors.black, height: 1),
-            SizedBox(
-              height: MediaQuery.of(context).size.height >
-                  MediaQuery.of(context).size.width
-                  ? MediaQuery.of(context).size.width / 4.8
-                  : MediaQuery.of(context).size.height / 4.8,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _allMembersOfProject.length + 2,
-                  itemBuilder: (BuildContext context, int i) {
-                    Widget circle;
-                    if (i == _allMembersOfProject.length) {
-                      circle = CircleAvatar(
-                        backgroundColor: const Color(0xFF92DEB1),
-                        radius: MediaQuery.of(context).size.height >
-                            MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              _showModalRemoveMember(context);
-                            });
-                          },
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 10,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Nom du projet",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  Center(
+                    child: Text(
+                      _projectName,
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Description du projet",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  Center(
+                    child: Text(_projectDesc),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 40,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0xFFFFC6C6)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
                         ),
-                      );
-                    } else if (i == _allMembersOfProject.length + 1) {
-                      circle = CircleAvatar(
-                        backgroundColor: const Color(0xFFFFC6C6),
-                        radius: MediaQuery.of(context).size.height >
+                      ),
+                    ),
+                    onPressed: () {
+                      _sureToDelete(context);
+                    },
+                    child: const Text(
+                      'Supprimer le projet',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 4,
+                  ),
+                  const Divider(color: Colors.black, height: 1),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height >
                             MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            _showModalAddUser(context);
-                          },
-                        ),
-                      );
-                    } else {
-                      circle = CircleAvatar(
-                        backgroundColor: _colorList.elementAt(i%4),
-                        radius: MediaQuery.of(context).size.height >
-                            MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 10
-                            : MediaQuery.of(context).size.height / 10,
-                        child: Text(_allMembersOfProject
-                            .elementAt(i)
-                            .email
-                            .characters
-                            .characterAt(0)
-                            .toString()
-                            .toUpperCase()),
-                      );
-                    }
-                    return circle;
-                  }),
-            ),
-            const Divider(color: Colors.black, height: 1),
-          ],
-        ));
+                        ? MediaQuery.of(context).size.width / 4.8
+                        : MediaQuery.of(context).size.height / 4.8,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _allMembersOfProject.length + 2,
+                        itemBuilder: (BuildContext context, int i) {
+                          Widget circle;
+                          if (i == _allMembersOfProject.length) {
+                            circle = CircleAvatar(
+                              backgroundColor: const Color(0xFF92DEB1),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    _showModalRemoveMember(context);
+                                  });
+                                },
+                              ),
+                            );
+                          } else if (i == _allMembersOfProject.length + 1) {
+                            circle = CircleAvatar(
+                              backgroundColor: const Color(0xFFFFC6C6),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  _showModalAddUser(context);
+                                },
+                              ),
+                            );
+                          } else {
+                            circle = CircleAvatar(
+                              backgroundColor: _colorList.elementAt(i % 4),
+                              radius: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 10
+                                  : MediaQuery.of(context).size.height / 10,
+                              child: Text(_allMembersOfProject
+                                  .elementAt(i)
+                                  .email
+                                  .characters
+                                  .characterAt(0)
+                                  .toString()
+                                  .toUpperCase()),
+                            );
+                          }
+                          return circle;
+                        }),
+                  ),
+                  const Divider(color: Colors.black, height: 1),
+                ],
+              ));
   }
 
   Future<void> _showModalRemoveMember(context) async {
@@ -366,13 +373,33 @@ class _projetSettingsState extends State<projetSettings> {
                                 borderRadius: BorderRadius.circular(18.0),
                               ),
                             ),
-                          ]),
+                          ),
+                          onPressed: () async {
+                            if (_selectedMember != _auth.currentUser.email) {
+                              await FirebaseFirestore.instance
+                                  .collection('project')
+                                  .doc(mainElementId)
+                                  .update({
+                                "members":
+                                    FieldValue.arrayRemove([_selectedMemberId])
+                              });
+                            }
+                            Navigator.pop(context, false);
+                            _initializeProjectData();
+                            setState(() {});
+                          },
+                          child: const Text(
+                            'Valider',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                );
-              });
+                ),
+              ),
+            );
+          });
         });
   }
 
@@ -404,7 +431,7 @@ class _projetSettingsState extends State<projetSettings> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20.0)),
+                                  BorderRadius.all(Radius.circular(20.0)),
                             ),
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey),
@@ -420,8 +447,8 @@ class _projetSettingsState extends State<projetSettings> {
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               const Color(0xFFFFDDB6)),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
                             ),
@@ -446,7 +473,6 @@ class _projetSettingsState extends State<projetSettings> {
           );
         });
   }
-
 
   _sureToDelete(context) {
     showDialog(
