@@ -64,6 +64,10 @@ class _categorieHomeState extends State<categorieHome> {
     initData();
   }
 
+  void openShowTaskInfoModal(){
+    _showModalTaskInfo(context);
+  }
+
   void addTask(String name, String description, int status, DateTime deadLine) {
     try {
       FirebaseFirestore.instance.collection("task").add({
@@ -187,7 +191,8 @@ class _categorieHomeState extends State<categorieHome> {
       });
     }
 
-    initData();
+    await initData();
+    await openShowTaskInfoModal();
   }
 
   @override
@@ -642,6 +647,8 @@ class _categorieHomeState extends State<categorieHome> {
                             ),
                           ),
                           onPressed: () async {
+                            Navigator.pop(context, false);
+
                             if (_selectedMember != _auth.currentUser.email) {
                               await FirebaseFirestore.instance
                                   .collection('task')
@@ -650,10 +657,14 @@ class _categorieHomeState extends State<categorieHome> {
                                 "members":
                                     FieldValue.arrayRemove([_selectedMemberId])
                               });
+                              Navigator.pop(context, false);
+                              await initData();
+                              openShowTaskInfoModal();
+
                             }
-                            initData();
-                            Navigator.pop(context, false);
-                            setState(() {});
+
+
+                            // setState(() {});
                           },
                           child: const Text(
                             'Valider',
@@ -722,15 +733,15 @@ class _categorieHomeState extends State<categorieHome> {
                           ),
                         ),
                         onPressed: () async {
+
+                          Navigator.pop(context, false);
+                          Navigator.pop(context, false);
                           if (_userToAdd.text.isNotEmpty) {
                             print("ajout user");
                             await _addUser(_userToAdd.text.toString().trim());
                             print("fin ajout");
                           }
-                          print("wtf ?");
-                          Navigator.of(context).setState(() {});
-                          Navigator.pop(context, false);
-                          setState(() {});
+
                         },
                         child: const Text(
                           'Valider',
