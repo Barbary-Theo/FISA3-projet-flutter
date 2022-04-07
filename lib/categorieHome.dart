@@ -80,19 +80,49 @@ class _categorieHomeState extends State<categorieHome> {
     initData();
   }
 
-  Future<void> initData() async {
-    // setState(() {
-    //   _loading = true;
-    // });
-    allTask = [];
-    _allMembersEmail = <String>[];
+  Future<void> addMembers(List<dynamic> temp) async {
     _allMembersOfTask = <Members>[];
+    for (var element in temp) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where("id", isEqualTo: element.toString())
+          .get()
+          .then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          print(result.get("email"));
+          _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
+        }
+      });
+
+      if (_allMembersOfTask.length == temp.length) {
+        if (_allMembersOfTask.isEmpty) {
+          setState(() {
+            _loading = false;
+            print(_loading);
+          });
+        } else {
+          setState(() {
+            _selectedMember = _allMembersOfTask.elementAt(0).email;
+            _selectedMemberId = _allMembersOfTask.elementAt(0).id;
+            _setMenuItems();
+            _loading = false;
+          });
+        }
+      }
+    }
+    print("entre 2");
+  }
+
+  Future<void> initData() async {
+    allTask = [];
+    print("attente 0");
     try {
+      // _allMembersOfTask = <Members>[];
       await FirebaseFirestore.instance
           .collection('task')
           .where("mainElementId", isEqualTo: categorieId)
           .get()
-          .then((querySnapshot) {
+          .then((querySnapshot) async {
         for (var result in querySnapshot.docs) {
           allTask.add(Task.withDate(
               result.get("name"),
@@ -105,35 +135,9 @@ class _categorieHomeState extends State<categorieHome> {
               result.id,
               result.get("description")));
           List<dynamic> temp = result.get("members");
-
-          temp.forEach((element) async {
-            await FirebaseFirestore.instance
-                .collection('user')
-                .where("id", isEqualTo: element.toString())
-                .get()
-                .then((querySnapshot) {
-              querySnapshot.docs.forEach((result) {
-                _allMembersOfTask
-                    .add(Members(result.get("email"), result.get("id")));
-              });
-            });
-
-            if (_allMembersOfTask.length == temp.length) {
-              if (_allMembersOfTask.isEmpty) {
-                setState(() {
-                  _loading = false;
-                  print(_loading);
-                });
-              } else {
-                setState(() {
-                  _selectedMember = _allMembersOfTask.elementAt(0).email;
-                  _selectedMemberId = _allMembersOfTask.elementAt(0).id;
-                  _setMenuItems();
-                  _loading = false;
-                });
-              }
-            }
-          });
+          print("ajout");
+          await addMembers(temp);
+          print("fin ajout");
         }
         setState(() {
           _loading = false;
@@ -143,27 +147,25 @@ class _categorieHomeState extends State<categorieHome> {
       print("error : ");
       print(error);
     }
-
-    // setState(() {
-    //
-    // });
+    print("attente ?");
+    // setState(() {});
   }
 
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
-    _allMembersOfTask.forEach((element) {
+    for (var element in _allMembersOfTask) {
       _menuItems.add(
           DropdownMenuItem(value: element.email, child: Text(element.email)));
-    });
+    }
   }
 
   Future<void> _addUser(String email) async {
     bool canAdd = true;
-    _allMembersEmail.forEach((element) {
+    for (var element in _allMembersEmail) {
       if (email == element) {
         canAdd = false;
       }
-    });
+    }
     String id = "";
 
     await FirebaseFirestore.instance
@@ -413,159 +415,169 @@ class _categorieHomeState extends State<categorieHome> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+              builder: (BuildContext contextOfDialog, StateSetter setState) {
             return Dialog(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 1.5,
-                child: Scaffold(
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child: Column(children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
+                height: MediaQuery.of(contextOfDialog).size.height / 1.5,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: Column(children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Nom de la tâche : " + taskNameTaskPressed),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Description : " + taskDescTaskPressed),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: Text("Date de fin : " +
+                            taskDeadLinePressed.year.toString() +
+                            "/" +
+                            taskDeadLinePressed.month.toString() +
+                            "/" +
+                            taskDeadLinePressed.day.toString()),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 4.5,
+                        child: Column(
+                          children: [
+                            RadioListTile(
+                                title: const Text('Pas commencé'),
+                                value: 0,
+                                groupValue: _status,
+                                onChanged: (int value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({'status': _status});
+                                  for (var element in allTask) {
+                                    if (element.id == taskIdTaskPressed) {
+                                      element.status = _status;
+                                    }
+                                  }
+                                  initData();
+                                  setState(() {});
+                                }),
+                            RadioListTile(
+                                title: const Text('Commencé'),
+                                value: 1,
+                                groupValue: _status,
+                                onChanged: (value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({'status': _status});
+                                  for (var element in allTask) {
+                                    if (element.id == taskIdTaskPressed) {
+                                      element.status = _status;
+                                    }
+                                  }
+                                  initData();
+                                  setState(() {});
+                                }),
+                            RadioListTile(
+                                title: const Text('Fini'),
+                                value: 2,
+                                groupValue: _status,
+                                onChanged: (value) async {
+                                  _status = value;
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({'status': _status});
+
+                                  for (var element in allTask) {
+                                    if (element.id == taskIdTaskPressed) {
+                                      element.status = _status;
+                                    }
+                                  }
+                                  initData();
+                                  setState(() {});
+                                }),
+                          ],
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child:
-                              Text("Nom de la tâche : " + taskNameTaskPressed),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: Text("Description : " + taskDescTaskPressed),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: Text("Date de fin : " +
-                              taskDeadLinePressed.year.toString() +
-                              "/" +
-                              taskDeadLinePressed.month.toString() +
-                              "/" +
-                              taskDeadLinePressed.day.toString()),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 4.5,
-                          child: Column(
-                            children: [
-                              RadioListTile(
-                                  title: const Text('Pas commencé'),
-                                  value: 0,
-                                  groupValue: _status,
-                                  onChanged: (int value) async {
-                                    _status = value;
-                                    await FirebaseFirestore.instance
-                                        .collection('task')
-                                        .doc(taskIdTaskPressed)
-                                        .update({'status': _status});
-                                    initData();
-                                    setState(() {});
-                                  }),
-                              RadioListTile(
-                                  title: const Text('Commencé'),
-                                  value: 1,
-                                  groupValue: _status,
-                                  onChanged: (value) async {
-                                    _status = value;
-                                    await FirebaseFirestore.instance
-                                        .collection('task')
-                                        .doc(taskIdTaskPressed)
-                                        .update({'status': _status});
-                                    initData();
-                                    setState(() {});
-                                  }),
-                              RadioListTile(
-                                  title: const Text('Fini'),
-                                  value: 2,
-                                  groupValue: _status,
-                                  onChanged: (value) async {
-                                    _status = value;
-                                    await FirebaseFirestore.instance
-                                        .collection('task')
-                                        .doc(taskIdTaskPressed)
-                                        .update({'status': _status});
-                                    initData();
-                                    setState(() {});
-                                  }),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height >
-                                  MediaQuery.of(context).size.width
-                              ? MediaQuery.of(context).size.width / 4.8
-                              : MediaQuery.of(context).size.height / 4.8,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _allMembersOfTask.length + 2,
-                              itemBuilder: (BuildContext context, int i) {
-                                Widget circle;
-                                if (i == _allMembersOfTask.length) {
-                                  circle = CircleAvatar(
-                                    backgroundColor: const Color(0xFF92DEB1),
-                                    radius: MediaQuery.of(context).size.height >
-                                            MediaQuery.of(context).size.width
-                                        ? MediaQuery.of(context).size.width / 10
-                                        : MediaQuery.of(context).size.height /
-                                            10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      onPressed: () async {
-                                        await _showModalRemoveMember(context);
-                                        setState(() {});
-                                      },
-                                    ),
-                                  );
-                                } else if (i == _allMembersOfTask.length + 1) {
-                                  circle = CircleAvatar(
-                                    backgroundColor: const Color(0xFFFFC6C6),
-                                    radius: MediaQuery.of(context).size.height >
-                                            MediaQuery.of(context).size.width
-                                        ? MediaQuery.of(context).size.width / 10
-                                        : MediaQuery.of(context).size.height /
-                                            10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.add),
-                                      onPressed: () {
-                                        _showModalAddUser(context);
-                                        setState(() {});
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  circle = CircleAvatar(
-                                    backgroundColor:
-                                        _colorList.elementAt(i % 4),
-                                    radius: MediaQuery.of(context).size.height >
-                                            MediaQuery.of(context).size.width
-                                        ? MediaQuery.of(context).size.width / 10
-                                        : MediaQuery.of(context).size.height /
-                                            10,
-                                    child: Text(_allMembersOfTask
-                                        .elementAt(i)
-                                        .email
-                                        .characters
-                                        .characterAt(0)
-                                        .toString()
-                                        .toUpperCase()),
-                                  );
-                                }
-                                return circle;
-                              }),
-                        ),
-                      ]),
-                    ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height >
+                                MediaQuery.of(context).size.width
+                            ? MediaQuery.of(context).size.width / 4.8
+                            : MediaQuery.of(context).size.height / 4.8,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _allMembersOfTask.length + 2,
+                            itemBuilder: (BuildContext context, int i) {
+                              Widget circle;
+                              if (i == _allMembersOfTask.length) {
+                                circle = CircleAvatar(
+                                  backgroundColor: const Color(0xFF92DEB1),
+                                  radius: MediaQuery.of(context).size.height >
+                                          MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.remove),
+                                    onPressed: () async {
+                                      await _showModalRemoveMember(
+                                          contextOfDialog);
+                                      setState(() {});
+                                    },
+                                  ),
+                                );
+                              } else if (i == _allMembersOfTask.length + 1) {
+                                circle = CircleAvatar(
+                                  backgroundColor: const Color(0xFFFFC6C6),
+                                  radius: MediaQuery.of(context).size.height >
+                                          MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {
+                                      _showModalAddUser(context);
+                                      setState(() {});
+                                    },
+                                  ),
+                                );
+                              } else {
+                                circle = CircleAvatar(
+                                  backgroundColor: _colorList.elementAt(i % 4),
+                                  radius: MediaQuery.of(context).size.height >
+                                          MediaQuery.of(context).size.width
+                                      ? MediaQuery.of(context).size.width / 10
+                                      : MediaQuery.of(context).size.height / 10,
+                                  child: Text(_allMembersOfTask
+                                      .elementAt(i)
+                                      .email
+                                      .characters
+                                      .characterAt(0)
+                                      .toString()
+                                      .toUpperCase()),
+                                );
+                              }
+                              return circle;
+                            }),
+                      ),
+                    ]),
                   ),
                 ),
               ),
@@ -579,10 +591,10 @@ class _categorieHomeState extends State<categorieHome> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+              builder: (BuildContext contextOfDialog, StateSetter setState) {
             return Dialog(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(contextOfDialog).size.height / 3,
                 child: Scaffold(
                   appBar: AppBar(
                     title: const Text("Suppression",
@@ -639,8 +651,8 @@ class _categorieHomeState extends State<categorieHome> {
                                     FieldValue.arrayRemove([_selectedMemberId])
                               });
                             }
-                            Navigator.pop(context, false);
                             initData();
+                            Navigator.pop(context, false);
                             setState(() {});
                           },
                           child: const Text(
@@ -658,7 +670,7 @@ class _categorieHomeState extends State<categorieHome> {
         });
   }
 
-  _showModalAddUser(context) {
+  Future<void> _showModalAddUser(context) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -709,14 +721,16 @@ class _categorieHomeState extends State<categorieHome> {
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            if (_userToAdd.text.isNotEmpty) {
-                              _addUser(_userToAdd.text.toString().trim());
-                            }
-                          });
-
+                        onPressed: () async {
+                          if (_userToAdd.text.isNotEmpty) {
+                            print("ajout user");
+                            await _addUser(_userToAdd.text.toString().trim());
+                            print("fin ajout");
+                          }
+                          print("wtf ?");
+                          Navigator.of(context).setState(() {});
                           Navigator.pop(context, false);
+                          setState(() {});
                         },
                         child: const Text(
                           'Valider',
