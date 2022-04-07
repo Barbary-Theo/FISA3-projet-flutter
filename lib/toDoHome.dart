@@ -6,22 +6,23 @@ import 'package:projetmobiles6/model/Categorie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'model/Task.dart';
+
 class toDoHome extends StatefulWidget {
   final String mainElementId;
 
   const toDoHome({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<toDoHome> createState() =>
-      _toDoHomeState(mainElementId: mainElementId);
+  State<toDoHome> createState() => _toDoHomeState(mainElementId: mainElementId);
 }
 
 class _toDoHomeState extends State<toDoHome> {
   bool isSearching = false;
   final String mainElementId;
-  final TextEditingController categorieName = TextEditingController();
-  List<Categorie> allCategorie = <Categorie>[];
-  List<Categorie> researchCategorie = <Categorie>[];
+  final TextEditingController tacheName = TextEditingController();
+  List<Task> allTache = <Task>[];
+  List<Task> researchTache = <Task>[];
   String errorText = "";
   bool loading = true;
 
@@ -35,7 +36,22 @@ class _toDoHomeState extends State<toDoHome> {
   _toDoHomeState({this.mainElementId});
 
   List<Widget> posiList = <Widget>[];
-  Stack allTaskWidget;
+  List<Color> allColor = <Color>[];
+  Widget allTaskWidget;
+
+  List<List<double>> allCoordinate = [];
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Colors.green;
+  }
 
   void setAllPositionned() {
     posiList = [];
@@ -70,11 +86,11 @@ class _toDoHomeState extends State<toDoHome> {
                         children: [
                           Center(
                               child:
-                                  Text(allTache.elementAt(i).name.toString())),
+                              Text(allTache.elementAt(i).name.toString())),
                           Checkbox(
                             checkColor: Colors.white,
                             fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
+                            MaterialStateProperty.resolveWith(getColor),
                             value: allTache.elementAt(i).validate,
                             onChanged: (bool value) {
                               allTache.elementAt(i).validate = value;
@@ -88,15 +104,15 @@ class _toDoHomeState extends State<toDoHome> {
                                 FirebaseFirestore.instance
                                     .collection("task")
                                     .where("mainElementId",
-                                        isEqualTo: mainElementId)
+                                    isEqualTo: mainElementId)
                                     .where("name",
-                                        isEqualTo: allTache.elementAt(i).name)
+                                    isEqualTo: allTache.elementAt(i).name)
                                     .get()
                                     .then((querySnapshot) {
                                   querySnapshot.docs.forEach((result) {
                                     Map mapCheck = <String, bool>{};
                                     mapCheck.putIfAbsent("validate",
-                                        () => allTache.elementAt(i).validate);
+                                            () => allTache.elementAt(i).validate);
                                     FirebaseFirestore.instance
                                         .collection("task")
                                         .doc(result.id)
@@ -117,9 +133,9 @@ class _toDoHomeState extends State<toDoHome> {
                                   FirebaseFirestore.instance
                                       .collection("task")
                                       .where("mainElementId",
-                                          isEqualTo: mainElementId)
+                                      isEqualTo: mainElementId)
                                       .where("name",
-                                          isEqualTo: allTache.elementAt(i).name)
+                                      isEqualTo: allTache.elementAt(i).name)
                                       .get()
                                       .then((querySnapshot) {
                                     querySnapshot.docs.forEach((result) {
@@ -176,9 +192,9 @@ class _toDoHomeState extends State<toDoHome> {
     }
   }
 
-  displayTask () {
+  displayTask() {
     setAllPositionned();
-    allTaskWidget =  Stack(
+    allTaskWidget = Stack(
       children: posiList,
     );
   }
@@ -188,7 +204,7 @@ class _toDoHomeState extends State<toDoHome> {
     fillList();
   }
 
-  void addCategorie(String name) {
+  void addTache(String name) {
     try {
       FirebaseFirestore.instance.collection("task").add({
         'name': name,
