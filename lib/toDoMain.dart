@@ -4,6 +4,7 @@ import 'package:projetmobiles6/projectHome.dart';
 import 'package:projetmobiles6/projectSettings.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 import 'package:projetmobiles6/toDoHome.dart';
+import 'package:projetmobiles6/toDoSettings.dart';
 
 class toDoMain extends StatefulWidget {
   final String mainElementId;
@@ -26,7 +27,7 @@ class _toDoMainState extends State<toDoMain> {
   void initState() {
     _widgetOptions = <Widget>[
       toDoHome(mainElementId: mainElementId),
-      projetSettings(),
+      toDoSettings(mainElementId: mainElementId),
     ];
   }
 
