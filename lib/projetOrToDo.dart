@@ -17,7 +17,7 @@ class projetOrToDo extends StatefulWidget {
 
 class _projetState extends State<projetOrToDo> {
   bool isSearching = false;
-  List<MainElementItem> allMainElementItem = <MainElementItem>[];
+  List<MainElementItem> allMainElementItem = <MainElementItem>[]
   List<MainElementItem> researchMainElementItem = <MainElementItem>[];
   final FirebaseAuth auth = FirebaseAuth.instance;
 
