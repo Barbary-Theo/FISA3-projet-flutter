@@ -6,22 +6,23 @@ import 'package:projetmobiles6/model/Categorie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'model/Task.dart';
+
 class toDoHome extends StatefulWidget {
   final String mainElementId;
 
   const toDoHome({Key key, this.mainElementId}) : super(key: key);
 
   @override
-  State<toDoHome> createState() =>
-      _toDoHomeState(mainElementId: mainElementId);
+  State<toDoHome> createState() => _toDoHomeState(mainElementId: mainElementId);
 }
 
 class _toDoHomeState extends State<toDoHome> {
   bool isSearching = false;
   final String mainElementId;
-  final TextEditingController categorieName = TextEditingController();
-  List<Categorie> allCategorie = <Categorie>[];
-  List<Categorie> researchCategorie = <Categorie>[];
+  final TextEditingController tacheName = TextEditingController();
+  List<Task> allTache = <Task>[];
+  List<Task> researchTache = <Task>[];
   String errorText = "";
   bool loading = true;
 
@@ -35,36 +36,144 @@ class _toDoHomeState extends State<toDoHome> {
   _toDoHomeState({this.mainElementId});
 
   List<Widget> posiList = <Widget>[];
-  Stack allTaskWidget;
+  List<Color> allColor = <Color>[];
+  Widget allTaskWidget;
+
+  List<List<double>> allCoordinate = [];
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Colors.green;
+  }
 
   void setAllPositionned() {
-    var rng = Random();
-    for(int i = 0 ; i < allCategorie.length ; i++) {
+    posiList = [];
+
+    for(int i = 0 ; i < allTache.length ; i++) {
+
+      if(allCoordinate.length < allTache.length) {
+        allCoordinate.add([allTache.elementAt(i).x, allTache.elementAt(i).y]);
+
+        if(allTache.elementAt(i).validate) {
+          allColor.add(new Color(0xFFD7F2D3));
+        }
+        else {
+          allColor.add(new Color(0xFFFFDDB6));
+        }
+      }
+
       posiList.add(
-        Positioned(
-          top: rng.nextDouble() * 100,
-          left: rng.nextDouble() * 100,
-          child: SizedBox(
-            height: 100,
-            width: 100,
-            child: Card(
-                shadowColor: Colors.black,
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                color: const Color(0xFFFFDDB6),
-                child: Text(allCategorie.elementAt(i).name.toString())
-            )
-          )
-        )
+          Positioned(
+              top: allCoordinate.elementAt(i)[1],
+              left: allCoordinate.elementAt(i)[0],
+              child: GestureDetector(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 8,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                      child: Card(
+                        shadowColor: Colors.black,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        color: allColor.elementAt(i),
+                        child: Stack(
+                           children: [
+                              Center(child: Text(allTache.elementAt(i).name.toString())),
+                              Checkbox(
+                                checkColor: Colors.white,
+                                fillColor: MaterialStateProperty.resolveWith(getColor),
+                                value: allTache.elementAt(i).validate,
+                                onChanged: (bool value) {
+                                  allTache.elementAt(i).validate = value;
+                                  if(value) {
+                                    allColor[i] = new Color(0xFFD7F2D3);
+                                  }
+                                  else {
+                                    allColor[i] = new Color(0xFFFFDDB6);
+                                  }
+
+                                  setState(() {
+                                    FirebaseFirestore.instance.collection("task").where(
+                                        "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                                      querySnapshot.docs.forEach((result) {
+                                        Map mapCheck = <String, bool>{};
+                                        mapCheck.putIfAbsent("validate", () => allTache.elementAt(i).validate);
+                                        FirebaseFirestore.instance.collection("task")
+                                            .doc(result.id).update(mapCheck);
+                                      });
+                                    });
+                                    displayTask();
+                                  });
+                                },
+                              ),
+                             Align(
+                               alignment: Alignment.topRight,
+                               child: IconButton(
+                                   alignment: Alignment.topRight,
+                                   constraints: const BoxConstraints(
+                                       minHeight: 1,
+                                       minWidth: 1
+                                   ),
+                                   onPressed: () {
+                                     FirebaseFirestore.instance.collection("task").where(
+                                         "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                                       querySnapshot.docs.forEach((result) {
+                                         FirebaseFirestore.instance.collection("task")
+                                             .doc(result.id).delete();
+                                       });
+                                       fillList();
+                                       displayTask();
+                                     });
+                                   },
+                                   icon: const Icon(
+                                       Icons.highlight_remove_rounded,
+                                     color: Colors.red,
+                                   )
+                               ),
+                             ),
+                            ],
+                        )
+                      )
+                  ),
+                  onVerticalDragEnd: (DragEndDetails dd){
+                    FirebaseFirestore.instance.collection("task").where(
+                        "mainElementId", isEqualTo: mainElementId).where("name", isEqualTo: allTache.elementAt(i).name).get().then((querySnapshot) {
+                      querySnapshot.docs.forEach((result) {
+                        Map mapX = <String, double>{};
+                        Map mapY = <String, double>{};
+                        mapX.putIfAbsent("x", () => allCoordinate.elementAt(i)[0]);
+                        mapY.putIfAbsent("y", () => allCoordinate.elementAt(i)[1]);
+                        FirebaseFirestore.instance.collection("task")
+                            .doc(result.id).update(mapX);
+                        FirebaseFirestore.instance.collection("task")
+                            .doc(result.id).update(mapY);
+                      });
+                    });
+                  },
+                  onVerticalDragUpdate: (DragUpdateDetails dd) {
+                    setState(() {
+                      allCoordinate.elementAt(i)[1] = dd.globalPosition.dy - MediaQuery.of(context).size.height / 6;
+                      allCoordinate.elementAt(i)[0] = dd.globalPosition.dx - MediaQuery.of(context).size.width / 6;
+                      displayTask();
+                    });
+                  },
+              )
+          ),
       );
     }
   }
 
-  displayTask () {
+  displayTask() {
     setAllPositionned();
-    allTaskWidget =  Stack(
+    allTaskWidget = Stack(
       children: posiList,
     );
   }
@@ -77,21 +186,48 @@ class _toDoHomeState extends State<toDoHome> {
     researchCategorie = [];
     for (var element in allCategorie) {
       if (element.name.contains(search)) {
-        researchCategorie.add(element);
+        researchTache.add(element);
       }
     }
 
     setState(() {});
   }
 
-  void addCategorie(String name) {
+  void addTache(String name) {
     try {
       FirebaseFirestore.instance
-          .collection("categorie")
-          .add({'name': name, 'project': mainElementId});
+          .collection("task")
+          .add({'name': name, 'mainElementId': mainElementId, 'x': 0.0, 'y': 0.0, 'validate': false});
     } catch (error) {
       print(error);
     }
+    fillList();
+  }
+
+  Future<void> fillList() async {
+    allTache = [];
+    allCoordinate = [];
+    allColor = [];
+    try {
+      var rng = Random();
+      await FirebaseFirestore.instance
+          .collection('task')
+          .where("mainElementId", isEqualTo: mainElementId)
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          allTache.add(Task(result.get("name"), 0, result.get("x"), result.get("y"), result.get("mainElementId"), result.get("validate")));
+        });
+      });
+      await displayTask();
+    } catch (error) {
+      print(error);
+    }
+
+    setState(() {
+      researchTache = allTache;
+      loading = false;
+    });
   }
 
   @override
@@ -113,7 +249,7 @@ class _toDoHomeState extends State<toDoHome> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          researchCategorie = allCategorie;
+                          researchTache = allTache;
                           isSearching = !isSearching;
                         });
                       },
@@ -143,8 +279,8 @@ class _toDoHomeState extends State<toDoHome> {
                 size: 50.0,
               ),
             )
-          : researchCategorie.isEmpty
-              ? const Center(child: Text("Pas de tâches dans la toDo List."))
+          : researchTache.isEmpty
+              ? const Center(child: Text("Aucune tâche dans cette ToDo List"))
               : allTaskWidget,
       floatingActionButton: FloatingActionButton(
         heroTag: "btn2",
@@ -172,21 +308,27 @@ class _toDoHomeState extends State<toDoHome> {
                   automaticallyImplyLeading: false,
                   backgroundColor: const Color(0xFF92DEB1),
                 ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: TextField(
-                          controller: categorieName,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
+                body: Container(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Center(
+                      child: Column(children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 25,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: TextField(
+                            controller: tacheName,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0)),
+                              ),
+                              filled: true,
+                              hintStyle: TextStyle(color: Colors.grey),
+                              hintText: "Nom de la tâche",
+                              fillColor: Colors.white70,
                             ),
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey),
@@ -207,6 +349,17 @@ class _toDoHomeState extends State<toDoHome> {
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
                             ),
+                          ),
+                          onPressed: () {
+                            if (!tacheName.text.isEmpty) {
+                              addTache(
+                                  tacheName.text.toString().trim());
+                            }
+                            Navigator.pop(context, false);
+                          },
+                          child: const Text(
+                            'Valider',
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                         onPressed: () {
