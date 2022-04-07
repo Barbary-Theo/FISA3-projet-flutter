@@ -53,6 +53,7 @@ class _categorieHomeState extends State<categorieHome> {
   String taskDescTaskPressed = "";
   DateTime taskDeadLinePressed = DateTime.now();
   int _status = 0;
+  final GlobalKey _dialogKey = GlobalKey();
 
   final List<Color> _colorList = [
     const Color(0xFFF2DAD3),
@@ -63,6 +64,14 @@ class _categorieHomeState extends State<categorieHome> {
   @override
   void initState() {
     initData();
+  }
+
+  void updateDialog() {
+    // Check if dialog displayed, we can't call setState when dialog not displayed
+    if (_dialogKey.currentState != null && _dialogKey.currentState.mounted) {
+      _dialogKey.currentState.setState(() {
+      });
+    }
   }
 
   void openShowTaskInfoModal() {
@@ -77,7 +86,6 @@ class _categorieHomeState extends State<categorieHome> {
         .get()
         .then((querySnapshot) async {
         List<dynamic> temp = querySnapshot.get("members");
-        print(temp);
         temp.forEach((element) async {
           await FirebaseFirestore.instance
               .collection('user')
@@ -85,16 +93,16 @@ class _categorieHomeState extends State<categorieHome> {
               .get()
               .then((querySnapshot) {
             for (var result in querySnapshot.docs) {
-              print(result.get("email"));
-
-              setState(() {
+                            setState(() {
                 _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
               });
               _setMenuItems();
+              // updateDialog();
             }
           });
         });
     });
+    // updateDialog();
   }
 
   void addTask(String name, String description, int status, DateTime deadLine) {
@@ -122,7 +130,6 @@ class _categorieHomeState extends State<categorieHome> {
           .get()
           .then((querySnapshot) {
         for (var result in querySnapshot.docs) {
-          print(result.get("email"));
           _allMembersOfCategorie
               .add(Members(result.get("email"), result.get("id")));
         }
@@ -132,7 +139,6 @@ class _categorieHomeState extends State<categorieHome> {
         if (_allMembersOfCategorie.isEmpty) {
           setState(() {
             _loading = false;
-            print(_loading);
           });
         } else {
           setState(() {
@@ -144,12 +150,13 @@ class _categorieHomeState extends State<categorieHome> {
         }
       }
     }
-    print("entre 2");
+
+    updateDialog();
   }
 
   Future<void> initData() async {
     allTask = [];
-    print("attente 0");
+
     try {
       // _allMembersOfTask = <Members>[];
       await FirebaseFirestore.instance
@@ -169,9 +176,9 @@ class _categorieHomeState extends State<categorieHome> {
               result.id,
               result.get("description")));
           List<dynamic> temp = result.get("members");
-          print("ajout");
+
           await addMembers(temp);
-          print("fin ajout");
+
         }
         setState(() {
           _loading = false;
@@ -181,7 +188,6 @@ class _categorieHomeState extends State<categorieHome> {
       print("error : ");
       print(error);
     }
-    print("attente ?");
     // setState(() {});
   }
 
@@ -191,6 +197,7 @@ class _categorieHomeState extends State<categorieHome> {
       _menuItems.add(
           DropdownMenuItem(value: element.email, child: Text(element.email)));
     }
+    updateDialog();
   }
 
   Future<void> _addUser(String email) async {
@@ -226,7 +233,7 @@ class _categorieHomeState extends State<categorieHome> {
     setState(() {
 
     });
-    openShowTaskInfoModal();
+    updateDialog();
   }
 
   @override
@@ -322,6 +329,7 @@ class _categorieHomeState extends State<categorieHome> {
                               _status = allTask.elementAt(i - 2).status;
                               setAllUserOfTask();
                               _showModalTaskInfo(context);
+                              updateDialog();
                             },
                           ),
                         ),
@@ -405,7 +413,6 @@ class _categorieHomeState extends State<categorieHome> {
                               DatePicker.showDatePicker(context,
                                   showTitleActions: true,
                                   minTime: DateTime.now(), onChanged: (date) {
-                                print('change $date');
                               }, onConfirm: (date) {
                                 _deadLine = date;
                               },
@@ -455,10 +462,11 @@ class _categorieHomeState extends State<categorieHome> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-              builder: (BuildContext contextOfDialog, StateSetter setState) {
+            key: _dialogKey,
+              builder: (BuildContext context, StateSetter setState) {
             return Dialog(
               child: SizedBox(
-                height: MediaQuery.of(contextOfDialog).size.height / 1.5,
+                height: MediaQuery.of(context).size.height / 1.5,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Center(
@@ -578,7 +586,7 @@ class _categorieHomeState extends State<categorieHome> {
                                     icon: const Icon(Icons.remove),
                                     onPressed: () async {
                                       await _showModalRemoveMember(
-                                          contextOfDialog);
+                                          context);
                                       setState(() {});
                                     },
                                   ),
@@ -658,7 +666,7 @@ class _categorieHomeState extends State<categorieHome> {
                               onChanged: (String value) {
                                 setState(() {
                                   _selectedMember = value;
-                                  for (var element in _allMembersOfCategorie) {
+                                  for (var element in _allMembersOfTask) {
                                     if (element.email == value) {
                                       _selectedMemberId = element.id;
                                     }
@@ -683,6 +691,8 @@ class _categorieHomeState extends State<categorieHome> {
                           ),
                           onPressed: () async {
                             Navigator.pop(context, false);
+                            print(_selectedMemberId);
+                            print(_selectedMember);
 
                             if (_selectedMember != _auth.currentUser.email) {
                               await FirebaseFirestore.instance
@@ -692,11 +702,12 @@ class _categorieHomeState extends State<categorieHome> {
                                 "members":
                                     FieldValue.arrayRemove([_selectedMemberId])
                               });
-                              Navigator.pop(context, false);
+                              // Navigator.pop(context, false);
                               await initData();
                               await setAllUserOfTask();
+                              updateDialog();
 
-                              openShowTaskInfoModal();
+                              // openShowTaskInfoModal();
                             }
 
                             // setState(() {});
@@ -769,11 +780,8 @@ class _categorieHomeState extends State<categorieHome> {
                         ),
                         onPressed: () async {
                           Navigator.pop(context, false);
-                          Navigator.pop(context, false);
                           if (_userToAdd.text.isNotEmpty) {
-                            print("ajout user");
                             await _addUser(_userToAdd.text.toString().trim());
-                            print("fin ajout");
                           }
                         },
                         child: const Text(
