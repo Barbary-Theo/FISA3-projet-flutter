@@ -24,6 +24,12 @@ Future<void> main() async {
     ),
     //name: "projetmobiles6"
   );
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp
+  ]);
+
   runApp(const MyApp());
 }
 

@@ -65,8 +65,8 @@ class _LoginPage extends State<LoginPage> {
                     height: MediaQuery.of(context).size.height / 15,
                     child: TextField(
                       controller: login,
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),

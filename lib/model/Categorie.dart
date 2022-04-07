@@ -4,9 +4,10 @@ class Categorie{
 
   List<Task> _tasks = <Task>[];
   String _name = "";
+  String id = "";
 
 
-  Categorie(this._tasks, this._name);
+  Categorie(this._tasks, this._name, this.id);
 
   Categorie.name(this._name);
 

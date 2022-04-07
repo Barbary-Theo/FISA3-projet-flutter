@@ -3,11 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Categorie.dart';
-import 'package:projetmobiles6/model/Project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/projetOrToDo.dart';
 
 import 'model/Task.dart';
 
@@ -30,10 +27,10 @@ class _toDoHomeState extends State<toDoHome> {
   bool loading = true;
 
   List<Color> colorList = [
-    Color(0xFFD7F2D3),
-    Color(0xFFD8D2ED),
-    Color(0xFFFFC6C6),
-    Color(0xFFFFDDB6),
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFC6C6),
+    const Color(0xFFFFDDB6),
   ];
 
   _toDoHomeState({this.mainElementId});
@@ -163,7 +160,6 @@ class _toDoHomeState extends State<toDoHome> {
                   },
                   onVerticalDragUpdate: (DragUpdateDetails dd) {
                     setState(() {
-                      print(dd);
                       allCoordinate.elementAt(i)[1] = dd.globalPosition.dy - MediaQuery.of(context).size.height / 6;
                       allCoordinate.elementAt(i)[0] = dd.globalPosition.dx - MediaQuery.of(context).size.width / 6;
                       displayTask();
@@ -184,16 +180,15 @@ class _toDoHomeState extends State<toDoHome> {
 
   @override
   void initState() {
-    fillList();
   }
 
   void research(String search) {
-    researchTache = [];
-    allTache.forEach((element) {
+    researchCategorie = [];
+    for (var element in allCategorie) {
       if (element.name.contains(search)) {
         researchTache.add(element);
       }
-    });
+    }
 
     setState(() {});
   }
@@ -211,6 +206,8 @@ class _toDoHomeState extends State<toDoHome> {
 
   Future<void> fillList() async {
     allTache = [];
+    allCoordinate = [];
+    allColor = [];
     try {
       var rng = Random();
       await FirebaseFirestore.instance
@@ -229,7 +226,6 @@ class _toDoHomeState extends State<toDoHome> {
 
     setState(() {
       researchTache = allTache;
-      print(loading);
       loading = false;
     });
   }
@@ -249,7 +245,7 @@ class _toDoHomeState extends State<toDoHome> {
           actions: [
             isSearching
                 ? Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -263,7 +259,7 @@ class _toDoHomeState extends State<toDoHome> {
                       ),
                     ))
                 : Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
