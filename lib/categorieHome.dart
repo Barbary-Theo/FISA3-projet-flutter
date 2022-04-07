@@ -69,8 +69,7 @@ class _categorieHomeState extends State<categorieHome> {
   void updateDialog() {
     // Check if dialog displayed, we can't call setState when dialog not displayed
     if (_dialogKey.currentState != null && _dialogKey.currentState.mounted) {
-      _dialogKey.currentState.setState(() {
-      });
+      _dialogKey.currentState.setState(() {});
     }
   }
 
@@ -85,22 +84,23 @@ class _categorieHomeState extends State<categorieHome> {
         .doc(taskIdTaskPressed)
         .get()
         .then((querySnapshot) async {
-        List<dynamic> temp = querySnapshot.get("members");
-        temp.forEach((element) async {
-          await FirebaseFirestore.instance
-              .collection('user')
-              .where("id", isEqualTo: element.toString())
-              .get()
-              .then((querySnapshot) {
-            for (var result in querySnapshot.docs) {
-                            setState(() {
-                _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
-              });
-              _setMenuItems();
-              // updateDialog();
-            }
-          });
+      List<dynamic> temp = querySnapshot.get("members");
+      temp.forEach((element) async {
+        await FirebaseFirestore.instance
+            .collection('user')
+            .where("id", isEqualTo: element.toString())
+            .get()
+            .then((querySnapshot) {
+          for (var result in querySnapshot.docs) {
+            setState(() {
+              _allMembersOfTask
+                  .add(Members(result.get("email"), result.get("id")));
+            });
+            _setMenuItems();
+            // updateDialog();
+          }
         });
+      });
     });
     // updateDialog();
   }
@@ -178,7 +178,6 @@ class _categorieHomeState extends State<categorieHome> {
           List<dynamic> temp = result.get("members");
 
           await addMembers(temp);
-
         }
         setState(() {
           _loading = false;
@@ -230,9 +229,7 @@ class _categorieHomeState extends State<categorieHome> {
 
     await initData();
     await setAllUserOfTask();
-    setState(() {
-
-    });
+    setState(() {});
     updateDialog();
   }
 
@@ -482,175 +479,189 @@ class _categorieHomeState extends State<categorieHome> {
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
-            key: _dialogKey,
+              key: _dialogKey,
               builder: (BuildContext context, StateSetter setState) {
-            return Dialog(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height / 1.5,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: Column(children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Nom de la tâche : " + taskNameTaskPressed),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Description : " + taskDescTaskPressed),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("Date de fin : " +
-                            taskDeadLinePressed.year.toString() +
-                            "/" +
-                            taskDeadLinePressed.month.toString() +
-                            "/" +
-                            taskDeadLinePressed.day.toString()),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 4.5,
-                        child: Column(
-                          children: [
-                            RadioListTile(
-                                title: const Text('Pas commencé'),
-                                value: 0,
-                                groupValue: _status,
-                                onChanged: (int value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({'status': _status});
-                                  for (var element in allTask) {
-                                    if (element.id == taskIdTaskPressed) {
-                                      element.status = _status;
-                                    }
-                                  }
-                                  initData();
-                                  setState(() {});
-                                }),
-                            RadioListTile(
-                                title: const Text('Commencé'),
-                                value: 1,
-                                groupValue: _status,
-                                onChanged: (value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({'status': _status});
-                                  for (var element in allTask) {
-                                    if (element.id == taskIdTaskPressed) {
-                                      element.status = _status;
-                                    }
-                                  }
-                                  initData();
-                                  setState(() {});
-                                }),
-                            RadioListTile(
-                                title: const Text('Fini'),
-                                value: 2,
-                                groupValue: _status,
-                                onChanged: (value) async {
-                                  _status = value;
-                                  await FirebaseFirestore.instance
-                                      .collection('task')
-                                      .doc(taskIdTaskPressed)
-                                      .update({'status': _status});
+                return Dialog(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Center(
+                        child: Column(children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: Text(
+                                "Nom de la tâche : " + taskNameTaskPressed),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: Text("Description : " + taskDescTaskPressed),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: Text("Date de fin : " +
+                                taskDeadLinePressed.year.toString() +
+                                "/" +
+                                taskDeadLinePressed.month.toString() +
+                                "/" +
+                                taskDeadLinePressed.day.toString()),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 4.5,
+                            child: Column(
+                              children: [
+                                RadioListTile(
+                                    title: const Text('Pas commencé'),
+                                    value: 0,
+                                    groupValue: _status,
+                                    onChanged: (int value) async {
+                                      _status = value;
+                                      await FirebaseFirestore.instance
+                                          .collection('task')
+                                          .doc(taskIdTaskPressed)
+                                          .update({'status': _status});
+                                      for (var element in allTask) {
+                                        if (element.id == taskIdTaskPressed) {
+                                          element.status = _status;
+                                        }
+                                      }
+                                      initData();
+                                      setState(() {});
+                                    }),
+                                RadioListTile(
+                                    title: const Text('Commencé'),
+                                    value: 1,
+                                    groupValue: _status,
+                                    onChanged: (value) async {
+                                      _status = value;
+                                      await FirebaseFirestore.instance
+                                          .collection('task')
+                                          .doc(taskIdTaskPressed)
+                                          .update({'status': _status});
+                                      for (var element in allTask) {
+                                        if (element.id == taskIdTaskPressed) {
+                                          element.status = _status;
+                                        }
+                                      }
+                                      initData();
+                                      setState(() {});
+                                    }),
+                                RadioListTile(
+                                    title: const Text('Fini'),
+                                    value: 2,
+                                    groupValue: _status,
+                                    onChanged: (value) async {
+                                      _status = value;
+                                      await FirebaseFirestore.instance
+                                          .collection('task')
+                                          .doc(taskIdTaskPressed)
+                                          .update({'status': _status});
 
-                                  for (var element in allTask) {
-                                    if (element.id == taskIdTaskPressed) {
-                                      element.status = _status;
-                                    }
+                                      for (var element in allTask) {
+                                        if (element.id == taskIdTaskPressed) {
+                                          element.status = _status;
+                                        }
+                                      }
+                                      initData();
+                                      setState(() {});
+                                    }),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height >
+                                    MediaQuery.of(context).size.width
+                                ? MediaQuery.of(context).size.width / 4.8
+                                : MediaQuery.of(context).size.height / 4.8,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _allMembersOfTask.length + 2,
+                                itemBuilder: (BuildContext context, int i) {
+                                  Widget circle;
+                                  if (i == _allMembersOfTask.length) {
+                                    circle = CircleAvatar(
+                                      backgroundColor: const Color(0xFF92DEB1),
+                                      radius: MediaQuery.of(context)
+                                                  .size
+                                                  .height >
+                                              MediaQuery.of(context).size.width
+                                          ? MediaQuery.of(context).size.width /
+                                              10
+                                          : MediaQuery.of(context).size.height /
+                                              10,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove),
+                                        onPressed: () async {
+                                          await _showModalRemoveMember(context);
+                                          setState(() {});
+                                        },
+                                      ),
+                                    );
+                                  } else if (i ==
+                                      _allMembersOfTask.length + 1) {
+                                    circle = CircleAvatar(
+                                      backgroundColor: const Color(0xFFFFC6C6),
+                                      radius: MediaQuery.of(context)
+                                                  .size
+                                                  .height >
+                                              MediaQuery.of(context).size.width
+                                          ? MediaQuery.of(context).size.width /
+                                              10
+                                          : MediaQuery.of(context).size.height /
+                                              10,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: () {
+                                          _showModalAddUser(context);
+                                          setState(() {});
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    circle = CircleAvatar(
+                                      backgroundColor:
+                                          _colorList.elementAt(i % 4),
+                                      radius: MediaQuery.of(context)
+                                                  .size
+                                                  .height >
+                                              MediaQuery.of(context).size.width
+                                          ? MediaQuery.of(context).size.width /
+                                              10
+                                          : MediaQuery.of(context).size.height /
+                                              10,
+                                      child: Text(_allMembersOfTask
+                                          .elementAt(i)
+                                          .email
+                                          .characters
+                                          .characterAt(0)
+                                          .toString()
+                                          .toUpperCase()),
+                                    );
                                   }
-                                  initData();
-                                  setState(() {});
+                                  return circle;
                                 }),
-                          ],
-                        ),
+                          ),
+                        ]),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height >
-                                MediaQuery.of(context).size.width
-                            ? MediaQuery.of(context).size.width / 4.8
-                            : MediaQuery.of(context).size.height / 4.8,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _allMembersOfTask.length + 2,
-                            itemBuilder: (BuildContext context, int i) {
-                              Widget circle;
-                              if (i == _allMembersOfTask.length) {
-                                circle = CircleAvatar(
-                                  backgroundColor: const Color(0xFF92DEB1),
-                                  radius: MediaQuery.of(context).size.height >
-                                          MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.remove),
-                                    onPressed: () async {
-                                      await _showModalRemoveMember(
-                                          context);
-                                      setState(() {});
-                                    },
-                                  ),
-                                );
-                              } else if (i == _allMembersOfTask.length + 1) {
-                                circle = CircleAvatar(
-                                  backgroundColor: const Color(0xFFFFC6C6),
-                                  radius: MediaQuery.of(context).size.height >
-                                          MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.add),
-                                    onPressed: () {
-                                      _showModalAddUser(context);
-                                      setState(() {});
-                                    },
-                                  ),
-                                );
-                              } else {
-                                circle = CircleAvatar(
-                                  backgroundColor: _colorList.elementAt(i % 4),
-                                  radius: MediaQuery.of(context).size.height >
-                                          MediaQuery.of(context).size.width
-                                      ? MediaQuery.of(context).size.width / 10
-                                      : MediaQuery.of(context).size.height / 10,
-                                  child: Text(_allMembersOfTask
-                                      .elementAt(i)
-                                      .email
-                                      .characters
-                                      .characterAt(0)
-                                      .toString()
-                                      .toUpperCase()),
-                                );
-                              }
-                              return circle;
-                            }),
-                      ),
-                    ]),
+                    ),
                   ),
-                ),
-              ),
-            );
-          });
+                );
+              });
         });
   }
 
@@ -660,102 +671,104 @@ class _categorieHomeState extends State<categorieHome> {
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                    contentPadding: EdgeInsets.only(bottom: 10.0),
-                    content: SizedBox(
-                        height: MediaQuery.of(context).size.height / 3.5,
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    InkWell(
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            top: 10.0, bottom: 10.0),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFFFC6C6),
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(16.0),
-                                              topRight: Radius.circular(16.0)),
-                                        ),
-                                        child: Text(
-                                          "Suppression",
-                                          style: TextStyle(
-                                              color: Color(0xFF696868),
-                                              fontSize: 25),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
+            return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                content: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0, bottom: 10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFC6C6),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
                                     ),
-                                  ]),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 20,
-                              ),
-                              SizedBox(
-                                  child: DropdownButton<String>(
-                                    value: _selectedMember,
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    onChanged: (String value) {
-                                      setState(() {
-                                        _selectedMember = value;
-                                        for (var element in _allMembersOfTask) {
-                                          if (element.email == value) {
-                                            _selectedMemberId = element.id;
-                                          }
-                                        }
-                                      });
-                                    },
-                                    items: _menuItems,
-                                  )),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 25,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.height / 5,
-                                child:ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                        const Color(0xFFFFDDB6)),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(18.0),
-                                      ),
+                                    child: Text(
+                                      "Suppression",
+                                      style: TextStyle(
+                                          color: Color(0xFF696868),
+                                          fontSize: 25),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  onPressed: () async {
-                                    Navigator.pop(context, false);
-
-                                    if (_selectedMember != _auth.currentUser.email) {
-                                      await FirebaseFirestore.instance
-                                          .collection('task')
-                                          .doc(taskIdTaskPressed)
-                                          .update({
-                                        "members":
-                                        FieldValue.arrayRemove([_selectedMemberId])
-                                      });
-                                      Navigator.pop(context, false);
-                                      await initData();
-                                      openShowTaskInfoModal();
-                                    }
-
-                                    // setState(() {});
-                                  },
-                                  child: const Text(
-                                    'Valider',
-                                    style: TextStyle(color: Colors.black),
+                                ),
+                              ]),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 20,
+                          ),
+                          SizedBox(
+                              child: DropdownButton<String>(
+                            value: _selectedMember,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            onChanged: (String value) {
+                              setState(() {
+                                _selectedMember = value;
+                                for (var element in _allMembersOfTask) {
+                                  if (element.email == value) {
+                                    _selectedMemberId = element.id;
+                                  }
+                                }
+                              });
+                            },
+                            items: _menuItems,
+                          )),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 25,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.height / 5,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
                                   ),
                                 ),
                               ),
-                            ],
+                              onPressed: () async {
+                                Navigator.pop(context, false);
+                                if (_selectedMember != _auth.currentUser.email) {
+                                  await FirebaseFirestore.instance
+                                      .collection('task')
+                                      .doc(taskIdTaskPressed)
+                                      .update({
+                                    "members":
+                                    FieldValue.arrayRemove([_selectedMemberId])
+                                  });
+                                  // Navigator.pop(context, false);
+                                  await initData();
+                                  await setAllUserOfTask();
+                                  updateDialog();
+
+                                  // openShowTaskInfoModal();
+                                }
+                                // setState(() {});
+                              },
+                              child: const Text(
+                                'Valider',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ),
-                        )));
-              });
+                        ],
+                      ),
+                    )));
+          });
         });
   }
 
@@ -836,12 +849,9 @@ class _categorieHomeState extends State<categorieHome> {
                               ),
                               onPressed: () async {
                                 Navigator.pop(context, false);
-                                Navigator.pop(context, false);
                                 if (_userToAdd.text.isNotEmpty) {
-                                  print("ajout user");
                                   await _addUser(
                                       _userToAdd.text.toString().trim());
-                                  print("fin ajout");
                                 }
                               },
                               child: const Text(
