@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/model/Members.dart';
+import 'package:projetmobiles6/projectMain.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projetSettings extends StatefulWidget {
@@ -32,8 +33,12 @@ class _projetSettingsState extends State<projetSettings> {
   String _selectedMemberId = "";
   List<DropdownMenuItem<String>> _menuItems = <DropdownMenuItem<String>>[];
   final TextEditingController _userToAdd = TextEditingController();
-  final List<Color> _colorList = [const Color(0xFFD7F2D3),const Color(0xFFD8D2ED),const Color(0xFFFFDDB6),const Color(0xFFFFDDB6),];
-
+  final List<Color> _colorList = [
+    const Color(0xFFD7F2D3),
+    const Color(0xFFD8D2ED),
+    const Color(0xFFFFDDB6),
+    const Color(0xFFFFDDB6),
+  ];
 
   @override
   void initState() {
@@ -68,7 +73,7 @@ class _projetSettingsState extends State<projetSettings> {
               .get()
               .then((querySnapshot) {
             querySnapshot.docs.forEach((result) {
-              if(result.get("email") != _auth.currentUser.email){
+              if (result.get("email") != _auth.currentUser.email) {
                 _allMembersOfProject
                     .add(Members(result.get("email"), result.get("id")));
                 _allMembersEmail.add(result.get("email"));
@@ -77,10 +82,11 @@ class _projetSettingsState extends State<projetSettings> {
             });
           });
 
-
           if (_allMembersOfProject.length == temp.length - 1) {
-            if(_allMembersOfProject.isEmpty){
-              setState(() {loading = false;});
+            if (_allMembersOfProject.isEmpty) {
+              setState(() {
+                loading = false;
+              });
             } else {
               setState(() {
                 _selectedMember = _allMembersOfProject.elementAt(0).email;
@@ -133,7 +139,6 @@ class _projetSettingsState extends State<projetSettings> {
   }
 
   Future<void> _deleteProject() async {
-
     try {
 
       await FirebaseFirestore.instance.collection("categorie").where(
@@ -145,15 +150,17 @@ class _projetSettingsState extends State<projetSettings> {
         }
       });
 
-      await FirebaseFirestore.instance.collection("project").doc(mainElementId).delete();
-
+      await FirebaseFirestore.instance
+          .collection("project")
+          .doc(mainElementId)
+          .delete();
 
       //Todo : Remove all task link to categorie
 
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => projet()),
+          MaterialPageRoute(builder: (context) => projectMain()),
               (route) => false);
-    } catch(e){
+    } catch (e) {
       print("error : ");
       print(e);
     }
@@ -177,7 +184,8 @@ class _projetSettingsState extends State<projetSettings> {
             const Center(
               child: Text(
                 "Nom du projet",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                style:
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
             SizedBox(
@@ -194,7 +202,8 @@ class _projetSettingsState extends State<projetSettings> {
             const Center(
               child: Text(
                 "Description du projet",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                style:
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
             SizedBox(
@@ -210,8 +219,7 @@ class _projetSettingsState extends State<projetSettings> {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
                     const Color(0xFFFFC6C6)),
-                shape: MaterialStateProperty.all<
-                    RoundedRectangleBorder>(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),
@@ -271,7 +279,7 @@ class _projetSettingsState extends State<projetSettings> {
                       );
                     } else {
                       circle = CircleAvatar(
-                        backgroundColor: _colorList.elementAt(i%4),
+                        backgroundColor: _colorList.elementAt(i % 4),
                         radius: MediaQuery.of(context).size.height >
                             MediaQuery.of(context).size.width
                             ? MediaQuery.of(context).size.width / 10
@@ -299,80 +307,79 @@ class _projetSettingsState extends State<projetSettings> {
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                    contentPadding: EdgeInsets.only(bottom: 10.0),
-                    content: SizedBox(
-                        height: MediaQuery.of(context).size.height / 3.5,
+                return Dialog(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: const Text("Suppression",
+                            style:
+                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                        automaticallyImplyLeading: false,
+                        backgroundColor: const Color(0xFF92DEB1),
+                      ),
+                      body: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
                         child: Center(
-                          child: Column(
-                            children: [
-                              Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    InkWell(
-                                      child: Container(
-                                        padding:
-                                        EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFF92DEB1),
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(16.0),
-                                              topRight: Radius.circular(16.0)),
-                                        ),
-                                        child: Text("Suppression",
-                                          style: TextStyle(
-                                              color: Color(0xFF696868),
-                                              fontSize: 25),
-                                          textAlign: TextAlign.center,),
-                                      ),
-                                    ),
-                                  ]),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 20,
-                              ),
-                              SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: DropdownButton<String>(
-                                    value: _selectedMember,
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    onChanged: (String value) {
-                                      setState(() {
-                                        _selectedMember = value;
-                                        for (var element in _allMembersOfProject) {
-                                          if (element.email == value) {
-                                            _selectedMemberId = element.id;
-                                          }
+                          child: Column(children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                child: DropdownButton<String>(
+                                  value: _selectedMember,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                  onChanged: (String value) {
+                                    setState(() {
+                                      _selectedMember = value;
+                                      for (var element in _allMembersOfProject) {
+                                        if (element.email == value) {
+                                          _selectedMemberId = element.id;
                                         }
-                                      });
-                                    },
-                                    items: _menuItems,
-                                  )),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height / 25,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.height / 5,
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                      const Color(0xFFFFDDB6),
-                                    ),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(18.0),
-                                      ),
-                                    ),
+                                      }
+                                    });
+                                  },
+                                  items: _menuItems,
+                                )),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(
+                                    const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        )
-                    )
+                              onPressed: () async {
+                                if (_selectedMember != _auth.currentUser.email) {
+                                  await FirebaseFirestore.instance
+                                      .collection('project')
+                                      .doc(mainElementId)
+                                      .update({
+                                    "members":
+                                    FieldValue.arrayRemove([_selectedMemberId])
+                                  });
+                                }
+                                Navigator.pop(context, false);
+                                _initializeProjectData();
+                                setState(() {});
+                              },
+                              child: const Text(
+                                'Valider',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               });
         });
@@ -422,8 +429,8 @@ class _projetSettingsState extends State<projetSettings> {
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
                               const Color(0xFFFFDDB6)),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
                             ),
@@ -449,68 +456,72 @@ class _projetSettingsState extends State<projetSettings> {
         });
   }
 
-
   _sureToDelete(context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-                child: Center(
-                    child: Column(
-                      children: [
-                        Text("Confirmation",
-                            style:
-                            TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFDDB6)),
-                            shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
+          return Dialog(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 3,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text("Confirmation",
+                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
+                  automaticallyImplyLeading: false,
+                  backgroundColor: const Color(0xFF92DEB1),
+                ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: Column(children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 25,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFFFDDB6)),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                             ),
                           ),
-                          onPressed: () {
-                            _deleteProject();
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Oui',
-                            style: TextStyle(color: Colors.black),
-                          ),
                         ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFC6C6)),
-                            shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
+                        onPressed: () {
+                          _deleteProject();
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Oui',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFFFC6C6)),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Non',
-                            style: TextStyle(color: Colors.black),
-                          ),
                         ),
-                      ],
-                    )),
-              ));
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text(
+                          'Non',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          );
         });
   }
 }

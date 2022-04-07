@@ -41,6 +41,7 @@ class _categorieHomeState extends State<categorieHome> {
   final TextEditingController _descController = TextEditingController();
   DateTime _deadLine = DateTime.now();
   final _auth = FirebaseAuth.instance;
+  List<Members> _allMembersOfCategorie = <Members>[];
   List<Members> _allMembersOfTask = <Members>[];
   List<String> _allMembersEmail = <String>[];
   String _selectedMember = "";
@@ -64,8 +65,36 @@ class _categorieHomeState extends State<categorieHome> {
     initData();
   }
 
-  void openShowTaskInfoModal(){
+  void openShowTaskInfoModal() {
     _showModalTaskInfo(context);
+  }
+
+  Future<void> setAllUserOfTask() async {
+    _allMembersOfTask = <Members>[];
+    await FirebaseFirestore.instance
+        .collection('task')
+        .doc(taskIdTaskPressed)
+        .get()
+        .then((querySnapshot) async {
+        List<dynamic> temp = querySnapshot.get("members");
+        print(temp);
+        temp.forEach((element) async {
+          await FirebaseFirestore.instance
+              .collection('user')
+              .where("id", isEqualTo: element.toString())
+              .get()
+              .then((querySnapshot) {
+            for (var result in querySnapshot.docs) {
+              print(result.get("email"));
+
+              setState(() {
+                _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
+              });
+              _setMenuItems();
+            }
+          });
+        });
+    });
   }
 
   void addTask(String name, String description, int status, DateTime deadLine) {
@@ -85,7 +114,7 @@ class _categorieHomeState extends State<categorieHome> {
   }
 
   Future<void> addMembers(List<dynamic> temp) async {
-    _allMembersOfTask = <Members>[];
+    _allMembersOfCategorie = <Members>[];
     for (var element in temp) {
       await FirebaseFirestore.instance
           .collection('user')
@@ -94,21 +123,22 @@ class _categorieHomeState extends State<categorieHome> {
           .then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           print(result.get("email"));
-          _allMembersOfTask.add(Members(result.get("email"), result.get("id")));
+          _allMembersOfCategorie
+              .add(Members(result.get("email"), result.get("id")));
         }
       });
 
-      if (_allMembersOfTask.length == temp.length) {
-        if (_allMembersOfTask.isEmpty) {
+      if (_allMembersOfCategorie.length == temp.length) {
+        if (_allMembersOfCategorie.isEmpty) {
           setState(() {
             _loading = false;
             print(_loading);
           });
         } else {
           setState(() {
-            _selectedMember = _allMembersOfTask.elementAt(0).email;
-            _selectedMemberId = _allMembersOfTask.elementAt(0).id;
-            _setMenuItems();
+            _selectedMember = _allMembersOfCategorie.elementAt(0).email;
+            _selectedMemberId = _allMembersOfCategorie.elementAt(0).id;
+
             _loading = false;
           });
         }
@@ -155,7 +185,7 @@ class _categorieHomeState extends State<categorieHome> {
     // setState(() {});
   }
 
-  void _setMenuItems() {
+  Future<void> _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
     for (var element in _allMembersOfTask) {
       _menuItems.add(
@@ -192,7 +222,11 @@ class _categorieHomeState extends State<categorieHome> {
     }
 
     await initData();
-    await openShowTaskInfoModal();
+    await setAllUserOfTask();
+    setState(() {
+
+    });
+    openShowTaskInfoModal();
   }
 
   @override
@@ -286,6 +320,7 @@ class _categorieHomeState extends State<categorieHome> {
                               taskDeadLinePressed =
                                   allTask.elementAt(i - 2).deadLine;
                               _status = allTask.elementAt(i - 2).status;
+                              setAllUserOfTask();
                               _showModalTaskInfo(context);
                             },
                           ),
@@ -623,7 +658,7 @@ class _categorieHomeState extends State<categorieHome> {
                               onChanged: (String value) {
                                 setState(() {
                                   _selectedMember = value;
-                                  for (var element in _allMembersOfTask) {
+                                  for (var element in _allMembersOfCategorie) {
                                     if (element.email == value) {
                                       _selectedMemberId = element.id;
                                     }
@@ -659,10 +694,10 @@ class _categorieHomeState extends State<categorieHome> {
                               });
                               Navigator.pop(context, false);
                               await initData();
+                              await setAllUserOfTask();
+
                               openShowTaskInfoModal();
-
                             }
-
 
                             // setState(() {});
                           },
@@ -733,7 +768,6 @@ class _categorieHomeState extends State<categorieHome> {
                           ),
                         ),
                         onPressed: () async {
-
                           Navigator.pop(context, false);
                           Navigator.pop(context, false);
                           if (_userToAdd.text.isNotEmpty) {
@@ -741,7 +775,6 @@ class _categorieHomeState extends State<categorieHome> {
                             await _addUser(_userToAdd.text.toString().trim());
                             print("fin ajout");
                           }
-
                         },
                         child: const Text(
                           'Valider',
