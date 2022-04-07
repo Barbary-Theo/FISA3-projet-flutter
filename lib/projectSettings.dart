@@ -356,6 +356,7 @@ class _projetSettingsState extends State<projetSettings> {
                               Container(
                                 width: MediaQuery.of(context).size.height / 5,
                                 child: ElevatedButton(
+                                  child: Text("Valider"),
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(
                                       const Color(0xFFFFDDB6),
@@ -367,6 +368,21 @@ class _projetSettingsState extends State<projetSettings> {
                                       ),
                                     ),
                                   ),
+                                  onPressed: () async {
+                                    if (_selectedMember != _auth.currentUser.email) {
+                                      await FirebaseFirestore.instance
+                                          .collection('project')
+                                          .doc(mainElementId)
+                                          .update({
+                                        "members":
+                                        FieldValue.arrayRemove([_selectedMemberId])
+                                      });
+                                    }
+                                    Navigator.pop(context, false);
+                                    _initializeProjectData();
+                                    setState(() {});
+                                  },
+
                                 ),
                               ),
                             ],
