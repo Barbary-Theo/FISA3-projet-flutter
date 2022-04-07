@@ -298,85 +298,66 @@ class _toDoHomeState extends State<toDoHome> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Création",
-                      style: TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF92DEB1),
-                ),
-                body: Container(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child: Column(children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: Container(
+              width: 300.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                    child: TextField(
+                      controller: tacheName,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(20.0)),
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: TextField(
-                            controller: tacheName,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
-                              ),
-                              filled: true,
-                              hintStyle: TextStyle(color: Colors.grey),
-                              hintText: "Nom de la tâche",
-                              fillColor: Colors.white70,
-                            ),
-                            filled: true,
-                            hintStyle: TextStyle(color: Colors.grey),
-                            hintText: "Nom de la tâche",
-                            fillColor: Colors.white70,
-                          ),
-                        ),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey),
+                        hintText: "Nom de la tâche",
+                        fillColor: Colors.white70,
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 25,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  InkWell(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF92DEB1),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16.0),
+                            bottomRight: Radius.circular(16.0)),
                       ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xFFFFDDB6)),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (!tacheName.text.isEmpty) {
-                              addTache(
-                                  tacheName.text.toString().trim());
-                            }
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Valider',
-                            style: TextStyle(color: Colors.black),
-                          ),
+                      child: TextButton(
+                        child: Text(
+                          "Ajouter la tâche",
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
                         ),
-                        onPressed: () {
-                          if (categorieName.text.isNotEmpty) {
-                            addCategorie(
-                                categorieName.text.toString().trim());
+                      onPressed: () {
+                        print(tacheName.text);
+                        if (!tacheName.text.isEmpty) {
+                          addTache(
+                            tacheName.text.toString().trim());
                           }
                           Navigator.pop(context, false);
                         },
-                        child: const Text(
-                          'Valider',
-                          style: TextStyle(color: Colors.black),
-                        ),
                       ),
-                    ]),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
