@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/model/Members.dart';
+import 'package:projetmobiles6/projectMain.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projetSettings extends StatefulWidget {
