@@ -231,9 +231,9 @@ class _projetState extends State<projet> {
         builder: (BuildContext context) {
           return AlertDialog(
               shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16),
-                  )
-              ),
+                  borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              )),
               contentPadding: const EdgeInsets.all(5),
               content: InkWell(
                 borderRadius: const BorderRadius.all(Radius.circular(16.0)),
@@ -277,14 +277,11 @@ class _projetState extends State<projet> {
                             scrollDirection: Axis.vertical,
                             child: Column(children: [
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 25,
+                                height: MediaQuery.of(context).size.height / 25,
                               ),
                               SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 1.5,
-                                height:
-                                    MediaQuery.of(context).size.height / 15,
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                height: MediaQuery.of(context).size.height / 15,
                                 child: TextField(
                                   controller: elementName,
                                   decoration: const InputDecoration(
@@ -300,14 +297,11 @@ class _projetState extends State<projet> {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 20,
+                                height: MediaQuery.of(context).size.height / 20,
                               ),
                               SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 1.5,
-                                height:
-                                    MediaQuery.of(context).size.height / 5,
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                height: MediaQuery.of(context).size.height / 5,
                                 child: TextField(
                                   controller: elementDesc,
                                   maxLines: 10,
@@ -324,8 +318,7 @@ class _projetState extends State<projet> {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 30,
+                                height: MediaQuery.of(context).size.height / 30,
                               ),
                               ElevatedButton(
                                 style: ButtonStyle(
@@ -336,8 +329,7 @@ class _projetState extends State<projet> {
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(18.0),
+                                      borderRadius: BorderRadius.circular(18.0),
                                     ),
                                   ),
                                 ),
@@ -360,14 +352,11 @@ class _projetState extends State<projet> {
                             scrollDirection: Axis.vertical,
                             child: Column(children: [
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 25,
+                                height: MediaQuery.of(context).size.height / 25,
                               ),
                               SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 1.5,
-                                height:
-                                    MediaQuery.of(context).size.height / 15,
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                height: MediaQuery.of(context).size.height / 15,
                                 child: TextField(
                                   controller: elementName,
                                   decoration: const InputDecoration(
@@ -383,14 +372,11 @@ class _projetState extends State<projet> {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 20,
+                                height: MediaQuery.of(context).size.height / 20,
                               ),
                               SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 1.5,
-                                height:
-                                    MediaQuery.of(context).size.height / 5,
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                height: MediaQuery.of(context).size.height / 5,
                                 child: TextField(
                                   controller: elementDesc,
                                   maxLines: 10,
@@ -407,8 +393,7 @@ class _projetState extends State<projet> {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 25,
+                                height: MediaQuery.of(context).size.height / 25,
                               ),
                               ElevatedButton(
                                 style: ButtonStyle(
@@ -418,8 +403,7 @@ class _projetState extends State<projet> {
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(18.0),
+                                      borderRadius: BorderRadius.circular(18.0),
                                     ),
                                   ),
                                 ),

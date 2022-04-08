@@ -80,11 +80,11 @@ class _toDoHomeState extends State<toDoHome> {
                         children: [
                           Center(
                               child:
-                              Text(allTache.elementAt(i).name.toString())),
+                                  Text(allTache.elementAt(i).name.toString())),
                           Checkbox(
                             checkColor: Colors.white,
                             fillColor:
-                            MaterialStateProperty.resolveWith(getColor),
+                                MaterialStateProperty.resolveWith(getColor),
                             value: allTache.elementAt(i).validate,
                             onChanged: (bool value) {
                               allTache.elementAt(i).validate = value;
@@ -98,15 +98,15 @@ class _toDoHomeState extends State<toDoHome> {
                                 FirebaseFirestore.instance
                                     .collection("task")
                                     .where("mainElementId",
-                                    isEqualTo: mainElementId)
+                                        isEqualTo: mainElementId)
                                     .where("name",
-                                    isEqualTo: allTache.elementAt(i).name)
+                                        isEqualTo: allTache.elementAt(i).name)
                                     .get()
                                     .then((querySnapshot) {
                                   for (var result in querySnapshot.docs) {
                                     Map mapCheck = <String, bool>{};
                                     mapCheck.putIfAbsent("validate",
-                                            () => allTache.elementAt(i).validate);
+                                        () => allTache.elementAt(i).validate);
                                     FirebaseFirestore.instance
                                         .collection("task")
                                         .doc(result.id)
@@ -127,9 +127,9 @@ class _toDoHomeState extends State<toDoHome> {
                                   FirebaseFirestore.instance
                                       .collection("task")
                                       .where("mainElementId",
-                                      isEqualTo: mainElementId)
+                                          isEqualTo: mainElementId)
                                       .where("name",
-                                      isEqualTo: allTache.elementAt(i).name)
+                                          isEqualTo: allTache.elementAt(i).name)
                                       .get()
                                       .then((querySnapshot) {
                                     for (var result in querySnapshot.docs) {

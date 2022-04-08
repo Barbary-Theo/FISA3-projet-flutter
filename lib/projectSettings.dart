@@ -105,7 +105,6 @@ class _projetSettingsState extends State<projetSettings> {
         print("error : ");
         print(error);
       }
-
     }
   }
 
@@ -184,17 +183,16 @@ class _projetSettingsState extends State<projetSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: loading
-            ? const Center(
-                child: SpinKitChasingDots(
-                  color: Color(0xFFFFDDB6),
-                  size: 50.0,
-                ),
-              )
-            :
-                  SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
+      body: loading
+          ? const Center(
+              child: SpinKitChasingDots(
+                color: Color(0xFFFFDDB6),
+                size: 50.0,
+              ),
+            )
+          : SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
                 children: [
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 10,
@@ -316,7 +314,9 @@ class _projetSettingsState extends State<projetSettings> {
                   ),
                   const Divider(color: Colors.black, height: 1),
                 ],
-              ),),);
+              ),
+            ),
+    );
   }
 
   Future<void> _showModalRemoveMember(context) async {

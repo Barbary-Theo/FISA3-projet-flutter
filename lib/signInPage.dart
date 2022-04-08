@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:projetmobiles6/loginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-class SignInPage extends StatefulWidget{
+class SignInPage extends StatefulWidget {
   @override
   State<SignInPage> createState() => _SignInPage();
 }
 
 class _SignInPage extends State<SignInPage> {
-
   final TextEditingController login = TextEditingController();
   final TextEditingController password1 = TextEditingController();
   final TextEditingController password2 = TextEditingController();
@@ -19,11 +17,8 @@ class _SignInPage extends State<SignInPage> {
 
   void _goToLogIn() {
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => const LoginPage()
-        ),
-            (route) => false
-    );
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false);
   }
 
   @override
@@ -118,7 +113,7 @@ class _SignInPage extends State<SignInPage> {
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.white),
+                        MaterialStateProperty.all<Color>(Colors.white),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
@@ -134,12 +129,11 @@ class _SignInPage extends State<SignInPage> {
                       setState(() {
                         _goToLogIn();
                       });
-
                     } on FirebaseAuthException catch (e) {
                       setState(() {
                         errorText = e.message;
                       });
-                    } catch(error){
+                    } catch (error) {
                       if (kDebugMode) {
                         print(error);
                       }
@@ -163,8 +157,8 @@ class _SignInPage extends State<SignInPage> {
                 ),
                 ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xFFFFDDB6)),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xFFFFDDB6)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),

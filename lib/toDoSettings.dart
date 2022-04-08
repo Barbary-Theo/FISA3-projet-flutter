@@ -48,71 +48,70 @@ class _toDoSettings extends State<toDoSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:  Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 10,
-            ),
-            const Center(
-              child: Text(
-                "Nom de la ToDo List",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(
-                _toDoName,
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            const Center(
-              child: Text(
-                "Description de la ToDo List",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            Center(
-              child: Text(_toDoDesc),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 40,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
+        body: Column(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 10,
+        ),
+        const Center(
+          child: Text(
+            "Nom de la ToDo List",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 40,
+        ),
+        Center(
+          child: Text(
+            _toDoName,
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 40,
+        ),
+        const Center(
+          child: Text(
+            "Description de la ToDo List",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 40,
+        ),
+        Center(
+          child: Text(_toDoDesc),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 40,
+        ),
+        ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
                 MaterialStateProperty.all<Color>(const Color(0xFFFFC6C6)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                _sureToDelete(context);
-              },
-              child: const Text(
-                'Supprimer la ToDo List',
-                style: TextStyle(color: Colors.black),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-            ),
-          ],
-        ));
+          ),
+          onPressed: () {
+            _sureToDelete(context);
+          },
+          child: const Text(
+            'Supprimer la ToDo List',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+        ),
+      ],
+    ));
   }
 
   Future<void> _deleteToDo() async {
     try {
-
       await FirebaseFirestore.instance
           .collection("task")
           .where("mainElementId", isEqualTo: mainElementId)
@@ -129,8 +128,7 @@ class _toDoSettings extends State<toDoSettings> {
           .delete();
 
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => projet()),
-              (route) => false);
+          MaterialPageRoute(builder: (context) => projet()), (route) => false);
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -150,56 +148,55 @@ class _toDoSettings extends State<toDoSettings> {
                 height: MediaQuery.of(context).size.height / 4,
                 child: Center(
                     child: Column(
-                      children: [
-                        const Text("Confirmation",
-                            style:
+                  children: [
+                    const Text("Confirmation",
+                        style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 25,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFDDB6)),
-                            shape:
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 25,
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFFFFDDB6)),
+                        shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            _deleteToDo();
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Oui',
-                            style: TextStyle(color: Colors.black),
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color(0xFFFFC6C6)),
-                            shape:
+                      ),
+                      onPressed: () {
+                        _deleteToDo();
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text(
+                        'Oui',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFFFFC6C6)),
+                        shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context, false);
-                          },
-                          child: const Text(
-                            'Non',
-                            style: TextStyle(color: Colors.black),
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                      ],
-                    )),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      child: const Text(
+                        'Non',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                )),
               ));
         });
   }
-
 }
