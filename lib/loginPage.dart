@@ -111,13 +111,16 @@ class _LoginPage extends State<LoginPage> {
                               password: password.text.trim());
 
                           bool exist = false;
+                          print(_auth.currentUser.uid);
 
                           await FirebaseFirestore.instance
                               .collection('user')
                               .where("id", isEqualTo: _auth.currentUser.uid)
                               .get()
                               .then((querySnapshot) {
-                            exist = true;
+                            for (var result in querySnapshot.docs) {
+                              exist = true;
+                            }
                           });
                           if (!exist) {
                             FirebaseFirestore.instance.collection("user").add({
