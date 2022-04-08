@@ -270,7 +270,7 @@ class _categorieHomeState extends State<categorieHome> {
                       );
                     } else {
                       widget = const Center(
-                        child: Text("Pas de tâches affecté à la catégorie"),
+                        child: Text("Pas de tâches affectées à la catégorie"),
                       );
                     }
                     return widget;
