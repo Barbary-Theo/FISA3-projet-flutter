@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'model/Task.dart';
@@ -209,9 +208,7 @@ class _toDoHomeState extends State<toDoHome> {
         'validate': false
       });
     } catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
+      print(error);
     }
     fillList();
   }
@@ -238,9 +235,7 @@ class _toDoHomeState extends State<toDoHome> {
       });
       await displayTask();
     } catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
+      print(error);
     }
 
     setState(() {
@@ -279,14 +274,14 @@ class _toDoHomeState extends State<toDoHome> {
                 borderRadius: BorderRadius.all(Radius.circular(16.0))),
             contentPadding: const EdgeInsets.only(top: 10.0),
             content: SizedBox(
-              width: 300.0,
+              width: MediaQuery.of(context).size.width / 1.4,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const SizedBox(
-                    height: 25,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 50,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -303,8 +298,8 @@ class _toDoHomeState extends State<toDoHome> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 30,
                   ),
                   InkWell(
                     child: Container(

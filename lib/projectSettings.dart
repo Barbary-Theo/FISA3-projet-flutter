@@ -191,7 +191,10 @@ class _projetSettingsState extends State<projetSettings> {
                   size: 50.0,
                 ),
               )
-            : Column(
+            :
+                  SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
                 children: [
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 10,
@@ -313,7 +316,7 @@ class _projetSettingsState extends State<projetSettings> {
                   ),
                   const Divider(color: Colors.black, height: 1),
                 ],
-              ));
+              ),),);
   }
 
   Future<void> _showModalRemoveMember(context) async {
@@ -428,7 +431,7 @@ class _projetSettingsState extends State<projetSettings> {
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
+                    height: MediaQuery.of(context).size.height / 3.2,
                     child: Center(
                       child: Column(
                         children: [
