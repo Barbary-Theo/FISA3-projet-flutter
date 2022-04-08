@@ -1,11 +1,5 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projetmobiles6/model/Categorie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'model/Task.dart';
 
 class toDoHome extends StatefulWidget {
@@ -61,9 +55,9 @@ class _toDoHomeState extends State<toDoHome> {
         allCoordinate.add([allTache.elementAt(i).x, allTache.elementAt(i).y]);
 
         if (allTache.elementAt(i).validate) {
-          allColor.add(new Color(0xFFD7F2D3));
+          allColor.add(const Color(0xFFD7F2D3));
         } else {
-          allColor.add(new Color(0xFFFFDDB6));
+          allColor.add(const Color(0xFFFFDDB6));
         }
       }
 
@@ -95,9 +89,9 @@ class _toDoHomeState extends State<toDoHome> {
                             onChanged: (bool value) {
                               allTache.elementAt(i).validate = value;
                               if (value) {
-                                allColor[i] = new Color(0xFFD7F2D3);
+                                allColor[i] = const Color(0xFFD7F2D3);
                               } else {
-                                allColor[i] = new Color(0xFFFFDDB6);
+                                allColor[i] = const Color(0xFFFFDDB6);
                               }
 
                               setState(() {
@@ -109,7 +103,7 @@ class _toDoHomeState extends State<toDoHome> {
                                     isEqualTo: allTache.elementAt(i).name)
                                     .get()
                                     .then((querySnapshot) {
-                                  querySnapshot.docs.forEach((result) {
+                                  for (var result in querySnapshot.docs) {
                                     Map mapCheck = <String, bool>{};
                                     mapCheck.putIfAbsent("validate",
                                             () => allTache.elementAt(i).validate);
@@ -117,7 +111,7 @@ class _toDoHomeState extends State<toDoHome> {
                                         .collection("task")
                                         .doc(result.id)
                                         .update(mapCheck);
-                                  });
+                                  }
                                 });
                                 displayTask();
                               });
@@ -138,12 +132,12 @@ class _toDoHomeState extends State<toDoHome> {
                                       isEqualTo: allTache.elementAt(i).name)
                                       .get()
                                       .then((querySnapshot) {
-                                    querySnapshot.docs.forEach((result) {
+                                    for (var result in querySnapshot.docs) {
                                       FirebaseFirestore.instance
                                           .collection("task")
                                           .doc(result.id)
                                           .delete();
-                                    });
+                                    }
                                     fillList();
                                     displayTask();
                                   });
@@ -162,7 +156,7 @@ class _toDoHomeState extends State<toDoHome> {
                     .where("name", isEqualTo: allTache.elementAt(i).name)
                     .get()
                     .then((querySnapshot) {
-                  querySnapshot.docs.forEach((result) {
+                  for (var result in querySnapshot.docs) {
                     Map mapX = <String, double>{};
                     Map mapY = <String, double>{};
                     mapX.putIfAbsent("x", () => allCoordinate.elementAt(i)[0]);
@@ -175,7 +169,7 @@ class _toDoHomeState extends State<toDoHome> {
                         .collection("task")
                         .doc(result.id)
                         .update(mapY);
-                  });
+                  }
                 });
               },
               onVerticalDragUpdate: (DragUpdateDetails dd) {
@@ -224,13 +218,12 @@ class _toDoHomeState extends State<toDoHome> {
     allCoordinate = [];
     allColor = [];
     try {
-      var rng = Random();
       await FirebaseFirestore.instance
           .collection('task')
           .where("mainElementId", isEqualTo: mainElementId)
           .get()
           .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
+        for (var result in querySnapshot.docs) {
           allTache.add(Task(
               result.get("name"),
               0,
@@ -238,7 +231,7 @@ class _toDoHomeState extends State<toDoHome> {
               result.get("y"),
               result.get("mainElementId"),
               result.get("validate")));
-        });
+        }
       });
       await displayTask();
     } catch (error) {
@@ -277,21 +270,21 @@ class _toDoHomeState extends State<toDoHome> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: Container(
+            contentPadding: const EdgeInsets.only(top: 10.0),
+            content: SizedBox(
               width: 300.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 25,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                    padding: const EdgeInsets.only(left: 30.0, right: 30.0),
                     child: TextField(
                       controller: tacheName,
                       decoration: const InputDecoration(
@@ -305,27 +298,26 @@ class _toDoHomeState extends State<toDoHome> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   InkWell(
                     child: Container(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      decoration: const BoxDecoration(
                         color: Color(0xFF92DEB1),
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(16.0),
                             bottomRight: Radius.circular(16.0)),
                       ),
                       child: TextButton(
-                        child: Text(
+                        child: const Text(
                           "Ajouter la tâche",
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
                         onPressed: () {
-                          print(tacheName.text);
-                          if (!tacheName.text.isEmpty) {
+                          if (tacheName.text.isNotEmpty) {
                             addTache(tacheName.text.toString().trim());
                           }
                           Navigator.pop(context, false);

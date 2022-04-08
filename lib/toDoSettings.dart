@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/model/Members.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class toDoSettings extends StatefulWidget {
@@ -23,12 +21,6 @@ class _toDoSettings extends State<toDoSettings> {
 
   String _toDoName = "";
   String _toDoDesc = "";
-  final List<Color> _colorList = [
-    const Color(0xFFD7F2D3),
-    const Color(0xFFD8D2ED),
-    const Color(0xFFFFDDB6),
-    const Color(0xFFFFDDB6),
-  ];
 
   @override
   void initState() {
@@ -37,8 +29,6 @@ class _toDoSettings extends State<toDoSettings> {
 
   Future<void> _initializeProjectData() async {
     try {
-      print("recupération data todo");
-      print(mainElementId);
       await FirebaseFirestore.instance
           .collection('todo')
           .doc(mainElementId)
@@ -49,7 +39,6 @@ class _toDoSettings extends State<toDoSettings> {
       });
       setState(() {});
     } catch (error) {
-      print("error : ");
       print(error);
     }
   }
@@ -121,16 +110,15 @@ class _toDoSettings extends State<toDoSettings> {
 
   Future<void> _deleteToDo() async {
     try {
-      print(mainElementId);
+
       await FirebaseFirestore.instance
           .collection("task")
           .where("mainElementId", isEqualTo: mainElementId)
           .get()
           .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          print(result.get("name"));
+        for (var result in querySnapshot.docs) {
           FirebaseFirestore.instance.collection("task").doc(result.id).delete();
-        });
+        }
       });
 
       await FirebaseFirestore.instance
@@ -138,14 +126,13 @@ class _toDoSettings extends State<toDoSettings> {
           .doc(mainElementId)
           .delete();
 
-      //Todo : Remove all task link to categorie
-
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => projet()),
               (route) => false);
     } catch (e) {
-      print("error : ");
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -154,15 +141,15 @@ class _toDoSettings extends State<toDoSettings> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
+              contentPadding: const EdgeInsets.only(top: 10.0),
               content: SizedBox(
                 height: MediaQuery.of(context).size.height / 4,
                 child: Center(
                     child: Column(
                       children: [
-                        Text("Confirmation",
+                        const Text("Confirmation",
                             style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
                         SizedBox(

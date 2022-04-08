@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projetmobiles6/projectHome.dart';
-import 'package:projetmobiles6/projectSettings.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 import 'package:projetmobiles6/toDoHome.dart';
 import 'package:projetmobiles6/toDoSettings.dart';
@@ -46,7 +44,7 @@ class _toDoMainState extends State<toDoMain> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        backgroundColor: Color(0xFFEEEDED),
+        backgroundColor: const Color(0xFFEEEDED),
         selectedItemColor: Colors.black,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,

@@ -1,9 +1,7 @@
-// ignore: file_names
-// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/loginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SignInPage extends StatefulWidget{
   @override
@@ -21,7 +19,7 @@ class _SignInPage extends State<SignInPage> {
   void _goToLogIn() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-            builder: (context) => LoginPage()
+            builder: (context) => const LoginPage()
         ),
             (route) => false
     );
@@ -46,7 +44,7 @@ class _SignInPage extends State<SignInPage> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 60,
                 ),
-                Center(
+                const Center(
                   child: Text(
                     "Bienvenue sur \n Done&Gone",
                     style: TextStyle(
@@ -62,7 +60,7 @@ class _SignInPage extends State<SignInPage> {
                   height: MediaQuery.of(context).size.height / 15,
                   child: TextField(
                     controller: login,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
@@ -82,7 +80,7 @@ class _SignInPage extends State<SignInPage> {
                   child: TextField(
                     controller: password1,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
@@ -102,7 +100,7 @@ class _SignInPage extends State<SignInPage> {
                   child: TextField(
                     controller: password2,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       ),
@@ -154,16 +152,16 @@ class _SignInPage extends State<SignInPage> {
                 ),
                 Text(
                   errorText,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
-                Divider(color: Colors.black, height: 1),
+                const Divider(color: Colors.black, height: 1),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 60,
                 ),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xFFFFDDB6)),
+                    MaterialStateProperty.all<Color>(const Color(0xFFFFDDB6)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),

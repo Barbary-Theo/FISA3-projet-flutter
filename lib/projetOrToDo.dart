@@ -59,11 +59,11 @@ class _projetState extends State<projet> {
 
   void research(String search) {
     researchMainElementItem = [];
-    allMainElementItem.forEach((element) {
+    for (var element in allMainElementItem) {
       if (element.name.contains(search)) {
         researchMainElementItem.add(element);
       }
-    });
+    }
     setState(() {});
   }
 
@@ -75,10 +75,10 @@ class _projetState extends State<projet> {
           .where("members", arrayContains: auth.currentUser.uid.toString())
           .get()
           .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
+        for (var result in querySnapshot.docs) {
           allMainElementItem.add(Project(
               result.get("name"), result.get("description"), result.id));
-        });
+        }
       });
 
       await FirebaseFirestore.instance
@@ -86,10 +86,10 @@ class _projetState extends State<projet> {
           .where("member", isEqualTo: auth.currentUser.uid.toString())
           .get()
           .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
+        for (var result in querySnapshot.docs) {
           allMainElementItem.add(
               ToDo(result.get("name"), result.get("description"), result.id));
-        });
+        }
       });
     } catch (error) {
       print(error);
@@ -116,7 +116,7 @@ class _projetState extends State<projet> {
           actions: [
             isSearching
                 ? Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -130,7 +130,7 @@ class _projetState extends State<projet> {
                       ),
                     ))
                 : Padding(
-                    padding: EdgeInsets.only(right: 1),
+                    padding: const EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -212,7 +212,7 @@ class _projetState extends State<projet> {
         onPressed: () {
           _showModalCreateProjectOrTasks(context);
         },
-        backgroundColor: Color(0xFF92DEB1),
+        backgroundColor: const Color(0xFF92DEB1),
         child: const Icon(Icons.add),
       ),
     );
@@ -223,15 +223,15 @@ class _projetState extends State<projet> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16),
                   )
               ),
-              contentPadding: EdgeInsets.all(5),
+              contentPadding: const EdgeInsets.all(5),
               content: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(16.0)),
                   ),
                   height: MediaQuery.of(context).size.height / 1.9,
@@ -239,14 +239,14 @@ class _projetState extends State<projet> {
                     length: 2,
                     child: Scaffold(
                       appBar: PreferredSize(
-                        preferredSize: Size(double.infinity, 50),
+                        preferredSize: const Size(double.infinity, 50),
                         child: AppBar(
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(16.0),
                                   topLeft: Radius.circular(16.0))),
                           automaticallyImplyLeading: false,
-                          backgroundColor: Color(0xFF92DEB1),
+                          backgroundColor: const Color(0xFF92DEB1),
                           bottom: const TabBar(
                             indicatorColor: Colors.white,
                             tabs: [
@@ -266,174 +266,170 @@ class _projetState extends State<projet> {
                       ),
                       body: TabBarView(
                         children: [
-                          Container(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 25,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 25,
+                              ),
+                              SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width / 1.5,
+                                height:
+                                    MediaQuery.of(context).size.height / 15,
+                                child: TextField(
+                                  controller: elementName,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0)),
+                                    ),
+                                    filled: true,
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: "Nom du projet",
+                                    fillColor: Colors.white70,
+                                  ),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
-                                  height:
-                                      MediaQuery.of(context).size.height / 15,
-                                  child: TextField(
-                                    controller: elementName,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Nom du projet",
-                                      fillColor: Colors.white70,
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 20,
+                              ),
+                              SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width / 1.5,
+                                height:
+                                    MediaQuery.of(context).size.height / 5,
+                                child: TextField(
+                                  controller: elementDesc,
+                                  maxLines: 10,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0)),
+                                    ),
+                                    filled: true,
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: "Description du projet",
+                                    fillColor: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 30,
+                              ),
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                    const Color(0xFFFFDDB6),
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(18.0),
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 20,
+                                onPressed: () {
+                                  if (!(elementName.text.isEmpty &&
+                                      elementDesc.text.isEmpty)) {
+                                    addProject(elementName.text.trim(),
+                                        elementDesc.text.trim());
+                                  }
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text(
+                                  'Valider',
+                                  style: TextStyle(color: Colors.black),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
-                                  height:
-                                      MediaQuery.of(context).size.height / 5,
-                                  child: TextField(
-                                    controller: elementDesc,
-                                    maxLines: 10,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Description du projet",
-                                      fillColor: Colors.white70,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 30,
-                                ),
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                      Color(0xFFFFDDB6),
-                                    ),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (!(elementName.text.isEmpty &&
-                                        elementDesc.text.isEmpty)) {
-                                      addProject(elementName.text.trim(),
-                                          elementDesc.text.trim());
-                                    }
-                                    Navigator.pop(context, false);
-                                  },
-                                  child: const Text(
-                                    'Valider',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ]),
-                            ),
+                              ),
+                            ]),
                           ),
-                          Container(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 25,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 25,
+                              ),
+                              SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width / 1.5,
+                                height:
+                                    MediaQuery.of(context).size.height / 15,
+                                child: TextField(
+                                  controller: elementName,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0)),
+                                    ),
+                                    filled: true,
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: "Nom de la liste ToDo",
+                                    fillColor: Colors.white70,
+                                  ),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
-                                  height:
-                                      MediaQuery.of(context).size.height / 15,
-                                  child: TextField(
-                                    controller: elementName,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Nom de la liste ToDo",
-                                      fillColor: Colors.white70,
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 20,
+                              ),
+                              SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width / 1.5,
+                                height:
+                                    MediaQuery.of(context).size.height / 5,
+                                child: TextField(
+                                  controller: elementDesc,
+                                  maxLines: 10,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0)),
+                                    ),
+                                    filled: true,
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    hintText: "Description de la liste ToDo",
+                                    fillColor: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 25,
+                              ),
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          const Color(0xFFFFDDB6)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(18.0),
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 20,
+                                onPressed: () {
+                                  if (!(elementName.text.isEmpty &&
+                                      elementDesc.text.isEmpty)) {
+                                    addToDo(elementName.text.trim(),
+                                        elementDesc.text.trim());
+                                  }
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text(
+                                  'Valider',
+                                  style: TextStyle(color: Colors.black),
                                 ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
-                                  height:
-                                      MediaQuery.of(context).size.height / 5,
-                                  child: TextField(
-                                    controller: elementDesc,
-                                    maxLines: 10,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20.0)),
-                                      ),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      hintText: "Description de la liste ToDo",
-                                      fillColor: Colors.white70,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 25,
-                                ),
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Color(0xFFFFDDB6)),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (!(elementName.text.isEmpty &&
-                                        elementDesc.text.isEmpty)) {
-                                      addToDo(elementName.text.trim(),
-                                          elementDesc.text.trim());
-                                    }
-                                    Navigator.pop(context, false);
-                                  },
-                                  child: const Text(
-                                    'Valider',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ]),
-                            ),
+                              ),
+                            ]),
                           ),
                         ],
                       ),
