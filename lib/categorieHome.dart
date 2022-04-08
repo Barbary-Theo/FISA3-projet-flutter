@@ -360,114 +360,121 @@ class _categorieHomeState extends State<categorieHome> {
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 1.8,
                     child: Center(
-                      child: Column(
-                        children: [
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                InkWell(
-                                  child: Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0),
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFF92DEB1),
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(16.0),
-                                          topRight: Radius.circular(16.0)),
-                                    ),
-                                    child: const Text(
-                                      "Ajout d'une tâche",
-                                      style: TextStyle(
-                                          color: Color(0xFF696868),
-                                          fontSize: 25),
-                                      textAlign: TextAlign.center,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  InkWell(
+                                    child: Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0, bottom: 10.0),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF92DEB1),
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(16.0),
+                                            topRight: Radius.circular(16.0)),
+                                      ),
+                                      child: const Text(
+                                        "Ajout d'une tâche",
+                                        style: TextStyle(
+                                            color: Color(0xFF696868),
+                                            fontSize: 25),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
+                                ]),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              child: TextField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
+                                  ),
+                                  filled: true,
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  hintText: "Nom de la tâche",
+                                  fillColor: Colors.white70,
                                 ),
-                              ]),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            child: TextField(
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0)),
-                                ),
-                                filled: true,
-                                hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Nom de la tâche",
-                                fillColor: Colors.white70,
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 60,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: MediaQuery.of(context).size.height / 5,
-                            child: TextField(
-                              controller: _descController,
-                              maxLines: 10,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0)),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 60,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              height: MediaQuery.of(context).size.height / 5,
+                              child: TextField(
+                                controller: _descController,
+                                maxLines: 10,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
+                                  ),
+                                  filled: true,
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  hintText: "Description de la tâche",
+                                  fillColor: Colors.white70,
                                 ),
-                                filled: true,
-                                hintStyle: TextStyle(color: Colors.grey),
-                                hintText: "Description de la tâche",
-                                fillColor: Colors.white70,
                               ),
                             ),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                DatePicker.showDatePicker(context,
-                                    showTitleActions: true,
-                                    minTime: DateTime.now(), onChanged: (date) {
-                                }, onConfirm: (date) {
-                                  _deadLine = date;
+                            TextButton(
+                                onPressed: () {
+                                  DatePicker.showDatePicker(context,
+                                      showTitleActions: true,
+                                      minTime: DateTime.now(),
+                                      onChanged: (date) {}, onConfirm: (date) {
+                                    _deadLine = date;
+                                  },
+                                      currentTime: DateTime.now(),
+                                      locale: LocaleType.en);
                                 },
-                                    currentTime: DateTime.now(),
-                                    locale: LocaleType.en);
+                                child: const Text(
+                                  'Selectionner une DeadLine',
+                                  style: TextStyle(color: Colors.blue),
+                                )),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 40,
+                            ),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        const Color(0xFFFFDDB6)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (_nameController.text.isNotEmpty) {
+                                  addTask(
+                                      _nameController.text.trim(),
+                                      _descController.text.trim(),
+                                      0,
+                                      _deadLine);
+                                }
+                                Navigator.pop(context, false);
                               },
                               child: const Text(
-                                'Selectionner une DeadLine',
-                                style: TextStyle(color: Colors.blue),
-                              )),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 40,
-                          ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color(0xFFFFDDB6)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                ),
+                                'Valider',
+                                style: TextStyle(color: Colors.black),
                               ),
                             ),
-                            onPressed: () {
-                              if (_nameController.text.isNotEmpty) {
-                                addTask(_nameController.text.trim(),
-                                    _descController.text.trim(), 0, _deadLine);
-                              }
-                              Navigator.pop(context, false);
-                            },
-                            child: const Text(
-                              'Valider',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )));
           });
@@ -487,176 +494,198 @@ class _categorieHomeState extends State<categorieHome> {
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Center(
-                        child: Column(children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            child: Text(
-                                "Nom de la tâche : " + taskNameTaskPressed),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            child: Text("Description : " + taskDescTaskPressed),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            child: Text("Date de fin : " +
-                                taskDeadLinePressed.year.toString() +
-                                "/" +
-                                taskDeadLinePressed.month.toString() +
-                                "/" +
-                                taskDeadLinePressed.day.toString()),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 4.5,
-                            child: Column(
-                              children: [
-                                RadioListTile(
-                                    title: const Text('Pas commencé'),
-                                    value: 0,
-                                    groupValue: _status,
-                                    onChanged: (int value) async {
-                                      _status = value;
-                                      await FirebaseFirestore.instance
-                                          .collection('task')
-                                          .doc(taskIdTaskPressed)
-                                          .update({'status': _status});
-                                      for (var element in allTask) {
-                                        if (element.id == taskIdTaskPressed) {
-                                          element.status = _status;
-                                        }
-                                      }
-                                      initData();
-                                      setState(() {});
-                                    }),
-                                RadioListTile(
-                                    title: const Text('Commencé'),
-                                    value: 1,
-                                    groupValue: _status,
-                                    onChanged: (value) async {
-                                      _status = value;
-                                      await FirebaseFirestore.instance
-                                          .collection('task')
-                                          .doc(taskIdTaskPressed)
-                                          .update({'status': _status});
-                                      for (var element in allTask) {
-                                        if (element.id == taskIdTaskPressed) {
-                                          element.status = _status;
-                                        }
-                                      }
-                                      initData();
-                                      setState(() {});
-                                    }),
-                                RadioListTile(
-                                    title: const Text('Fini'),
-                                    value: 2,
-                                    groupValue: _status,
-                                    onChanged: (value) async {
-                                      _status = value;
-                                      await FirebaseFirestore.instance
-                                          .collection('task')
-                                          .doc(taskIdTaskPressed)
-                                          .update({'status': _status});
-
-                                      for (var element in allTask) {
-                                        if (element.id == taskIdTaskPressed) {
-                                          element.status = _status;
-                                        }
-                                      }
-                                      initData();
-                                      setState(() {});
-                                    }),
-                              ],
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
                             ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 25,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height >
-                                    MediaQuery.of(context).size.width
-                                ? MediaQuery.of(context).size.width / 4.8
-                                : MediaQuery.of(context).size.height / 4.8,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _allMembersOfTask.length + 2,
-                                itemBuilder: (BuildContext context, int i) {
-                                  Widget circle;
-                                  if (i == _allMembersOfTask.length) {
-                                    circle = CircleAvatar(
-                                      backgroundColor: const Color(0xFF92DEB1),
-                                      radius: MediaQuery.of(context)
-                                                  .size
-                                                  .height >
-                                              MediaQuery.of(context).size.width
-                                          ? MediaQuery.of(context).size.width /
-                                              10
-                                          : MediaQuery.of(context).size.height /
-                                              10,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.remove),
-                                        onPressed: () async {
-                                          await _showModalRemoveMember(context);
-                                          setState(() {});
-                                        },
-                                      ),
-                                    );
-                                  } else if (i ==
-                                      _allMembersOfTask.length + 1) {
-                                    circle = CircleAvatar(
-                                      backgroundColor: const Color(0xFFFFC6C6),
-                                      radius: MediaQuery.of(context)
-                                                  .size
-                                                  .height >
-                                              MediaQuery.of(context).size.width
-                                          ? MediaQuery.of(context).size.width /
-                                              10
-                                          : MediaQuery.of(context).size.height /
-                                              10,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.add),
-                                        onPressed: () {
-                                          _showModalAddUser(context);
-                                          setState(() {});
-                                        },
-                                      ),
-                                    );
-                                  } else {
-                                    circle = CircleAvatar(
-                                      backgroundColor:
-                                          _colorList.elementAt(i % 4),
-                                      radius: MediaQuery.of(context)
-                                                  .size
-                                                  .height >
-                                              MediaQuery.of(context).size.width
-                                          ? MediaQuery.of(context).size.width /
-                                              10
-                                          : MediaQuery.of(context).size.height /
-                                              10,
-                                      child: Text(_allMembersOfTask
-                                          .elementAt(i)
-                                          .email
-                                          .characters
-                                          .characterAt(0)
-                                          .toString()
-                                          .toUpperCase()),
-                                    );
-                                  }
-                                  return circle;
-                                }),
-                          ),
-                        ]),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              child: Text(
+                                  "Nom de la tâche : " + taskNameTaskPressed),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              child:
+                                  Text("Description : " + taskDescTaskPressed),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 1.5,
+                              child: Text("Date de fin : " +
+                                  taskDeadLinePressed.year.toString() +
+                                  "/" +
+                                  taskDeadLinePressed.month.toString() +
+                                  "/" +
+                                  taskDeadLinePressed.day.toString()),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 4,
+                              child: Column(
+                                children: [
+                                  RadioListTile(
+                                      title: const Text('Pas commencé'),
+                                      value: 0,
+                                      groupValue: _status,
+                                      onChanged: (int value) async {
+                                        _status = value;
+                                        await FirebaseFirestore.instance
+                                            .collection('task')
+                                            .doc(taskIdTaskPressed)
+                                            .update({'status': _status});
+                                        for (var element in allTask) {
+                                          if (element.id == taskIdTaskPressed) {
+                                            element.status = _status;
+                                          }
+                                        }
+                                        initData();
+                                        setState(() {});
+                                      }),
+                                  RadioListTile(
+                                      title: const Text('Commencé'),
+                                      value: 1,
+                                      groupValue: _status,
+                                      onChanged: (value) async {
+                                        _status = value;
+                                        await FirebaseFirestore.instance
+                                            .collection('task')
+                                            .doc(taskIdTaskPressed)
+                                            .update({'status': _status});
+                                        for (var element in allTask) {
+                                          if (element.id == taskIdTaskPressed) {
+                                            element.status = _status;
+                                          }
+                                        }
+                                        initData();
+                                        setState(() {});
+                                      }),
+                                  RadioListTile(
+                                      title: const Text('Fini'),
+                                      value: 2,
+                                      groupValue: _status,
+                                      onChanged: (value) async {
+                                        _status = value;
+                                        await FirebaseFirestore.instance
+                                            .collection('task')
+                                            .doc(taskIdTaskPressed)
+                                            .update({'status': _status});
+
+                                        for (var element in allTask) {
+                                          if (element.id == taskIdTaskPressed) {
+                                            element.status = _status;
+                                          }
+                                        }
+                                        initData();
+                                        setState(() {});
+                                      }),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 25,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height >
+                                      MediaQuery.of(context).size.width
+                                  ? MediaQuery.of(context).size.width / 4.8
+                                  : MediaQuery.of(context).size.height / 4.8,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _allMembersOfTask.length + 2,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    Widget circle;
+                                    if (i == _allMembersOfTask.length) {
+                                      circle = CircleAvatar(
+                                        backgroundColor:
+                                            const Color(0xFF92DEB1),
+                                        radius:
+                                            MediaQuery.of(context).size.height >
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    10
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    10,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove),
+                                          onPressed: () async {
+                                            await _showModalRemoveMember(
+                                                context);
+                                            setState(() {});
+                                          },
+                                        ),
+                                      );
+                                    } else if (i ==
+                                        _allMembersOfTask.length + 1) {
+                                      circle = CircleAvatar(
+                                        backgroundColor:
+                                            const Color(0xFFFFC6C6),
+                                        radius:
+                                            MediaQuery.of(context).size.height >
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    10
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    10,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.add),
+                                          onPressed: () {
+                                            _showModalAddUser(context);
+                                            setState(() {});
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      circle = CircleAvatar(
+                                        backgroundColor:
+                                            _colorList.elementAt(i % 4),
+                                        radius:
+                                            MediaQuery.of(context).size.height >
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    10
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    10,
+                                        child: Text(_allMembersOfTask
+                                            .elementAt(i)
+                                            .email
+                                            .characters
+                                            .characterAt(0)
+                                            .toString()
+                                            .toUpperCase()),
+                                      );
+                                    }
+                                    return circle;
+                                  }),
+                            ),
+                          ]),
+                        ),
                       ),
                     ),
                   ),
@@ -676,7 +705,7 @@ class _categorieHomeState extends State<categorieHome> {
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
+                    height: MediaQuery.of(context).size.height / 3.2,
                     child: Center(
                       child: Column(
                         children: [
@@ -742,13 +771,14 @@ class _categorieHomeState extends State<categorieHome> {
                               ),
                               onPressed: () async {
                                 Navigator.pop(context, false);
-                                if (_selectedMember != _auth.currentUser.email) {
+                                if (_selectedMember !=
+                                    _auth.currentUser.email) {
                                   await FirebaseFirestore.instance
                                       .collection('task')
                                       .doc(taskIdTaskPressed)
                                       .update({
-                                    "members":
-                                    FieldValue.arrayRemove([_selectedMemberId])
+                                    "members": FieldValue.arrayRemove(
+                                        [_selectedMemberId])
                                   });
                                   // Navigator.pop(context, false);
                                   await initData();
@@ -783,7 +813,7 @@ class _categorieHomeState extends State<categorieHome> {
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
+                    height: MediaQuery.of(context).size.height / 3.2,
                     child: Center(
                       child: Column(
                         children: [
