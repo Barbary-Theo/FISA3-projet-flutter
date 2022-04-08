@@ -4,13 +4,14 @@ import 'package:projetmobiles6/signInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LoginPage extends StatefulWidget{
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key key}) : super(key: key);
+
   @override
   State<LoginPage> createState() => _LoginPage();
 }
 
 class _LoginPage extends State<LoginPage> {
-
   final TextEditingController login = TextEditingController();
   final TextEditingController password = TextEditingController();
   final _auth = FirebaseAuth.instance;
@@ -28,17 +29,14 @@ class _LoginPage extends State<LoginPage> {
 
   void _goToProjectOrToDo() {
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => projet()
-        ),
-            (route) => false
-    );
+        MaterialPageRoute(builder: (context) => projet()), (route) => false);
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SizedBox (
+        child: SizedBox(
           width: MediaQuery.of(context).size.width / 1.1,
           height: MediaQuery.of(context).size.height / 2,
           child: Card(
@@ -54,8 +52,10 @@ class _LoginPage extends State<LoginPage> {
                   height: MediaQuery.of(context).size.height / 90,
                 ),
                 const Center(
-                    child: Text("Bienvenue sur \n Done&Gone", style: TextStyle(fontSize: 25),)
-                ),
+                    child: Text(
+                  "Bienvenue sur \n Done&Gone",
+                  style: TextStyle(fontSize: 25),
+                )),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 30,
                 ),
@@ -73,8 +73,7 @@ class _LoginPage extends State<LoginPage> {
                           ),
                           filled: true,
                           hintText: "Identifiant",
-                          fillColor: Color(0xFFFCFCFC)
-                      ),
+                          fillColor: Color(0xFFFCFCFC)),
                     ),
                   ),
                 ),
@@ -96,8 +95,7 @@ class _LoginPage extends State<LoginPage> {
                           ),
                           filled: true,
                           hintText: "Mot de passe",
-                          fillColor: Color(0xFFFCFCFC)
-                      ),
+                          fillColor: Color(0xFFFCFCFC)),
                     ),
                   ),
                 ),
@@ -108,55 +106,55 @@ class _LoginPage extends State<LoginPage> {
                   child: ElevatedButton(
                       onPressed: () async {
                         try {
-                          await _auth.signInWithEmailAndPassword(email: login.text.trim(), password: password.text.trim());
+                          await _auth.signInWithEmailAndPassword(
+                              email: login.text.trim(),
+                              password: password.text.trim());
 
                           bool exist = false;
 
-                          await FirebaseFirestore.instance.collection('user').where("id",isEqualTo: _auth.currentUser.uid).get().then((querySnapshot) {
-                            querySnapshot.docs.forEach((result) {
-                              print(result.get("email"));
-                              exist = true;
-                              print("already exist");
-                            });
+                          await FirebaseFirestore.instance
+                              .collection('user')
+                              .where("id", isEqualTo: _auth.currentUser.uid)
+                              .get()
+                              .then((querySnapshot) {
+                            exist = true;
                           });
-
-                          print("???");
-                          if(!exist) {
-                            print("on ajoute");
-                            FirebaseFirestore.instance.collection("user").add(
-                                {
-                                  'email': login.text.trim(),
-                                  'id': _auth.currentUser.uid.trim(),
-                                }
-                            );
+                          if (!exist) {
+                            FirebaseFirestore.instance.collection("user").add({
+                              'email': login.text.trim(),
+                              'id': _auth.currentUser.uid.trim(),
+                            });
                           }
                           _goToProjectOrToDo();
-                          //  Naviguer à la page des projets
-                        } on FirebaseAuthException catch (e)  {
+                        } on FirebaseAuthException catch (e) {
                           setState(() {
                             errorText = e.message;
                           });
                         }
                       },
-                      child: const Text('Se connecter', style: TextStyle(color: Colors.black),),
+                      child: const Text(
+                        'Se connecter',
+                        style: TextStyle(color: Colors.black),
+                      ),
                       style: ButtonStyle(
-                        backgroundColor:  MaterialStateProperty.all<Color>(Colors.white),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 70,
                 ),
                 Text(
                   errorText,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
-                Divider(color: Colors.black, height: 1),
+                const Divider(color: Colors.black, height: 1),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 50,
                 ),
@@ -167,16 +165,20 @@ class _LoginPage extends State<LoginPage> {
                           _goToSignIn();
                         });
                       },
-                      child: const Text("S'inscrire", style: TextStyle(color: Colors.black),),
+                      child: const Text(
+                        "S'inscrire",
+                        style: TextStyle(color: Colors.black),
+                      ),
                       style: ButtonStyle(
-                        backgroundColor:  MaterialStateProperty.all<Color>(Color (0xFFD8D2ED)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xFFD8D2ED)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 ),
               ],
             ),

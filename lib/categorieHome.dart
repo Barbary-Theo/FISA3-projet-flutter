@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Members.dart';
 import 'package:projetmobiles6/model/Task.dart';
-import 'package:projetmobiles6/projectHome.dart';
-import 'package:projetmobiles6/projetOrToDo.dart';
-import 'package:projetmobiles6/signInPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -184,7 +181,6 @@ class _categorieHomeState extends State<categorieHome> {
         });
       });
     } catch (error) {
-      print("error : ");
       print(error);
     }
     // setState(() {});

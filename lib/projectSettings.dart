@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projetmobiles6/model/Members.dart';
-import 'package:projetmobiles6/projectMain.dart';
 import 'package:projetmobiles6/projetOrToDo.dart';
 
 class projetSettings extends StatefulWidget {
@@ -48,7 +47,6 @@ class _projetSettingsState extends State<projetSettings> {
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
     _allMembersEmail.forEach((element) {
-      print("element : " + element);
       _menuItems.add(DropdownMenuItem(value: element, child: Text(element)));
     });
   }
@@ -72,14 +70,14 @@ class _projetSettingsState extends State<projetSettings> {
               .where("id", isEqualTo: element.toString())
               .get()
               .then((querySnapshot) {
-            querySnapshot.docs.forEach((result) {
+            for (var result in querySnapshot.docs) {
               if (result.get("email") != _auth.currentUser.email) {
                 _allMembersOfProject
                     .add(Members(result.get("email"), result.get("id")));
                 _allMembersEmail.add(result.get("email"));
                 _allMemberId.add(result.get("id"));
               }
-            });
+            }
           });
 
           if (_allMembersOfProject.length == temp.length - 1) {
@@ -109,11 +107,11 @@ class _projetSettingsState extends State<projetSettings> {
 
   Future<void> _addUser(String email) async {
     bool canAdd = true;
-    _allMembersEmail.forEach((element) {
+    for (var element in _allMembersEmail) {
       if (email == element) {
         canAdd = false;
       }
-    });
+    }
     String id = "";
 
     await FirebaseFirestore.instance
@@ -144,8 +142,20 @@ class _projetSettingsState extends State<projetSettings> {
           .collection("categorie")
           .where("project", isEqualTo: mainElementId)
           .get()
-          .then((querySnapshot) {
+          .then((querySnapshot) async {
         for (var result in querySnapshot.docs) {
+          await FirebaseFirestore.instance
+              .collection("task")
+              .where("mainElementId", isEqualTo: result.id)
+              .get()
+              .then((querySnapshot) {
+            for (var result in querySnapshot.docs) {
+              FirebaseFirestore.instance
+                  .collection("task")
+                  .doc(result.id)
+                  .delete();
+            }
+          });
           FirebaseFirestore.instance
               .collection("categorie")
               .doc(result.id)
@@ -158,12 +168,9 @@ class _projetSettingsState extends State<projetSettings> {
           .doc(mainElementId)
           .delete();
 
-      //Todo : Remove all task link to categorie
-
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => projet()), (route) => false);
     } catch (e) {
-      print("error : ");
       print(e);
     }
   }
@@ -236,7 +243,7 @@ class _projetSettingsState extends State<projetSettings> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 4,
+                    height: MediaQuery.of(context).size.height / 8,
                   ),
                   const Divider(color: Colors.black, height: 1),
                   SizedBox(
@@ -310,9 +317,9 @@ class _projetSettingsState extends State<projetSettings> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                contentPadding: EdgeInsets.only(bottom: 10.0),
+                contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
                     child: Center(
@@ -324,15 +331,15 @@ class _projetSettingsState extends State<projetSettings> {
                               children: [
                                 InkWell(
                                   child: Container(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: 10.0, bottom: 10.0),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFFFFC6C6),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
                                           topRight: Radius.circular(16.0)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Suppression",
                                       style: TextStyle(
                                           color: Color(0xFF696868),
@@ -347,27 +354,27 @@ class _projetSettingsState extends State<projetSettings> {
                           ),
                           SizedBox(
                               child: DropdownButton<String>(
-                                value: _selectedMember,
-                                icon: const Icon(Icons.keyboard_arrow_down),
-                                onChanged: (String value) {
-                                  setState(() {
-                                    _selectedMember = value;
-                                    for (var element in _allMembersOfProject) {
-                                      if (element.email == value) {
-                                        _selectedMemberId = element.id;
-                                      }
-                                    }
-                                  });
-                                },
-                                items: _menuItems,
-                              )),
+                            value: _selectedMember,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            onChanged: (String value) {
+                              setState(() {
+                                _selectedMember = value;
+                                for (var element in _allMembersOfProject) {
+                                  if (element.email == value) {
+                                    _selectedMemberId = element.id;
+                                  }
+                                }
+                              });
+                            },
+                            items: _menuItems,
+                          )),
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 25,
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.height / 5,
                             child: ElevatedButton(
-                              child: Text("Valider"),
+                              child: const Text("Valider"),
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
@@ -411,9 +418,9 @@ class _projetSettingsState extends State<projetSettings> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                contentPadding: EdgeInsets.only(bottom: 10.0),
+                contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
                     child: Center(
@@ -425,15 +432,15 @@ class _projetSettingsState extends State<projetSettings> {
                               children: [
                                 InkWell(
                                   child: Container(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: 10.0, bottom: 10.0),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFF92DEB1),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
                                           topRight: Radius.circular(16.0)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Ajout",
                                       style: TextStyle(
                                           color: Color(0xFF696868),
@@ -465,7 +472,7 @@ class _projetSettingsState extends State<projetSettings> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 25,
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.height / 5,
                             child: ElevatedButton(
                               style: ButtonStyle(
@@ -503,15 +510,15 @@ class _projetSettingsState extends State<projetSettings> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
+              contentPadding: const EdgeInsets.only(top: 10.0),
               content: SizedBox(
                 height: MediaQuery.of(context).size.height / 4,
                 child: Center(
                     child: Column(
                   children: [
-                    Text("Confirmation",
+                    const Text("Confirmation",
                         style:
                             TextStyle(color: Color(0xFF696868), fontSize: 25)),
                     SizedBox(

@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Categorie.dart';
-import 'package:projetmobiles6/model/Project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:projetmobiles6/projetOrToDo.dart';
-
 import 'categorieHome.dart';
 
 class projectHome extends StatefulWidget{
@@ -48,11 +44,11 @@ class _projectHomeState extends State<projectHome>{
 
   void research(String search){
     researchCategorie = [];
-    allCategorie.forEach((element) {
+    for (var element in allCategorie) {
       if(element.name.contains(search)){
         researchCategorie.add(element);
       }
-    });
+    }
 
     setState(() {
 
@@ -81,19 +77,17 @@ class _projectHomeState extends State<projectHome>{
     allCategorie = [];
     try{
       await FirebaseFirestore.instance.collection('categorie').where("project",isEqualTo: mainElementId).get().then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
+        for (var result in querySnapshot.docs) {
           allCategorie.add(Categorie([], result.get("name"),result.id));
-        });
+        }
       });
 
     }catch(error){
-      print("error : ");
       print(error);
     }
 
     setState(() {
       researchCategorie = allCategorie;
-      print(loading);
       loading = false;
     });
 
@@ -111,7 +105,7 @@ class _projectHomeState extends State<projectHome>{
           actions: [
             isSearching ?
             Padding(
-                padding: EdgeInsets.only(right: 1),
+                padding: const EdgeInsets.only(right: 1),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -126,7 +120,7 @@ class _projectHomeState extends State<projectHome>{
                 )
             ) :
             Padding(
-                padding: EdgeInsets.only(right: 1),
+                padding: const EdgeInsets.only(right: 1),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -168,8 +162,6 @@ class _projectHomeState extends State<projectHome>{
                   onTap: (){
                     categorieId = researchCategorie.elementAt(i).id;
                     categorieName = researchCategorie.elementAt(i).name;
-                    print("cat id avant : ");
-                    print(categorieId);
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => categorieHome(categorieId: categorieId, categorieName: categorieName,mainElementId: mainElementId,)),
                     );
@@ -198,9 +190,9 @@ class _projectHomeState extends State<projectHome>{
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return AlertDialog(
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                    contentPadding: EdgeInsets.only(bottom: 10.0),
+                    contentPadding: const EdgeInsets.only(bottom: 10.0),
                     content: SizedBox(
                         height: MediaQuery.of(context).size.height / 3.5,
                         child: Center(
@@ -212,15 +204,15 @@ class _projectHomeState extends State<projectHome>{
                                   children: [
                                     InkWell(
                                       child: Container(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             top: 10.0, bottom: 10.0),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Color(0xFF92DEB1),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(16.0),
                                               topRight: Radius.circular(16.0)),
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           "Ajout d'un catégorie",
                                           style: TextStyle(
                                               color: Color(0xFF696868),
@@ -252,7 +244,7 @@ class _projectHomeState extends State<projectHome>{
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 25,
                               ),
-                              Container(
+                              SizedBox(
                                 width: MediaQuery.of(context).size.height / 5,
                                 child: ElevatedButton(
                                   style: ButtonStyle(
@@ -266,7 +258,6 @@ class _projectHomeState extends State<projectHome>{
                                     ),
                                   ),
                                   onPressed: () {
-                                    print(categorieNameController.text);
                                     if(categorieNameController.text.isNotEmpty){
                                       addCategorie(categorieNameController.text.toString().trim());
                                     }

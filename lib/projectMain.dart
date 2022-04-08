@@ -45,7 +45,7 @@ class _projectMainState extends State<projectMain> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        backgroundColor: Color(0xFFEEEDED),
+        backgroundColor: const Color(0xFFEEEDED),
         selectedItemColor: Colors.black,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
