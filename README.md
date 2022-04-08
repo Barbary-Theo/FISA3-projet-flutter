@@ -40,6 +40,9 @@ git clone https://gitlab.com/Barbary-Theo/projet-flutter
 
 2. Ouvrir le projet sur Android Studio ou avec Visual Studio Code
 
+   > **WARNING: Si vous êtes sur IOS ou Chrome :**<br>
+   > Avant toutes choses, il faut mettre en commentaire le > ligne 22 : `name: "projetmobiles6"`.
+
 3. Lancer l'application
 
    - **Android Studio :**
@@ -48,8 +51,6 @@ git clone https://gitlab.com/Barbary-Theo/projet-flutter
      - Lancer le projet avec la flèche ➡️
 
    - **Visual Studio Code :**
-
-   Avant toutes choses, il faut mettre en commentaire le ligne
 
    Dans votre terminal :
 
