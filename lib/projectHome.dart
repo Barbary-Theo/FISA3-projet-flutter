@@ -202,7 +202,7 @@ class _projectHomeState extends State<projectHome> {
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3.5,
+                    height: MediaQuery.of(context).size.height / 3.2,
                     child: Center(
                       child: Column(
                         children: [
