@@ -43,7 +43,7 @@ class _categorieHomeState extends State<categorieHome> {
   final _auth = FirebaseAuth.instance;
   List<Members> _allMembersOfCategorie = <Members>[];
   List<Members> _allMembersOfTask = <Members>[];
-  List<String> _allMembersEmail = <String>[];
+  final List<String> _allMembersEmail = <String>[];
   String _selectedMember = "";
   String _selectedMemberId = "";
   List<DropdownMenuItem<String>> _menuItems = <DropdownMenuItem<String>>[];
@@ -190,7 +190,7 @@ class _categorieHomeState extends State<categorieHome> {
     // setState(() {});
   }
 
-  Future<void> _setMenuItems() {
+  Future<void> _setMenuItems() async {
     _menuItems = <DropdownMenuItem<String>>[];
     for (var element in _allMembersOfTask) {
       _menuItems.add(
@@ -268,7 +268,7 @@ class _categorieHomeState extends State<categorieHome> {
                         textAlign: TextAlign.center,
                       );
                     } else {
-                      widget = Center(
+                      widget = const Center(
                         child: Text("Pas de tâches affecté à la catégorie"),
                       );
                     }
@@ -353,9 +353,9 @@ class _categorieHomeState extends State<categorieHome> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                contentPadding: EdgeInsets.only(bottom: 10.0),
+                contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 1.8,
                     child: Center(
@@ -367,15 +367,15 @@ class _categorieHomeState extends State<categorieHome> {
                               children: [
                                 InkWell(
                                   child: Container(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: 10.0, bottom: 10.0),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFF92DEB1),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
                                           topRight: Radius.circular(16.0)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Ajout d'une tâche",
                                       style: TextStyle(
                                           color: Color(0xFF696868),
@@ -430,7 +430,6 @@ class _categorieHomeState extends State<categorieHome> {
                                 DatePicker.showDatePicker(context,
                                     showTitleActions: true,
                                     minTime: DateTime.now(), onChanged: (date) {
-                                  print('change $date');
                                 }, onConfirm: (date) {
                                   _deadLine = date;
                                 },
@@ -672,9 +671,9 @@ class _categorieHomeState extends State<categorieHome> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                contentPadding: EdgeInsets.only(bottom: 10.0),
+                contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
                     child: Center(
@@ -686,15 +685,15 @@ class _categorieHomeState extends State<categorieHome> {
                               children: [
                                 InkWell(
                                   child: Container(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: 10.0, bottom: 10.0),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFFFFC6C6),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
                                           topRight: Radius.circular(16.0)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Suppression",
                                       style: TextStyle(
                                           color: Color(0xFF696868),
@@ -726,7 +725,7 @@ class _categorieHomeState extends State<categorieHome> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 25,
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.height / 5,
                             child: ElevatedButton(
                               style: ButtonStyle(
@@ -779,9 +778,9 @@ class _categorieHomeState extends State<categorieHome> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                contentPadding: EdgeInsets.only(bottom: 10.0),
+                contentPadding: const EdgeInsets.only(bottom: 10.0),
                 content: SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
                     child: Center(
@@ -793,15 +792,15 @@ class _categorieHomeState extends State<categorieHome> {
                               children: [
                                 InkWell(
                                   child: Container(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: 10.0, bottom: 10.0),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Color(0xFF92DEB1),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(16.0),
                                           topRight: Radius.circular(16.0)),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Affecter un membre",
                                       style: TextStyle(
                                           color: Color(0xFF696868),
@@ -833,7 +832,7 @@ class _categorieHomeState extends State<categorieHome> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 25,
                           ),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.height / 5,
                             child: ElevatedButton(
                               style: ButtonStyle(
