@@ -199,7 +199,7 @@ class _projectHomeState extends State<projectHome>{
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                     contentPadding: const EdgeInsets.only(bottom: 10.0),
                     content: SizedBox(
-                        height: MediaQuery.of(context).size.height / 3.5,
+                        height: MediaQuery.of(context).size.height / 3,
                         child: Center(
                           child: Column(
                             children: [
@@ -250,7 +250,7 @@ class _projectHomeState extends State<projectHome>{
                                 height: MediaQuery.of(context).size.height / 25,
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.height / 5,
+                                width: MediaQuery.of(context).size.width / 4,
                                 child: ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(
