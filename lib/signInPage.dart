@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/loginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -139,7 +140,9 @@ class _SignInPage extends State<SignInPage> {
                         errorText = e.message;
                       });
                     } catch(error){
-                      print(error);
+                      if (kDebugMode) {
+                        print(error);
+                      }
                     }
                   },
                   child: const Text(

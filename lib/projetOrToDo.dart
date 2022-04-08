@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/MainElementItem.dart';
 import 'package:projetmobiles6/model/Project.dart';
@@ -39,7 +40,9 @@ class _projetState extends State<projet> {
           .collection("project")
           .add({'name': name, 'description': description, 'members': member});
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     fillList();
   }
@@ -52,7 +55,9 @@ class _projetState extends State<projet> {
         'member': auth.currentUser.uid
       });
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     fillList();
   }
@@ -92,7 +97,9 @@ class _projetState extends State<projet> {
         }
       });
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
 
     setState(() {

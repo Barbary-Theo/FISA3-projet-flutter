@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Members.dart';
 import 'package:projetmobiles6/model/Task.dart';
@@ -113,7 +114,9 @@ class _categorieHomeState extends State<categorieHome> {
         'members': <String>[_auth.currentUser.uid]
       });
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     initData();
   }
@@ -181,7 +184,9 @@ class _categorieHomeState extends State<categorieHome> {
         });
       });
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     // setState(() {});
   }

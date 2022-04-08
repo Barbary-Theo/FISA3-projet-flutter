@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,10 +28,9 @@ class _userSettingsState extends State<userSettings>{
   }
 
   Future<void> initializeUser() async {
-    await _auth;
+    _auth;
     setState(() {
       userName = _auth.currentUser.email;
-      print(userName);
     });
   }
 
@@ -84,7 +84,7 @@ class _userSettingsState extends State<userSettings>{
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 30,
                       ),
-                      Divider(color: Colors.black, height: 1),
+                      const Divider(color: Colors.black, height: 1),
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 30,
                       ),
@@ -157,7 +157,7 @@ class _userSettingsState extends State<userSettings>{
                       ),
                       Text(
                         errorText,
-                        style: TextStyle(color: Colors.red),
+                        style: const TextStyle(color: Colors.red),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 80,
@@ -212,12 +212,14 @@ class _userSettingsState extends State<userSettings>{
                                   _auth.signOut();
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
-                                          builder: (context) => LoginPage()
+                                          builder: (context) => const LoginPage()
                                       ),
                                           (route) => false
                                   );
                                 } catch(e){
-                                  print(e);
+                                  if (kDebugMode) {
+                                    print(e);
+                                  }
                                 }
                               }
                           )

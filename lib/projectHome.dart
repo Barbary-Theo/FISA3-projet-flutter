@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projetmobiles6/model/Categorie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,7 +66,9 @@ class _projectHomeState extends State<projectHome>{
           }
       );
     } catch(error){
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     fillList();
   }
@@ -83,7 +86,9 @@ class _projectHomeState extends State<projectHome>{
       });
 
     }catch(error){
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
 
     setState(() {

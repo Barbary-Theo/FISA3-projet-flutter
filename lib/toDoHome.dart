@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'model/Task.dart';
@@ -208,7 +209,9 @@ class _toDoHomeState extends State<toDoHome> {
         'validate': false
       });
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
     fillList();
   }
@@ -235,7 +238,9 @@ class _toDoHomeState extends State<toDoHome> {
       });
       await displayTask();
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
 
     setState(() {

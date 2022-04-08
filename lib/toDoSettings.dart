@@ -39,7 +39,9 @@ class _toDoSettings extends State<toDoSettings> {
       });
       setState(() {});
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
     }
   }
 

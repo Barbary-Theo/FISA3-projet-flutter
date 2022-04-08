@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -46,9 +47,9 @@ class _projetSettingsState extends State<projetSettings> {
 
   void _setMenuItems() {
     _menuItems = <DropdownMenuItem<String>>[];
-    _allMembersEmail.forEach((element) {
+    for (var element in _allMembersEmail) {
       _menuItems.add(DropdownMenuItem(value: element, child: Text(element)));
-    });
+    }
   }
 
   Future<void> _initializeProjectData() async {
@@ -100,8 +101,11 @@ class _projetSettingsState extends State<projetSettings> {
         loading = false;
       });
     } catch (error) {
-      print("error : ");
-      print(error);
+      if (kDebugMode) {
+        print("error : ");
+        print(error);
+      }
+
     }
   }
 
@@ -171,7 +175,9 @@ class _projetSettingsState extends State<projetSettings> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => projet()), (route) => false);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
