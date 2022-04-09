@@ -19,7 +19,8 @@ Future<void> main() async {
         messagingSenderId: "XXX",
         projectId: "projetmobiles6",
       ),
-      name: "projetmobiles6");
+      name: "projetmobiles6"
+      );
 
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
