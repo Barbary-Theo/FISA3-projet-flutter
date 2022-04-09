@@ -1,6 +1,6 @@
 # **Done&Gone**
 
-## **Membre du groupe de l'équipe scrum**
+## **Membre de l'équipe scrum**
 
 <img src="./assets/theo.png"
          style="width: 20%" />
@@ -41,7 +41,7 @@ git clone https://gitlab.com/Barbary-Theo/projet-flutter
 2. Ouvrir le projet sur Android Studio ou avec Visual Studio Code
 
    > **WARNING: Si vous êtes sur IOS ou Chrome :**<br>
-   > Avant toutes choses, il faut mettre en commentaire le > ligne 22 : `name: "projetmobiles6"`.
+   > Avant toutes choses, il faut mettre en commentaire la > ligne 22 : `name: "projetmobiles6"`.
 
 3. Lancer l'application
 
