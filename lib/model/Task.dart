@@ -1,7 +1,4 @@
-import 'package:projetmobiles6/model/Members.dart';
-
-class Task{
-
+class Task {
   String _id = "";
   String _name = "";
   String _mainElementId = "";
@@ -18,9 +15,19 @@ class Task{
     _desc = value;
   }
 
-  Task(this._name, this._status, this._x, this._y, this._mainElementId, this._validate);
+  Task(this._name, this._status, this._x, this._y, this._mainElementId,
+      this._validate);
 
-  Task.withDate(String name, int status, double x, double y, String mainElementId, bool validate, DateTime deadLine, String id,String desc){
+  Task.withDate(
+      String name,
+      int status,
+      double x,
+      double y,
+      String mainElementId,
+      bool validate,
+      DateTime deadLine,
+      String id,
+      String desc) {
     _name = name;
     _status = status;
     _x = x;

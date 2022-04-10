@@ -19,8 +19,7 @@ Future<void> main() async {
         messagingSenderId: "XXX",
         projectId: "projetmobiles6",
       ),
-      name: "projetmobiles6"
-      );
+      name: "projetmobiles6");
 
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
@@ -31,7 +30,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

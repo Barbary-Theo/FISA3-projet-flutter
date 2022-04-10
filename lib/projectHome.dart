@@ -143,7 +143,7 @@ class _projectHomeState extends State<projectHome> {
             )
           : researchCategorie.isEmpty
               ? const Center(
-                  child: Text("Pas de catégories affectées au projet."))
+                  child: Text("Pas de catégorie affectée au projet."))
               : ListView.builder(
                   itemCount: researchCategorie.length,
                   itemBuilder: (context, i) {

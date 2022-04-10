@@ -1,9 +1,7 @@
-abstract class MainElementItem{
-
+abstract class MainElementItem {
   String _name = "";
   String _description = "";
   String _id = "";
-
 
   MainElementItem(this._name, this._description, this._id);
 

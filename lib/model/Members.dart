@@ -1,9 +1,6 @@
-class Members{
-
-
+class Members {
   String _email = "";
   String _id = "";
-
 
   Members(this._email, this._id);
 

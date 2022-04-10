@@ -65,7 +65,6 @@ class _categorieHomeState extends State<categorieHome> {
   }
 
   void updateDialog() {
-    // Check if dialog displayed, we can't call setState when dialog not displayed
     if (_dialogKey.currentState != null && _dialogKey.currentState.mounted) {
       _dialogKey.currentState.setState(() {});
     }
@@ -95,12 +94,10 @@ class _categorieHomeState extends State<categorieHome> {
                   .add(Members(result.get("email"), result.get("id")));
             });
             _setMenuItems();
-            // updateDialog();
           }
         });
       });
     });
-    // updateDialog();
   }
 
   void addTask(String name, String description, int status, DateTime deadLine) {
@@ -158,7 +155,6 @@ class _categorieHomeState extends State<categorieHome> {
     allTask = [];
 
     try {
-      // _allMembersOfTask = <Members>[];
       await FirebaseFirestore.instance
           .collection('task')
           .where("mainElementId", isEqualTo: categorieId)
@@ -188,7 +184,6 @@ class _categorieHomeState extends State<categorieHome> {
         print(error);
       }
     }
-    // setState(() {});
   }
 
   Future<void> _setMenuItems() async {
@@ -270,7 +265,7 @@ class _categorieHomeState extends State<categorieHome> {
                       );
                     } else {
                       widget = const Center(
-                        child: Text("Pas de tâches affectées à la catégorie"),
+                        child: Text("Pas de tâche affectée à la catégorie"),
                       );
                     }
                     return widget;
@@ -533,7 +528,7 @@ class _categorieHomeState extends State<categorieHome> {
                               child: Column(
                                 children: [
                                   RadioListTile(
-                                      title: const Text('Pas commencé'),
+                                      title: const Text('Pas commencée'),
                                       value: 0,
                                       groupValue: _status,
                                       onChanged: (int value) async {
@@ -551,7 +546,7 @@ class _categorieHomeState extends State<categorieHome> {
                                         setState(() {});
                                       }),
                                   RadioListTile(
-                                      title: const Text('Commencé'),
+                                      title: const Text('Commencée'),
                                       value: 1,
                                       groupValue: _status,
                                       onChanged: (value) async {
@@ -569,7 +564,7 @@ class _categorieHomeState extends State<categorieHome> {
                                         setState(() {});
                                       }),
                                   RadioListTile(
-                                      title: const Text('Fini'),
+                                      title: const Text('Terminée'),
                                       value: 2,
                                       groupValue: _status,
                                       onChanged: (value) async {

@@ -176,7 +176,7 @@ class _userSettingsState extends State<userSettings> {
                           try {
                             _auth.currentUser.updatePassword(mdp2.text.trim());
                             setState(() {
-                              errorText = "Mot de passe changer !";
+                              errorText = "Mot de passe changé !";
                             });
                           } on FirebaseAuthException catch (e) {
                             setState(() {

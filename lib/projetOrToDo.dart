@@ -172,7 +172,7 @@ class _projetState extends State<projet> {
               ),
             )
           : researchMainElementItem.isEmpty
-              ? const Center(child: Text("Pas de projets en cours"))
+              ? const Center(child: Text("Pas de projet en cours"))
               : ListView.builder(
                   itemCount: researchMainElementItem.length,
                   itemBuilder: (context, i) {
